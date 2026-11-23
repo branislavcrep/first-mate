@@ -25,6 +25,7 @@ Jazyk: slovenčina. Branislavovi a Marcelovi tykaj, klientovi vo všetkých výs
 - `panel/` · jadro panela (vznikne v migrácii)
 - `klienti/<klient>/` · `nastavenia.json`, `verzie.md` (vznikne v migrácii)
 - `tools/` · skripty (build, export, testy, referenčný finančný model)
+- `.claude/` · hooky (`settings.json` → `tools/hooks/koniec_session.py`) a príkazy (`commands/`: /novy-klient, /build, /release, /export-usecases, /zverejni-demo, /koniec)
 - `dennik/`, `CHANGELOG.md` · denník a verzie
 - Úlohy: GitHub Issues v tomto repozitári (nie v markdowne)
 

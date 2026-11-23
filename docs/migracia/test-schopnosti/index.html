@@ -1,0 +1,269 @@
+<title>First Mate · test schopností</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: jeden stĺpec, každý test je riadok s výsledkom (stav ako chip), súhrn hore */
+:root {
+  --paper: #F9F9F5; --surface: #FFFFFF; --ink: #0B0B0C; --muted: #5E5F66; --line: #E3E3DC;
+  --blue: #1B2CC1; --blue-soft: #E8EAFB;
+  --ok: #0B7A5C; --ok-soft: #E3F3EC; --warn: #B45A0A; --warn-soft: #FBEEDF; --bad: #B3261E; --bad-soft: #FBE7E5;
+  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #111113; --surface: #19191C; --ink: #F2F2EE; --muted: #A3A4AB; --line: #2C2C31;
+  --blue: #8C97FF; --blue-soft: #23264A;
+  --ok: #4CC79E; --ok-soft: #12322A; --warn: #F0A35E; --warn-soft: #3A2814; --bad: #FF8A80; --bad-soft: #3D1A18;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #111113; --surface: #19191C; --ink: #F2F2EE; --muted: #A3A4AB; --line: #2C2C31;
+  --blue: #8C97FF; --blue-soft: #23264A;
+  --ok: #4CC79E; --ok-soft: #12322A; --warn: #F0A35E; --warn-soft: #3A2814; --bad: #FF8A80; --bad-soft: #3D1A18;
+  color-scheme: dark }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 860px; margin: 0 auto; padding-block: 32px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 24px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); }
+h1 { font-size: clamp(24px, 4vw, 32px); font-weight: 600; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+.lead { color: var(--muted); margin: 0; max-width: 65ch; }
+.summary { display: flex; flex-wrap: wrap; gap: 8px; }
+.tests { display: grid; gap: 12px; }
+.test { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 10px; min-width: 0; }
+.test-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; }
+.num { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.test h2 { font-size: 16px; font-weight: 600; margin: 0; flex: 1 1 220px; }
+.what { color: var(--muted); margin: 0; font-size: 14px; }
+.chip { font-family: var(--mono); font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--line); color: var(--muted); white-space: nowrap; }
+.chip[data-s="ok"] { background: var(--ok-soft); color: var(--ok); }
+.chip[data-s="warn"] { background: var(--warn-soft); color: var(--warn); }
+.chip[data-s="bad"] { background: var(--bad-soft); color: var(--bad); }
+.chip[data-s="run"] { background: var(--blue-soft); color: var(--blue); }
+.out { font-family: var(--mono); font-size: 13px; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 1.5em; margin: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button { font: inherit; font-size: 14px; font-weight: 500; padding: 7px 14px; border-radius: 7px; border: 1px solid var(--blue); background: var(--blue); color: var(--surface); cursor: pointer; }
+button.ghost { background: transparent; color: var(--blue); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+label { font-size: 14px; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; font-size: 13px; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-weight: 500; color: var(--muted); font-size: 12px; }
+td.n { text-align: right; }
+footer { color: var(--muted); font-size: 13px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Migrácia · fáza 1 · krok 5</div>
+    <h1>First Mate · test schopností</h1>
+    <p class="lead">Overuje, čo vie artefakt zverejnený z Claude Code v cloude: vložené dáta, súbor vedľa stránky, AI, databázu artefaktu a konektor Slack. Dáta sú fiktívne ukážky First Mate.</p>
+  </header>
+
+  <div class="summary" id="summary" aria-live="polite"></div>
+
+  <div class="tests">
+    <section class="test" id="t-embed">
+      <div class="test-head"><span class="num">T1</span><h2>Dáta vložené v HTML</h2><span class="chip">čaká</span></div>
+      <p class="what">CSV jednotiek developera je priamo v stránke, bez <code>fetch</code>. Načíta sa samo.</p>
+      <div class="tbl" id="embed-table"></div>
+      <pre class="out" id="embed-out"></pre>
+    </section>
+
+    <section class="test" id="t-file">
+      <div class="test-head"><span class="num">T2</span><h2>Súbor vedľa stránky</h2><span class="chip">čaká</span></div>
+      <p class="what">Načíta <code>data/nehnutelnosti_ukazka.csv</code> relatívnou cestou. Funguje, len ak Claude Code zverejnil artefakt z viacerých súborov.</p>
+      <pre class="out" id="file-out"></pre>
+    </section>
+
+    <section class="test" id="t-ai">
+      <div class="test-head"><span class="num">T3</span><h2>AI (sample)</h2><span class="chip">čaká</span></div>
+      <p class="what">Pošle vložené dáta Claudovi a vypýta si jednovetové zhrnutie. Prvé volanie si vypýta súhlas a čerpá vaše využitie Claude.</p>
+      <div class="row"><button id="ai-btn" type="button">Spýtať sa AI</button></div>
+      <pre class="out" id="ai-out"></pre>
+    </section>
+
+    <section class="test" id="t-db">
+      <div class="test-head"><span class="num">T4</span><h2>Databáza artefaktu (db)</h2><span class="chip">čaká</span></div>
+      <p class="what">Zapíše dokument <code>test/beh</code> (počítadlo a čas) a hneď ho prečíta späť. Hodnota prežije znovuzverejnenie.</p>
+      <div class="row"><button id="db-btn" type="button">Zapísať a prečítať</button></div>
+      <pre class="out" id="db-out"></pre>
+    </section>
+
+    <section class="test" id="t-slack">
+      <div class="test-head"><span class="num">T5</span><h2>Konektor Slack (mcp)</h2><span class="chip">čaká</span></div>
+      <p class="what">Overí, či je Slack deklarovaný a pripojený, a nájde kanály First Mate (len čítanie). Odoslanie je oddelené a vyžaduje potvrdenie.</p>
+      <div class="row"><button id="slack-btn" type="button">Overiť konektor</button></div>
+      <pre class="out" id="slack-out"></pre>
+      <div class="row">
+        <label for="slack-ok"><input type="checkbox" id="slack-ok"> Súhlasím s odoslaním testovacej správy do #first-mate-developer</label>
+        <button id="slack-send" class="ghost" type="button" disabled>Poslať testovaciu správu</button>
+      </div>
+      <pre class="out" id="slack-send-out" hidden></pre>
+    </section>
+
+    <section class="test" id="t-user">
+      <div class="test-head"><span class="num">T6</span><h2>Kto pozerá (user)</h2><span class="chip">čaká</span></div>
+      <p class="what">Či je divák vlastník a či môže upravovať. Dôležité pre Marcela a klientske panely.</p>
+      <pre class="out" id="user-out"></pre>
+    </section>
+  </div>
+
+  <footer>First Mate test schopností · zostavené 2026-11-23 · zdroj: <code>docs/migracia/test-schopnosti/</code> v repozitári first-mate</footer>
+</div>
+
+<script type="text/plain" id="csv-jednotky">kod;projekt;typ;izby;plocha_m2;cena_s_dph_eur;stav;predajca
+PL-A-301;Rezidencia Pod Lesom;Byt;2;52;213900;Zmluva o budúcej;Michal Hrnčiar
+PL-A-304;Rezidencia Pod Lesom;Byt;4;98;441800;Zmluva o budúcej;Martina Vargová
+PL-A-203;Rezidencia Pod Lesom;Byt;2;55;235100;Zmluva o budúcej;Michal Hrnčiar
+PL-A-403;Rezidencia Pod Lesom;Byt;2;55;239500;Zmluva o budúcej;Martina Vargová
+PL-B-102;Rezidencia Pod Lesom;Byt;3;78;373500;Zmluva o budúcej;Martina Vargová
+PL-B-101;Rezidencia Pod Lesom;Byt;2;52;227800;Voľná;Martina Vargová
+PL-A-101;Rezidencia Pod Lesom;Byt;2;52;229800;Voľná;Martina Vargová
+PL-A-103;Rezidencia Pod Lesom;Byt;2;55;248700;Zmluva o budúcej;Martina Vargová
+PL-A-201;Rezidencia Pod Lesom;Byt;2;52;211800;Voľná;Martina Vargová
+PL-A-204;Rezidencia Pod Lesom;Byt;4;98;437900;Zmluva o budúcej;Michal Hrnčiar</script>
+
+<script>
+(function () {
+  const SLACK = "Slack";
+  const KANAL_DEV = "C0CDY6XG8MR"; // #first-mate-developer (demo workspace)
+  const vysledky = {};
+  const $ = (id) => document.getElementById(id);
+
+  function stav(testId, s, text) {
+    const chip = document.querySelector("#" + testId + " .chip");
+    chip.dataset.s = s; chip.textContent = text;
+    vysledky[testId] = { s, text };
+    kresliSuhrn();
+  }
+  function kresliSuhrn() {
+    const box = $("summary"); box.textContent = "";
+    const mena = { "t-embed": "T1 dáta", "t-file": "T2 súbor", "t-ai": "T3 AI", "t-db": "T4 db", "t-slack": "T5 Slack", "t-user": "T6 user" };
+    for (const id of Object.keys(mena)) {
+      const c = document.createElement("span"); c.className = "chip";
+      const v = vysledky[id]; c.dataset.s = v ? v.s : ""; c.textContent = mena[id] + ": " + (v ? v.text : "čaká");
+      box.append(c);
+    }
+  }
+  function parseCSV(txt) {
+    const riadky = txt.replace(/^﻿/, "").split(/\r?\n/).filter((r) => r.trim());
+    const hlava = riadky[0].split(";");
+    return riadky.slice(1).map((r) => { const b = r.split(";"); const o = {}; hlava.forEach((h, i) => (o[h] = b[i])); return o; });
+  }
+  const eur = (n) => Number(n).toLocaleString("sk-SK") + " €";
+
+  // T1 · vložené dáta
+  let jednotky = [];
+  try {
+    jednotky = parseCSV($("csv-jednotky").textContent);
+    const t = document.createElement("table");
+    const hl = ["kod", "izby", "plocha_m2", "cena_s_dph_eur", "stav", "predajca"];
+    const thead = t.createTHead().insertRow();
+    hl.forEach((h) => { const th = document.createElement("th"); th.textContent = h; thead.append(th); });
+    const tb = t.createTBody();
+    jednotky.slice(0, 5).forEach((j) => { const r = tb.insertRow(); hl.forEach((h) => { const c = r.insertCell(); c.textContent = h === "cena_s_dph_eur" ? eur(j[h]) : j[h]; if (["izby", "plocha_m2", "cena_s_dph_eur"].includes(h)) c.className = "n"; }); });
+    $("embed-table").append(t);
+    const predane = jednotky.filter((j) => j.stav !== "Voľná").length;
+    $("embed-out").textContent = "Načítaných " + jednotky.length + " jednotiek, z toho " + predane + " so zmluvou, " + (jednotky.length - predane) + " voľných (zobrazených prvých 5).";
+    stav("t-embed", "ok", "funguje");
+  } catch (e) { $("embed-out").textContent = "Chyba: " + e.message; stav("t-embed", "bad", "nefunguje"); }
+
+  // T2 · súbor vedľa stránky
+  fetch("data/nehnutelnosti_ukazka.csv").then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+    .then((txt) => { const n = parseCSV(txt); $("file-out").textContent = "Načítaných " + n.length + " ponúk realitky, napr. " + n[0].kod + " · " + n[0].name + " · " + eur(n[0].value) + "."; stav("t-file", "ok", "funguje"); })
+    .catch((e) => { $("file-out").textContent = "Súbor sa nenačítal (" + e.message + "). Artefakt je zrejme len jedna stránka."; stav("t-file", "bad", "nefunguje"); });
+
+  const cl = window.claude;
+  if (!cl || typeof cl.use !== "function") {
+    ["t-ai", "t-db", "t-slack", "t-user"].forEach((id) => stav(id, "warn", "mimo prehliadača Claude"));
+    ["ai-btn", "db-btn", "slack-btn"].forEach((id) => ($(id).disabled = true));
+    return;
+  }
+
+  // T3 · AI
+  cl.use("sample").then((sample) => {
+    if (!sample) { stav("t-ai", "bad", "nedostupné"); $("ai-btn").disabled = true; $("ai-out").textContent = "Capability sample nie je v tomto zobrazení dostupná."; return; }
+    stav("t-ai", "run", "pripravené");
+    $("ai-btn").onclick = async () => {
+      $("ai-btn").disabled = true; $("ai-out").textContent = "Premýšľa…";
+      const prompt = "Si First Mate, AI analytik pre developera. Odpovedz po slovensky jednou vetou, vykaj čitateľovi. " +
+        "Zhrň stav predaja týchto jednotiek (koľko je predaných, koľko voľných, aká je priemerná cena voľných):\n\n" + $("csv-jednotky").textContent;
+      try {
+        const { text } = await sample(prompt, { modelTier: "quick", onText: ({ text }) => ($("ai-out").textContent = text) });
+        $("ai-out").textContent = text; stav("t-ai", "ok", "funguje");
+      } catch (e) {
+        $("ai-out").textContent = (e.text ? e.text + "\n\n" : "") + "Kód chyby: " + e.code + (e.code === "not_granted" ? " (súhlas nebol udelený)" : "");
+        stav("t-ai", e.code === "not_granted" ? "warn" : "bad", e.code);
+      } finally { $("ai-btn").disabled = false; }
+    };
+  });
+
+  // T4 · databáza
+  cl.use("db").then((db) => {
+    if (!db) { stav("t-db", "bad", "nedostupné"); $("db-btn").disabled = true; $("db-out").textContent = "Capability db nie je dostupná (napr. neprihlásený divák)."; return; }
+    const ref = db.doc("test/beh");
+    const casovac = setTimeout(() => ($("db-out").textContent = "Databáza neodpovedá do 10 s."), 10000);
+    ref.get().then((s) => { clearTimeout(casovac); $("db-out").textContent = s.exists ? "Uložené z minula: " + JSON.stringify(s.data()) : "Zatiaľ prázdne. Stlačte „Zapísať a prečítať“."; stav("t-db", "run", "pripravené"); })
+      .catch((e) => { clearTimeout(casovac); $("db-out").textContent = "Čítanie zlyhalo: " + (e.code || e.message); stav("t-db", "bad", e.code || "chyba"); });
+    $("db-btn").onclick = async () => {
+      $("db-btn").disabled = true;
+      try {
+        const pred = await ref.get();
+        const n = ((pred.exists && Number(pred.data().pocet)) || 0) + 1;
+        await ref.set({ pocet: n, cas: new Date().toISOString(), zdroj: "test schopností" });
+        const po = await ref.get();
+        $("db-out").textContent = "Zapísané a prečítané späť: " + JSON.stringify(po.data());
+        stav("t-db", po.exists && po.data().pocet === n ? "ok" : "warn", po.exists && po.data().pocet === n ? "funguje" : "nezhoda");
+      } catch (e) { $("db-out").textContent = "Zápis zlyhal: " + (e.code || e.message) + " (len na čítanie?)"; stav("t-db", "warn", e.code || "chyba"); }
+      finally { $("db-btn").disabled = false; }
+    };
+  });
+
+  // T5 · Slack
+  cl.use("mcp").then((mcp) => {
+    if (!mcp) { stav("t-slack", "bad", "nedostupné"); $("slack-btn").disabled = true; $("slack-out").textContent = "Capability mcp nie je v tomto zobrazení dostupná."; return; }
+    mcp.listTools(SLACK).then((r) => {
+      const s = r.servers.find((x) => x.server === SLACK);
+      $("slack-out").textContent = s ? "Deklarovaný: áno · stav pripojenia: " + s.authStatus + " · nástroje: " + s.tools.map((t) => t.name).join(", ") : "Slack nie je medzi pripojenými konektormi diváka.";
+      stav("t-slack", s ? "run" : "warn", s ? "deklarovaný" : "nepripojený");
+    }).catch((e) => { $("slack-out").textContent = "listTools zlyhal: " + e.code; stav("t-slack", "bad", e.code); });
+
+    $("slack-btn").onclick = async () => {
+      $("slack-btn").disabled = true; $("slack-out").textContent = "Hľadám kanály first-mate…";
+      try {
+        const res = await mcp.callTool(SLACK, "slack_search_channels", { keywords: ["first-mate"], natural_language_query: "kanály First Mate", limit: 10, response_format: "concise" }, { cache: false });
+        const p = res.payload; const txt = typeof p === "string" ? p : (p && typeof p.results === "string") ? p.results : JSON.stringify(p, null, 1);
+        $("slack-out").textContent = "Konektor odpovedal (len čítanie):\n" + String(txt).slice(0, 1200);
+        stav("t-slack", "ok", "funguje");
+      } catch (e) {
+        const k = { needs_reauth: "Slack treba znovu pripojiť v claude.ai → Nastavenia → Konektory.", server_not_connected: "Pridajte Slack v claude.ai → Nastavenia → Konektory.", not_in_manifest: "Konektor nie je povolený pre túto stránku.", approval_required: "Volanie čaká na váš súhlas." }[e.code] || e.message || "";
+        $("slack-out").textContent = "Kód chyby: " + e.code + "\n" + k; stav("t-slack", "warn", e.code);
+      } finally { $("slack-btn").disabled = false; }
+    };
+    $("slack-ok").onchange = () => ($("slack-send").disabled = !$("slack-ok").checked);
+    $("slack-send").onclick = async () => {
+      if (!$("slack-ok").checked) return;
+      $("slack-send").disabled = true; $("slack-ok").checked = false;
+      const out = $("slack-send-out"); out.hidden = false; out.textContent = "Posielam…";
+      try {
+        await mcp.callTool(SLACK, "slack_send_message", { channel_id: KANAL_DEV, message: "First Mate · test schopností: testovacia správa z artefaktu zverejneného z Claude Code (fáza 1 migrácie). Ignorujte." });
+        out.textContent = "Odoslané do #first-mate-developer.";
+      } catch (e) { out.textContent = "Neodoslané alebo neisté (kód " + e.code + "). Pred ďalším pokusom skontrolujte kanál."; }
+    };
+  });
+
+  // T6 · user
+  cl.use("user").then(async (user) => {
+    if (!user) { stav("t-user", "warn", "nedostupné"); $("user-out").textContent = "Divák nie je prihlásený alebo capability chýba."; return; }
+    const [vlastnik, upravy] = await Promise.all([user.isOwner().catch(() => null), user.canEdit().catch(() => null)]);
+    const fmt = (v) => (v === true ? "áno" : v === false ? "nie" : "neznáme");
+    $("user-out").textContent = "Vlastník: " + fmt(vlastnik) + " · môže upravovať: " + fmt(upravy);
+    stav("t-user", "ok", "funguje");
+  });
+})();
+</script>

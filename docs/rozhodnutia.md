@@ -15,3 +15,11 @@ Datované. Neplatné sa nemažú, označia sa `NEPLATÍ od RRRR-MM-DD`.
 - Staré dva panely ostanú ako zmrazený archív s odkazom na nový.
 - Postup práce podľa „Tenký kontext“ (`docs/zdroje/tenky-kontext.pdf`): CLAUDE.md, hot.md (max 500 slov), index.md v priečinkoch, denník, hooky.
 - Vizualizácia cieľového stavu: https://claude.ai/artifact/EvgMLQK1uhuD7T9Z6igLtb (kópia `docs/architektura.html`).
+
+## 2026-11-23 · fáza 1: čo vie Claude Code v cloude (Branislav, overil Claude Code)
+- **Zverejnenie z Claude Code funguje aj z viacerých súborov.** Testovací artefakt „First Mate · test schopností“ (https://claude.ai/artifact/HA9ygyGrhrRWdjbTyhf4NV, zdroj `docs/migracia/test-schopnosti/`) bol zverejnený ako `index.html` + `data/nehnutelnosti_ukazka.csv`; server drží oba súbory. Stránka môže načítať súbor vedľa seba relatívnym `fetch` (rovnako ako pôvodné panely `data/*.csv`).
+- **Capabilities dostupné pre účet Branislava:** `artifact`, `assets`, `comments`, `db`, `dictation`, `downloads`, `files`, `mcp`, `room`, `sample`, `tts`, `user` (+ vstavané `permissions`). Runtime kontrakt 0.2.98. Test deklaruje `db`, `user`, `sample`, `mcp` (Slack: `slack_search_channels`, `slack_send_message`).
+- Overené zo session: databáza artefaktu (zápis, čítanie, zmazanie cez ArtifactData), konektor Slack (vyhľadanie kanálov #first-mate-demo C0CDGG5MY0Y a #first-mate-developer C0CDY6XG8MR), GitHub Issues (čítanie, zakladanie; štítky vznikajú automaticky pri priradení, v sivej farbe). AI (`sample`) a volania z prehliadača overí Branislav kliknutím v artefakte.
+- Claude Code vie vytvárať plánované úlohy (scheduled tasks) – podklad pre nočné znovuzverejnenie demo panela vo fáze 6.
+- **Rozhodnutie:** nový panel zverejňuje Claude Code (cieľ z plánu), nie chat na claude.ai. Chat ostáva len zálohou. Build vo fáze 5 môže ostať viacsúborový (`index.html` + `data/`), jedna samostatná stránka nie je nutná.
+- Artefakty z Claude Code sú súkromné (len vlastník). Zdieľanie s Marcelom alebo klientom sa robí ručne cez Share v artefakte.
