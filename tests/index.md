@@ -9,6 +9,6 @@ Golden testy: čísla signálov z pôvodných panelov sú zdroj pravdy. Spusteni
 - golden/porovnaj.mjs — hĺbkové porovnanie s toleranciou 1e-9 a výpis rozdielov
 - golden/financie_python.mjs — krížová kontrola F1–F6 s `tools/first_mate_financny_model.py` (187 hodnôt) a 20 overenými číslami z `legacy/README.md`
 - golden/extract.mjs — vytvorí golden súbory (`npm run golden`)
-- golden/run.mjs — `npm test`: legacy ↔ golden, Python, README, a nové jadro `panel/golden.mjs` ↔ golden (od fázy 4)
+- golden/run.mjs — `npm test`: legacy ↔ golden, Python, README, katalóg use casov a nové jadro `panel/golden.mjs` ↔ golden (prechádza od 24. 11. 2026)
 
 Kontrakt pre nové jadro: `panel/golden.mjs` exportuje `nacitaj(typ, nowMs)` → `{FMCSV, FM, FIN, CSV}` v tvare legacy modulov. `FM_JADRO=legacy` alebo `FM_JADRO=panel` spustí len jednu časť.

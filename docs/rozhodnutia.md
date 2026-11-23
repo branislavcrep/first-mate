@@ -36,3 +36,9 @@ Datované. Neplatné sa nemažú, označia sa `NEPLATÍ od RRRR-MM-DD`.
 - Zlúčený jediný use case: `dopyty-bez-reakcie` (realitka s1 + developer s4), predvolená hranica podľa typu 48 h / 24 h. Ostatné ostávajú samostatné.
 - `cas-prvej-reakcie` len realitka; návrh rozšíriť na developera je Issue #7. Spoločný `zaujem-bez-akcie` (ležiaky + záujem bez obhliadky) a samostatné vypredané typy sú Issue #8. Oboje mení čísla, robí sa až po ďalšom súhlase.
 - Kategórie a typy tipov ostávajú podľa návrhu (napr. `podmienka-banky`, `zalohy-po-splatnosti` vo financiách).
+
+## 2026-11-24 · fáza 4: výpočtové jadro (Claude Code, v rámci schváleného plánu)
+- Výpočty signálov sú v `panel/usecases/<id>.js`, jeden súbor na use case z katalógu, funkcia pre každý typ firmy. Panel ich volá v poradí z `usecases/typy.json`. Zlúčený `dopyty-bez-reakcie` má zatiaľ dve funkcie (realitka, developer), lebo doplnky výstupu sa líšia; spoločné jadro pravidla sa zjednotí neskôr bez zmeny čísel.
+- Kľúče výstupu ostávajú zatiaľ pôvodné (`s1`…, `f1`…), lebo na ne sú viazané texty brífingu, AI prompty a šablóny. Prechod na ID z katalógu je samostatný krok.
+- Moduly sú ES moduly (fungujú v prehliadači aj v Node pre testy). Fáza 1 ukázala, že artefakt môže mať viac súborov.
+- `CSV.toData` realitky dostáva čas ako parameter (`teraz`) namiesto `Date.now()`; správanie v paneli je rovnaké.
