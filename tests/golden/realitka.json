@@ -1,0 +1,426 @@
+{
+ "meta": {
+  "typ": "realitka",
+  "referencny_datum": "2026-11-03",
+  "teraz": "2026-11-03T17:00:00.000Z",
+  "teraz_miestne": "2026-11-03 18:00 Europe/Bratislava",
+  "posun_dni": 0,
+  "zdroj_vypoctu": "legacy/panel-realitka/index.html",
+  "data": {
+   "nehnutelnosti.csv": "a11b9d9707892b8d",
+   "dopyty.csv": "75ac10592446e711",
+   "obhliadky.csv": "9186ef1f167a13bd"
+  },
+  "upozornenia_csv": []
+ },
+ "signaly_nastavenia": {
+  "period": 7,
+  "s1": {
+   "on": true,
+   "hours": 48
+  },
+  "s2": {
+   "on": true,
+   "fastHours": 4
+  },
+  "s3": {
+   "on": true,
+   "minViews": 200,
+   "days": 14
+  },
+  "s4": {
+   "on": true,
+   "days": 14
+  }
+ },
+ "suhrn": {
+  "s1": {
+   "on": true,
+   "level": "red",
+   "count": 9,
+   "polozky": [
+    {
+     "id": "D0408",
+     "hodinBezReakcie": 168
+    },
+    {
+     "id": "D0409",
+     "hodinBezReakcie": 146
+    },
+    {
+     "id": "D0410",
+     "hodinBezReakcie": 131
+    },
+    {
+     "id": "D0414",
+     "hodinBezReakcie": 106
+    },
+    {
+     "id": "D0411",
+     "hodinBezReakcie": 100
+    },
+    {
+     "id": "D0412",
+     "hodinBezReakcie": 95
+    },
+    {
+     "id": "D0413",
+     "hodinBezReakcie": 82
+    },
+    {
+     "id": "D0415",
+     "hodinBezReakcie": 80
+    },
+    {
+     "id": "D0416",
+     "hodinBezReakcie": 74
+    }
+   ]
+  },
+  "s2": {
+   "on": true,
+   "level": "yellow",
+   "polozky": []
+  },
+  "s3": {
+   "on": true,
+   "level": "yellow",
+   "count": 4,
+   "polozky": [
+    {
+     "id": "N035",
+     "views7": 512,
+     "cenaM2": 5077,
+     "priemerM2": 4300,
+     "nadPriemerPct": 18,
+     "dopyty14": 1
+    },
+    {
+     "id": "N029",
+     "views7": 230,
+     "cenaM2": 3286,
+     "priemerM2": 3200,
+     "nadPriemerPct": 3,
+     "dopyty14": 0
+    },
+    {
+     "id": "N005",
+     "views7": 223,
+     "cenaM2": 3145,
+     "priemerM2": 3100,
+     "nadPriemerPct": 1,
+     "dopyty14": 4
+    },
+    {
+     "id": "N011",
+     "views7": 219,
+     "cenaM2": 3390,
+     "priemerM2": 3900,
+     "nadPriemerPct": -13,
+     "dopyty14": 1
+    }
+   ]
+  },
+  "s4": {
+   "on": true,
+   "level": "yellow",
+   "count": 3,
+   "polozky": [
+    {
+     "id": "N036",
+     "obhliadky14": 0,
+     "dopyty14": 0,
+     "rizikova": true,
+     "dniDoKonca": 6
+    },
+    {
+     "id": "N037",
+     "obhliadky14": 2,
+     "dopyty14": 1,
+     "rizikova": false,
+     "dniDoKonca": 11
+    },
+    {
+     "id": "N038",
+     "obhliadky14": 1,
+     "dopyty14": 3,
+     "rizikova": false,
+     "dniDoKonca": 13
+    }
+   ]
+  }
+ },
+ "vystup": {
+  "now": 1793725200000,
+  "today": "2026-11-03",
+  "dayLabel": "ut 3. 11.",
+  "dayLong": "utorok 3. 11. 2026",
+  "s1": {
+   "on": true,
+   "hours": 48,
+   "count": 9,
+   "prev": 0,
+   "byMakler": [
+    {
+     "makler": "Tomáš Kováč",
+     "n": 6
+    },
+    {
+     "makler": "Juraj Šimko",
+     "n": 2
+    },
+    {
+     "makler": "Peter Molnár",
+     "n": 1
+    }
+   ],
+   "items": [
+    {
+     "kod": "D0408",
+     "makler": "Tomáš Kováč",
+     "nehnutelnost": "N005",
+     "lokalita": "Senec",
+     "hodinBezReakcie": 168
+    },
+    {
+     "kod": "D0409",
+     "makler": "Tomáš Kováč",
+     "nehnutelnost": "N038",
+     "lokalita": "Trnava",
+     "hodinBezReakcie": 146
+    },
+    {
+     "kod": "D0410",
+     "makler": "Tomáš Kováč",
+     "nehnutelnost": "N005",
+     "lokalita": "Senec",
+     "hodinBezReakcie": 131
+    },
+    {
+     "kod": "D0414",
+     "makler": "Juraj Šimko",
+     "nehnutelnost": "N019",
+     "lokalita": "Senec",
+     "hodinBezReakcie": 106
+    },
+    {
+     "kod": "D0411",
+     "makler": "Tomáš Kováč",
+     "nehnutelnost": "N027",
+     "lokalita": "Nové Mesto",
+     "hodinBezReakcie": 100
+    },
+    {
+     "kod": "D0412",
+     "makler": "Tomáš Kováč",
+     "nehnutelnost": "N038",
+     "lokalita": "Trnava",
+     "hodinBezReakcie": 95
+    },
+    {
+     "kod": "D0413",
+     "makler": "Tomáš Kováč",
+     "nehnutelnost": "N003",
+     "lokalita": "Rača",
+     "hodinBezReakcie": 82
+    },
+    {
+     "kod": "D0415",
+     "makler": "Peter Molnár",
+     "nehnutelnost": "N021",
+     "lokalita": "Nové Mesto",
+     "hodinBezReakcie": 80
+    },
+    {
+     "kod": "D0416",
+     "makler": "Juraj Šimko",
+     "nehnutelnost": "N019",
+     "lokalita": "Senec",
+     "hodinBezReakcie": 74
+    }
+   ],
+   "level": "red"
+  },
+  "s2": {
+   "on": true,
+   "fastHours": 4,
+   "mean": 9.317391304347826,
+   "prev": 9.937931034482759,
+   "perMakler": [
+    {
+     "makler": "Tomáš Kováč",
+     "hodiny": 30.166666666666668,
+     "n": 6
+    },
+    {
+     "makler": "Juraj Šimko",
+     "hodiny": 3.95,
+     "n": 2
+    },
+    {
+     "makler": "Lucia Hudáková",
+     "hodiny": 2.1999999999999997,
+     "n": 3
+    },
+    {
+     "makler": "Simona Lukáčová",
+     "hodiny": 1.9249999999999998,
+     "n": 4
+    },
+    {
+     "makler": "Peter Molnár",
+     "hodiny": 1.4000000000000001,
+     "n": 3
+    },
+    {
+     "makler": "Katarína Bartošová",
+     "hodiny": 1.3800000000000001,
+     "n": 5
+    }
+   ],
+   "fast": 5,
+   "slowest": {
+    "makler": "Tomáš Kováč",
+    "hodiny": 30.166666666666668,
+    "n": 6
+   },
+   "level": "yellow"
+  },
+  "s3": {
+   "on": true,
+   "minViews": 200,
+   "days": 14,
+   "count": 4,
+   "items": [
+    {
+     "kod": "N035",
+     "nazov": "3-izbový byt, Bratislava – Ružinov",
+     "lokalita": "Ružinov",
+     "makler": "Peter Molnár",
+     "views7": 512,
+     "cenaM2": 5077,
+     "priemerM2": 4300,
+     "nadPriemerPct": 18,
+     "dopyty14": 1
+    },
+    {
+     "kod": "N029",
+     "nazov": "1-izbový byt, Ivanka pri Dunaji",
+     "lokalita": "Ivanka pri Dunaji",
+     "makler": "Juraj Šimko",
+     "views7": 230,
+     "cenaM2": 3286,
+     "priemerM2": 3200,
+     "nadPriemerPct": 3,
+     "dopyty14": 0
+    },
+    {
+     "kod": "N005",
+     "nazov": "3-izbový byt, Senec",
+     "lokalita": "Senec",
+     "makler": "Tomáš Kováč",
+     "views7": 223,
+     "cenaM2": 3145,
+     "priemerM2": 3100,
+     "nadPriemerPct": 1,
+     "dopyty14": 4
+    },
+    {
+     "kod": "N011",
+     "nazov": "3-izbový byt, Bratislava – Rača",
+     "lokalita": "Rača",
+     "makler": "Simona Lukáčová",
+     "views7": 219,
+     "cenaM2": 3390,
+     "priemerM2": 3900,
+     "nadPriemerPct": -13,
+     "dopyty14": 1
+    }
+   ],
+   "top": {
+    "kod": "N035",
+    "nazov": "3-izbový byt, Bratislava – Ružinov",
+    "lokalita": "Ružinov",
+    "makler": "Peter Molnár",
+    "views7": 512,
+    "cenaM2": 5077,
+    "priemerM2": 4300,
+    "nadPriemerPct": 18,
+    "dopyty14": 1
+   },
+   "level": "yellow"
+  },
+  "s4": {
+   "on": true,
+   "days": 14,
+   "count": 3,
+   "prev": 1,
+   "items": [
+    {
+     "kod": "N036",
+     "lokalita": "Petržalka",
+     "makler": "Juraj Šimko",
+     "exklDo": "2026-11-09",
+     "koniec": "9. 11.",
+     "obhliadky14": 0,
+     "dopyty14": 0,
+     "rizikova": true,
+     "dniDoKonca": 6
+    },
+    {
+     "kod": "N037",
+     "lokalita": "Rača",
+     "makler": "Lucia Hudáková",
+     "exklDo": "2026-11-14",
+     "koniec": "14. 11.",
+     "obhliadky14": 2,
+     "dopyty14": 1,
+     "rizikova": false,
+     "dniDoKonca": 11
+    },
+    {
+     "kod": "N038",
+     "lokalita": "Trnava",
+     "makler": "Tomáš Kováč",
+     "exklDo": "2026-11-16",
+     "koniec": "16. 11.",
+     "obhliadky14": 1,
+     "dopyty14": 3,
+     "rizikova": false,
+     "dniDoKonca": 13
+    }
+   ],
+   "level": "yellow"
+  },
+  "hot": [
+   {
+    "kod": "N005",
+    "lokalita": "Senec",
+    "makler": "Tomáš Kováč",
+    "dopyty14": 4,
+    "obhliadky14": 0
+   }
+  ],
+  "dataInfo": {
+   "unanswered": 11,
+   "recent": 126,
+   "viewings": 55,
+   "deals": 40
+  }
+ },
+ "texty": {
+  "nadpis": "Dopyty čakajú",
+  "podnadpis": "9 bez reakcie nad 48 h",
+  "s1": "6 z nich má Tomáš Kováč, 2 Juraj Šimko a 1 Peter Molnár. Pri každom ďalšom dni rastie riziko, že kupujúci odíde ku konkurencii.",
+  "s2": "5 maklérov reaguje do 4 h. Najdlhšie reaguje Tomáš Kováč s 30,2 h.",
+  "s3": "Najvýraznejšia je N035 Ružinov (P. Molnár): 512 zobrazení za týždeň a 0 obhliadok. Cena 5 077 €/m² je o 18 % nad priemerom lokality.",
+  "s4": "N036 Petržalka (J. Šimko) končí 9. 11. a za 14 dní nemala obhliadku ani dopyt. Ďalej N037 Rača (L. Hudáková) 14. 11. a N038 Trnava (T. Kováč) 16. 11.",
+  "kroky": [
+   "Prerozdeliť 6 nevybavených dopytov (maklér T. Kováč) a ozvať sa klientom do 12:00. Prednosť má N005 Senec: 4 dopyty za 2 týždne, 0 obhliadok.",
+   "P. Molnár: prebrať s majiteľom N035 cenu, podklad sú zobrazenia a priemer lokality.",
+   "J. Šimko: ešte tento týždeň dohodnúť s predávajúcim N036 stretnutie o predĺžení exkluzivity."
+  ],
+  "zhrnutie": "Na 9 dopytov nikto nereagoval viac ako 48 hodín, pred týždňom nebol takýto ani jeden. Priemerný čas prvej reakcie je 9,3 h (predtým 9,9 h). Blíži sa koniec 3 exkluzivít.",
+  "zistenie": "6 z 9 nevybavených dopytov má Tomáš Kováč, ktorý reaguje v priemere za 30,2 h."
+ }
+}

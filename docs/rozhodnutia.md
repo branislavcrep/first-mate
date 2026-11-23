@@ -23,3 +23,10 @@ Datované. Neplatné sa nemažú, označia sa `NEPLATÍ od RRRR-MM-DD`.
 - Claude Code vie vytvárať plánované úlohy (scheduled tasks) – podklad pre nočné znovuzverejnenie demo panela vo fáze 6.
 - **Rozhodnutie:** nový panel zverejňuje Claude Code (cieľ z plánu), nie chat na claude.ai. Chat ostáva len zálohou. Build vo fáze 5 môže ostať viacsúborový (`index.html` + `data/`), jedna samostatná stránka nie je nutná.
 - Artefakty z Claude Code sú súkromné (len vlastník). Zdieľanie s Marcelom alebo klientom sa robí ručne cez Share v artefakte.
+
+## 2026-11-23 · fáza 2: golden testy (Branislav, pripravil Claude Code)
+- Golden výstup sa počíta priamo z kódu pôvodných panelov (`legacy/*/index.html`, moduly FMCSV, FM, FIN sa čítajú zo súboru, nekopírujú sa) nad `data/<typ>/`, bez posunu dátumov, s predvolenými hranicami (`mergeSettings({})`).
+- „Teraz“ = `referencny_datum` z manifestu o **18:00 Europe/Bratislava** (realitka 3. 11., developer 2. 11.). 18:00 je po poslednom zázname v dátach, takže žiadny záznam nie je v budúcnosti. Výsledok nezávisí od časového pásma stroja.
+- Golden pokrýva celý výstup `FM.compute` a `FIN.compute` (nielen level a count) a aj pravidlové texty (`fallbackTexts`). Nové jadro musí dať rovnaký výstup cez `panel/golden.mjs`; tolerancia čísel 1e-9 relatívne.
+- Golden súbory sa prepisujú (`npm run golden`) len po schválenej zmene výpočtu so zápisom sem.
+- Overené: F1–F6 z JS sa zhodujú s `tools/first_mate_financny_model.py` (187 hodnôt) aj s 20 číslami z `legacy/README.md`.

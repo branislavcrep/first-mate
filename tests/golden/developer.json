@@ -1,0 +1,2870 @@
+{
+ "meta": {
+  "typ": "developer",
+  "referencny_datum": "2026-11-02",
+  "teraz": "2026-11-02T17:00:00.000Z",
+  "teraz_miestne": "2026-11-02 18:00 Europe/Bratislava",
+  "posun_dni": 0,
+  "zdroj_vypoctu": "legacy/panel-developer/index.html",
+  "data": {
+   "dev_projekty.csv": "ed6319c1e0281bbe",
+   "dev_jednotky.csv": "b4252cfc37656f98",
+   "dev_dopyty.csv": "d779b7f7fa836079",
+   "dev_uver.csv": "8c5669f015f9830e",
+   "dev_tranze.csv": "5e501f39a518d5f2",
+   "dev_podmienky_cerpania.csv": "790c5421a9bde861",
+   "dev_rozpocet.csv": "88b8733088bea103",
+   "dev_cashflow.csv": "a1d1f196eb65e418"
+  },
+  "upozornenia_csv": []
+ },
+ "signaly_nastavenia": {
+  "s1": {
+   "on": true,
+   "days": 90
+  },
+  "s2": {
+   "on": true,
+   "graceDays": 0
+  },
+  "s3": {
+   "on": true,
+   "days": 5
+  },
+  "s4": {
+   "on": true,
+   "hours": 24
+  },
+  "s5": {
+   "on": true,
+   "days": 3
+  },
+  "s6": {
+   "on": true,
+   "days": 21
+  },
+  "s7": {
+   "on": true,
+   "minViews": 150,
+   "minDays": 60
+  },
+  "s8": {
+   "on": true,
+   "days": 180
+  },
+  "f1": {
+   "on": true,
+   "days": 60
+  },
+  "f2": {
+   "on": true,
+   "buffer": 10
+  },
+  "f3": {
+   "on": true,
+   "pct": 30
+  },
+  "f4": {
+   "on": true,
+   "tol": 5,
+   "rezPp": 10
+  },
+  "f5": {
+   "on": true,
+   "pp": 2
+  },
+  "f6": {
+   "on": true,
+   "cena": 5,
+   "naklady": 5,
+   "mesiace": 3,
+   "urok": 1
+  },
+  "custom": []
+ },
+ "suhrn": {
+  "s1": {
+   "on": true,
+   "level": "red",
+   "count": 1,
+   "polozky": [
+    {
+     "id": "NZ",
+     "predane": 3,
+     "byty": 20,
+     "predanePct": 15,
+     "cielPct": 30,
+     "dni": 59,
+     "chyba": 3,
+     "rezervovane": 1,
+     "predane30": 2,
+     "riziko": true
+    }
+   ]
+  },
+  "s2": {
+   "on": true,
+   "level": "red",
+   "count": 3,
+   "polozky": [
+    {
+     "id": "PL-A-204",
+     "suma": 87600,
+     "dniPo": 8
+    },
+    {
+     "id": "PL-B-102",
+     "suma": 74700,
+     "dniPo": 8
+    },
+    {
+     "id": "PL-B-303",
+     "suma": 47200,
+     "dniPo": 8
+    }
+   ]
+  },
+  "s3": {
+   "on": true,
+   "level": "red",
+   "count": 4,
+   "polozky": [
+    {
+     "id": "PL-B-402",
+     "dni": -2,
+     "vyprsala": true,
+     "cena": 363300
+    },
+    {
+     "id": "PL-A-303",
+     "dni": 2,
+     "vyprsala": false,
+     "cena": 235100
+    },
+    {
+     "id": "PL-B-204",
+     "dni": 3,
+     "vyprsala": false,
+     "cena": 437900
+    },
+    {
+     "id": "NZ-302",
+     "dni": 4,
+     "vyprsala": false,
+     "cena": 174200
+    }
+   ]
+  },
+  "s4": {
+   "on": true,
+   "level": "red",
+   "count": 4,
+   "polozky": [
+    {
+     "id": "DD001",
+     "hodinBezReakcie": 82
+    },
+    {
+     "id": "DD002",
+     "hodinBezReakcie": 51
+    },
+    {
+     "id": "DD003",
+     "hodinBezReakcie": 51
+    },
+    {
+     "id": "DD004",
+     "hodinBezReakcie": 48
+    }
+   ]
+  },
+  "s5": {
+   "on": true,
+   "level": "yellow",
+   "count": 3,
+   "polozky": [
+    {
+     "id": "DD022",
+     "dniOdObhliadky": 12
+    },
+    {
+     "id": "DD033",
+     "dniOdObhliadky": 8
+    },
+    {
+     "id": "DD030",
+     "dniOdObhliadky": 7
+    }
+   ]
+  },
+  "s6": {
+   "on": true,
+   "level": "yellow",
+   "count": 5,
+   "polozky": [
+    {
+     "id": "PL",
+     "dni": 18
+    }
+   ]
+  },
+  "s7": {
+   "on": true,
+   "level": "yellow",
+   "count": 4,
+   "polozky": [
+    {
+     "id": "PL-A-201",
+     "izby": 2,
+     "podlazie": 2,
+     "plocha": 52,
+     "cena": 211800,
+     "cenaM2": 3970,
+     "zobrazenia30": 224,
+     "dopyty30": 0
+    },
+    {
+     "id": "PL-B-201",
+     "izby": 2,
+     "podlazie": 2,
+     "plocha": 52,
+     "cena": 211800,
+     "cenaM2": 3970,
+     "zobrazenia30": 219,
+     "dopyty30": 0
+    },
+    {
+     "id": "PL-B-101",
+     "izby": 2,
+     "podlazie": 1,
+     "plocha": 52,
+     "cena": 227800,
+     "cenaM2": 3930,
+     "zobrazenia30": 208,
+     "dopyty30": 0
+    },
+    {
+     "id": "PL-A-101",
+     "izby": 2,
+     "podlazie": 1,
+     "plocha": 52,
+     "cena": 229800,
+     "cenaM2": 3970,
+     "zobrazenia30": 163,
+     "dopyty30": 0
+    }
+   ]
+  },
+  "s8": {
+   "on": true,
+   "level": "yellow",
+   "count": 1,
+   "polozky": [
+    {
+     "id": "PL-OP2",
+     "plocha": 112,
+     "cena": 479000,
+     "dniVPonuke": 364,
+     "dopyty": 6,
+     "najom": 6,
+     "kupa": 0
+    }
+   ]
+  }
+ },
+ "vystup": {
+  "now": 1793638800000,
+  "today": "2026-11-02",
+  "dayLabel": "po 2. 11.",
+  "dayLong": "pondelok 2. 11. 2026",
+  "projekty": [
+   {
+    "kod": "PL",
+    "nazov": "Rezidencia Pod Lesom",
+    "lokalita": "Bratislava – Lamač",
+    "faza": "Hrubá stavba dokončená",
+    "kolaudacia": "2027-06-30",
+    "zaciatok": "2025-11-03",
+    "byty": 32,
+    "sold": 22,
+    "rez": 3,
+    "free": 7,
+    "soldPct": 68.8,
+    "planPct": 70,
+    "bankaPct": 40,
+    "bankaDo": "2026-03-31",
+    "target": 13,
+    "chyba": 0,
+    "dniDoBanky": -216,
+    "banka": "splnené",
+    "sold30": 0,
+    "lastSale": "2026-09-04",
+    "volneM2": 4021.6666666666665,
+    "konkurenciaM2": 4250,
+    "mix": [
+     {
+      "typ": "2-izbové",
+      "spolu": 16,
+      "predane": 9,
+      "rez": 1,
+      "volne": 6,
+      "vzor": 0,
+      "m2": [
+       3970,
+       3970,
+       4070,
+       3930,
+       3970,
+       4220
+      ],
+      "volneM2": 4021.6666666666665,
+      "vypredane": false
+     },
+     {
+      "typ": "3-izbové",
+      "spolu": 8,
+      "predane": 6,
+      "rez": 1,
+      "volne": 0,
+      "vzor": 1,
+      "m2": [],
+      "volneM2": null,
+      "vypredane": true
+     },
+     {
+      "typ": "4-izbové",
+      "spolu": 8,
+      "predane": 7,
+      "rez": 1,
+      "volne": 0,
+      "vzor": 0,
+      "m2": [],
+      "volneM2": null,
+      "vypredane": true
+     }
+    ],
+    "ostatne": [
+     {
+      "typ": "Obchodný priestor",
+      "spolu": 2,
+      "predane": 1,
+      "volne": 1
+     },
+     {
+      "typ": "Parkovacie státie",
+      "spolu": 8,
+      "predane": 5,
+      "volne": 3
+     }
+    ],
+    "uzavierka": "2026-11-20"
+   },
+   {
+    "kod": "NZ",
+    "nazov": "Nové Záhrady Senec",
+    "lokalita": "Senec",
+    "faza": "Základy",
+    "kolaudacia": "2028-03-31",
+    "zaciatok": "2026-09-15",
+    "byty": 20,
+    "sold": 3,
+    "rez": 1,
+    "free": 16,
+    "soldPct": 15,
+    "planPct": 25,
+    "bankaPct": 30,
+    "bankaDo": "2026-12-31",
+    "target": 6,
+    "chyba": 3,
+    "dniDoBanky": 59,
+    "banka": "chýba",
+    "sold30": 2,
+    "lastSale": "2026-10-14",
+    "volneM2": 3119.375,
+    "konkurenciaM2": 3150,
+    "mix": [
+     {
+      "typ": "1-izbové",
+      "spolu": 4,
+      "predane": 0,
+      "rez": 0,
+      "volne": 4,
+      "vzor": 0,
+      "m2": [
+       3050,
+       3080,
+       3110,
+       3140
+      ],
+      "volneM2": 3095,
+      "vypredane": false
+     },
+     {
+      "typ": "2-izbové",
+      "spolu": 8,
+      "predane": 0,
+      "rez": 1,
+      "volne": 7,
+      "vzor": 0,
+      "m2": [
+       3100,
+       3000,
+       3130,
+       3030,
+       3060,
+       3190,
+       3090
+      ],
+      "volneM2": 3085.714285714286,
+      "vypredane": false
+     },
+     {
+      "typ": "3-izbové",
+      "spolu": 8,
+      "predane": 3,
+      "rez": 0,
+      "volne": 5,
+      "vzor": 0,
+      "m2": [
+       3120,
+       3150,
+       3210,
+       3240,
+       3210
+      ],
+      "volneM2": 3186,
+      "vypredane": false
+     }
+    ],
+    "ostatne": [
+     {
+      "typ": "Obchodný priestor",
+      "spolu": 1,
+      "predane": 0,
+      "volne": 1
+     }
+    ],
+    "uzavierka": "2027-06-30"
+   }
+  ],
+  "s1": {
+   "on": true,
+   "days": 90,
+   "items": [
+    {
+     "projekt": "Nové Záhrady Senec",
+     "kod": "NZ",
+     "predane": 3,
+     "byty": 20,
+     "predanePct": 15,
+     "cielPct": 30,
+     "termin": "2026-12-31",
+     "terminDm": "31. 12. 2026",
+     "dni": 59,
+     "chyba": 3,
+     "rezervovane": 1,
+     "predane30": 2,
+     "riziko": true
+    }
+   ],
+   "count": 1,
+   "ok": [
+    "Rezidencia Pod Lesom"
+   ],
+   "level": "red"
+  },
+  "s2": {
+   "on": true,
+   "graceDays": 0,
+   "items": [
+    {
+     "jednotka": "PL-A-204",
+     "projekt": "PL",
+     "predajca": "Michal Hrnčiar",
+     "suma": 87600,
+     "splatna": "25. 10.",
+     "dniPo": 8
+    },
+    {
+     "jednotka": "PL-B-102",
+     "projekt": "PL",
+     "predajca": "Martina Vargová",
+     "suma": 74700,
+     "splatna": "25. 10.",
+     "dniPo": 8
+    },
+    {
+     "jednotka": "PL-B-303",
+     "projekt": "PL",
+     "predajca": "Martina Vargová",
+     "suma": 47200,
+     "splatna": "25. 10.",
+     "dniPo": 8
+    }
+   ],
+   "count": 3,
+   "suma": 209500,
+   "level": "red"
+  },
+  "s3": {
+   "on": true,
+   "days": 5,
+   "items": [
+    {
+     "jednotka": "PL-B-402",
+     "projekt": "PL",
+     "predajca": "Martina Vargová",
+     "do": "31. 10.",
+     "dni": -2,
+     "vyprsala": true,
+     "cena": 363300,
+     "zaujemca": "Branislav Oravec",
+     "followUp": "Naplánovaný"
+    },
+    {
+     "jednotka": "PL-A-303",
+     "projekt": "PL",
+     "predajca": "Martina Vargová",
+     "do": "4. 11.",
+     "dni": 2,
+     "vyprsala": false,
+     "cena": 235100,
+     "zaujemca": "Vladimír Krajč",
+     "followUp": "Naplánovaný"
+    },
+    {
+     "jednotka": "PL-B-204",
+     "projekt": "PL",
+     "predajca": "Martina Vargová",
+     "do": "5. 11.",
+     "dni": 3,
+     "vyprsala": false,
+     "cena": 437900,
+     "zaujemca": "Zuzana Mešťanová",
+     "followUp": "Naplánovaný"
+    },
+    {
+     "jednotka": "NZ-302",
+     "projekt": "NZ",
+     "predajca": "Michal Hrnčiar",
+     "do": "6. 11.",
+     "dni": 4,
+     "vyprsala": false,
+     "cena": 174200,
+     "zaujemca": "Denisa Vavrová",
+     "followUp": "Naplánovaný"
+    }
+   ],
+   "count": 4,
+   "vyprsane": 1,
+   "level": "red"
+  },
+  "s4": {
+   "on": true,
+   "hours": 24,
+   "count": 4,
+   "byPredajca": [
+    {
+     "predajca": "Michal Hrnčiar",
+     "n": 3
+    },
+    {
+     "predajca": "Zuzana Polakovičová",
+     "n": 1
+    }
+   ],
+   "predajcovia": [
+    {
+     "predajca": "Martina Vargová",
+     "otvorene": 2,
+     "bezReakcie": 0,
+     "priemerHodin": 3.8,
+     "dopytov": 5
+    },
+    {
+     "predajca": "Michal Hrnčiar",
+     "otvorene": 14,
+     "bezReakcie": 3,
+     "priemerHodin": 31.235294117647058,
+     "dopytov": 21
+    },
+    {
+     "predajca": "Zuzana Polakovičová",
+     "otvorene": 11,
+     "bezReakcie": 1,
+     "priemerHodin": 5.923076923076923,
+     "dopytov": 15
+    }
+   ],
+   "items": [
+    {
+     "dopyt": "DD001",
+     "meno": "Adam Kováč",
+     "jednotka": "PL-OP2",
+     "projekt": "PL",
+     "predajca": "Michal Hrnčiar",
+     "typZaujmu": "Nájom",
+     "zdroj": "Partnerská RK",
+     "hodinBezReakcie": 82
+    },
+    {
+     "dopyt": "DD002",
+     "meno": "Barbora Hrušková",
+     "jednotka": "NZ-205",
+     "projekt": "NZ",
+     "predajca": "Michal Hrnčiar",
+     "typZaujmu": "Kúpa",
+     "zdroj": "Partnerská RK",
+     "hodinBezReakcie": 51
+    },
+    {
+     "dopyt": "DD003",
+     "meno": "Daniel Mráz",
+     "jednotka": "PL-B-403",
+     "projekt": "PL",
+     "predajca": "Michal Hrnčiar",
+     "typZaujmu": "Kúpa",
+     "zdroj": "Nehnutelnosti.sk",
+     "hodinBezReakcie": 51
+    },
+    {
+     "dopyt": "DD004",
+     "meno": "Eva Šimková",
+     "jednotka": "NZ-401",
+     "projekt": "NZ",
+     "predajca": "Zuzana Polakovičová",
+     "typZaujmu": "Kúpa",
+     "zdroj": "Billboard na stavenisku",
+     "hodinBezReakcie": 48
+    }
+   ],
+   "priemerTimu": 17.914285714285715,
+   "level": "red"
+  },
+  "s5": {
+   "on": true,
+   "days": 3,
+   "items": [
+    {
+     "dopyt": "DD022",
+     "meno": "Andrej Baláž",
+     "jednotka": "NZ-101",
+     "projekt": "NZ",
+     "predajca": "Michal Hrnčiar",
+     "obhliadka": "21. 10.",
+     "dniOdObhliadky": 12,
+     "vysledok": "Zvažuje",
+     "spatnaVazba": "Porovnáva s projektom v Pezinku",
+     "stav": "Obhliadka prebehla"
+    },
+    {
+     "dopyt": "DD033",
+     "meno": "Oľga Kubíková",
+     "jednotka": "PL-A-303",
+     "projekt": "PL",
+     "predajca": "Michal Hrnčiar",
+     "obhliadka": "25. 10.",
+     "dniOdObhliadky": 8,
+     "vysledok": "Zvažuje",
+     "spatnaVazba": "Porovnáva cenu s konkurenciou",
+     "stav": "Obhliadka prebehla"
+    },
+    {
+     "dopyt": "DD030",
+     "meno": "Ladislav Uhrin",
+     "jednotka": "PL-A-401",
+     "projekt": "PL",
+     "predajca": "Michal Hrnčiar",
+     "obhliadka": "26. 10.",
+     "dniOdObhliadky": 7,
+     "vysledok": "Zvažuje",
+     "spatnaVazba": "Porovnáva cenu s konkurenciou",
+     "stav": "Obhliadka prebehla"
+    }
+   ],
+   "count": 3,
+   "byPredajca": [
+    {
+     "predajca": "Michal Hrnčiar",
+     "n": 3
+    }
+   ],
+   "level": "yellow"
+  },
+  "s6": {
+   "on": true,
+   "days": 21,
+   "items": [
+    {
+     "projekt": "Rezidencia Pod Lesom",
+     "kod": "PL",
+     "uzavierka": "20. 11.",
+     "dni": 18,
+     "jednotky": [
+      {
+       "jednotka": "PL-A-104",
+       "predajca": "Martina Vargová"
+      },
+      {
+       "jednotka": "PL-A-302",
+       "predajca": "Martina Vargová"
+      },
+      {
+       "jednotka": "PL-B-104",
+       "predajca": "Martina Vargová"
+      },
+      {
+       "jednotka": "PL-B-302",
+       "predajca": "Martina Vargová"
+      },
+      {
+       "jednotka": "PL-B-404",
+       "predajca": "Martina Vargová"
+      }
+     ]
+    }
+   ],
+   "count": 5,
+   "level": "yellow"
+  },
+  "s7": {
+   "on": true,
+   "minViews": 150,
+   "minDays": 60,
+   "items": [
+    {
+     "jednotka": "PL-A-201",
+     "projekt": "PL",
+     "izby": 2,
+     "podlazie": 2,
+     "orientacia": "S",
+     "exterier": "Balkón",
+     "plocha": 52,
+     "cena": 211800,
+     "cenaM2": 3970,
+     "zobrazenia30": 224,
+     "dopyty30": 0,
+     "predajca": "Martina Vargová",
+     "dovody": [
+      "Výhľad na parkovisko"
+     ]
+    },
+    {
+     "jednotka": "PL-B-201",
+     "projekt": "PL",
+     "izby": 2,
+     "podlazie": 2,
+     "orientacia": "S",
+     "exterier": "Balkón",
+     "plocha": 52,
+     "cena": 211800,
+     "cenaM2": 3970,
+     "zobrazenia30": 219,
+     "dopyty30": 0,
+     "predajca": "Martina Vargová",
+     "dovody": [
+      "Výhľad na parkovisko"
+     ]
+    },
+    {
+     "jednotka": "PL-B-101",
+     "projekt": "PL",
+     "izby": 2,
+     "podlazie": 1,
+     "orientacia": "S",
+     "exterier": "Predzáhradka",
+     "plocha": 52,
+     "cena": 227800,
+     "cenaM2": 3930,
+     "zobrazenia30": 208,
+     "dopyty30": 0,
+     "predajca": "Martina Vargová",
+     "dovody": []
+    },
+    {
+     "jednotka": "PL-A-101",
+     "projekt": "PL",
+     "izby": 2,
+     "podlazie": 1,
+     "orientacia": "S",
+     "exterier": "Predzáhradka",
+     "plocha": 52,
+     "cena": 229800,
+     "cenaM2": 3970,
+     "zobrazenia30": 163,
+     "dopyty30": 0,
+     "predajca": "Martina Vargová",
+     "dovody": [
+      "Výhľad na parkovisko"
+     ]
+    }
+   ],
+   "count": 4,
+   "vypredane": [
+    {
+     "projekt": "PL",
+     "typ": "3-izbové",
+     "spolu": 8,
+     "predane": 6,
+     "rezervovane": 1
+    },
+    {
+     "projekt": "PL",
+     "typ": "4-izbové",
+     "spolu": 8,
+     "predane": 7,
+     "rezervovane": 1
+    }
+   ],
+   "spolocne": [
+    {
+     "typ": "2-izbové na sever",
+     "n": 4
+    }
+   ],
+   "hodnota": 881200,
+   "level": "yellow"
+  },
+  "s8": {
+   "on": true,
+   "days": 180,
+   "items": [
+    {
+     "jednotka": "PL-OP2",
+     "projekt": "PL",
+     "plocha": 112,
+     "cena": 479000,
+     "dniVPonuke": 364,
+     "predajca": "Michal Hrnčiar",
+     "dopyty": 6,
+     "najom": 6,
+     "kupa": 0,
+     "spatnaVazba": [
+      "Ambulancia – nájom na 5 rokov",
+      "Kaviareň – chce iba nájom",
+      "Ambulancia – nájom na 5 rokov",
+      "Kaviareň – chce iba nájom",
+      "Kaviareň – chce iba nájom"
+     ]
+    }
+   ],
+   "count": 1,
+   "level": "yellow"
+  },
+  "customKeys": [],
+  "dataInfo": {
+   "projekty": 2,
+   "jednotky": 63,
+   "dopyty": 41
+  }
+ },
+ "texty": {
+  "nadpis": "Podmienka banky",
+  "podnadpis": "NZ: chýbajú 3 zmluvy",
+  "s1": "Nové Záhrady Senec: predaných 3 z 20 bytov (15 %), banka chce 30 % do 31. 12. 2026. Chýbajú 3 zmluvy, 59 dní do termínu, za posledných 30 dní pribudli 2.",
+  "s2": "Neuhradené PL-A-204 87 600 €, PL-B-102 74 700 € a PL-B-303 47 200 €, splatné 25. 10. Bez záloh sa zdrží ďalšie čerpanie úveru.",
+  "s3": "PL-B-402 (M. Vargová) vypršala 31. 10. a stav nie je aktualizovaný; PL-A-303 (M. Vargová) končí 4. 11.; PL-B-204 (M. Vargová) končí 5. 11.; NZ-302 (M. Hrnčiar) končí 6. 11.",
+  "s4": "Podľa predajcu: M. Hrnčiar 3, Z. Polakovičová 1. Michal Hrnčiar má 14 otvorených dopytov a reaguje v priemere za 31,2 h.",
+  "s5": "Záujemcovia po obhliadke bez dohodnutého ďalšieho kroku, všetkých má Michal Hrnčiar. Najdlhšie čaká Andrej Baláž (NZ-101), 12 dní.",
+  "s6": "Rezidencia Pod Lesom: uzávierka 20. 11., nevyjadrili sa 5 kupujúcich (PL-A-104, PL-A-302, PL-B-104, PL-B-302, PL-B-404).",
+  "s7": "PL-A-201, PL-B-201, PL-B-101 a PL-A-101: veľa zobrazení, za 30 dní ani jeden dopyt. Všetky sú 2-izbové na sever. Voľné už nie sú 3-izbové a 4-izbové byty v PL.",
+  "s8": "PL-OP2 je v ponuke 364 dní, 6 záujemcov, z toho 6 chce nájom.",
+  "kroky": [
+   "NZ: do 31. 12. 2026 treba ešte 3 zmluvy o budúcej zmluve; tento týždeň obvolať záujemcov po obhliadke.",
+   "Poslať upomienky na zálohy PL-A-204, PL-B-102, PL-B-303 (spolu 209 500 €).",
+   "Rezervácie PL-B-402, PL-A-303, PL-B-204, NZ-302: dohodnúť podpis zmluvy o budúcej alebo uvoľniť jednotku."
+  ],
+  "zhrnutie": "Rezidencia Pod Lesom má predaných 22 z 32 bytov (68,8 %, plán 70 %). Nové Záhrady Senec má predaných 3 z 20 bytov (15 %, plán 25 %).",
+  "zistenie": "Nové Záhrady Senec potrebuje do 31. 12. 2026 ešte 3 zmluvy, inak banka nepustí úver."
+ },
+ "financie": {
+  "suhrn": {
+   "f1": {
+    "on": true,
+    "level": "red",
+    "count": 2,
+    "polozky": [
+     {
+      "id": "T-PL-4",
+      "poradie": 4,
+      "suma": 1200000,
+      "cerpana": false,
+      "dni": 23,
+      "vOkne": true,
+      "nesplnene": 2,
+      "oneskorenie": 0,
+      "dopadVk": 0,
+      "cerpanePo": 5600000
+     },
+     {
+      "id": "T-NZ-2",
+      "poradie": 2,
+      "suma": 600000,
+      "cerpana": false,
+      "dni": 43,
+      "vOkne": true,
+      "nesplnene": 3,
+      "oneskorenie": 49,
+      "dopadVk": 33800,
+      "cerpanePo": 950000
+     }
+    ]
+   },
+   "f2": {
+    "on": true,
+    "level": "yellow",
+    "count": 1,
+    "polozky": [
+     {
+      "id": "NZ",
+      "krytie": 2.12,
+      "kovenant": 1.2,
+      "limit": 2100000,
+      "krytieLimitu": 0.35,
+      "dalsiaSuma": 600000,
+      "poDalsej": 0.78,
+      "chybaPo": 398200
+     }
+    ]
+   },
+   "f3": {
+    "on": true,
+    "level": "red",
+    "count": 2,
+    "polozky": [
+     {
+      "id": "NZ · banka",
+      "tempo": 1,
+      "chyba": 3,
+      "dni": 59,
+      "potrebne": 1.55,
+      "pomer": 1.5476694915254237,
+      "hit": true
+     },
+     {
+      "id": "T-NZ-2",
+      "tempo": 1,
+      "chyba": 3,
+      "dni": 43,
+      "potrebne": 2.12,
+      "pomer": 2.123546511627907,
+      "hit": true
+     }
+    ]
+   },
+   "f4": {
+    "on": true,
+    "level": "red",
+    "count": 2,
+    "polozky": [
+     {
+      "id": "PL",
+      "spolu": 7400000,
+      "eacSpolu": 7420000,
+      "rezerva": 300000,
+      "pouzita": 320000,
+      "pouzitaPct": 106.7,
+      "dokoncenie": 53.9,
+      "nakladyDoDokoncenia": 2720000,
+      "vkTreba": 0,
+      "vkZostava": 50000
+     },
+     {
+      "id": "NZ",
+      "spolu": 2910000,
+      "eacSpolu": 2910000,
+      "rezerva": 140000,
+      "pouzita": 20000,
+      "pouzitaPct": 14.3,
+      "dokoncenie": 5.8,
+      "nakladyDoDokoncenia": 2040000,
+      "vkTreba": 0,
+      "vkZostava": 50000
+     }
+    ]
+   },
+   "f5": {
+    "on": true,
+    "level": "red",
+    "count": 1,
+    "polozky": [
+     {
+      "id": "NZ",
+      "pBp": 17.3,
+      "p": 12.8,
+      "vkBp": 21.4,
+      "vk": 15,
+      "pMix": 12.7,
+      "ziskBp": 484573,
+      "zisk": 316890,
+      "naklady": 2910000,
+      "prijmy": 3353740,
+      "urokyOdhad": 126850,
+      "ciel": 18,
+      "marza": 10.9,
+      "marzaBp": 16.7,
+      "vplyvPredaja": -4.6,
+      "vplyvNakladov": 0.1
+     }
+    ]
+   },
+   "f6": {
+    "on": true,
+    "level": "yellow",
+    "count": 2,
+    "polozky": [
+     {
+      "id": "PL",
+      "ciel": 18
+     },
+     {
+      "id": "NZ",
+      "ciel": 18
+     }
+    ]
+   }
+  },
+  "vystup": {
+   "available": true,
+   "today": "2026-11-02",
+   "projekty": [
+    {
+     "kod": "PL",
+     "nazov": "Rezidencia Pod Lesom",
+     "kolaudacia": "2027-06-30",
+     "faza": "Hrubá stavba dokončená",
+     "byty": 32,
+     "sold": 22,
+     "soldPct": 68.8,
+     "zmluvy": 7800500,
+     "cerpane": 4400000,
+     "tempo": 3,
+     "sold90": 9,
+     "uver": {
+      "id": "U-PL",
+      "projekt": "PL",
+      "banka": "Tatra banka",
+      "typ": "Developerský úver",
+      "limit": 6200000,
+      "urok": 5.4,
+      "splatnost": "2028-06-30",
+      "kovenant": 1.3
+     },
+     "pavg": 274800,
+     "vkPlan": 2050000,
+     "vkVlozeny": 2000000,
+     "ciel": 18,
+     "tranze": [
+      {
+       "id": "T-PL-1",
+       "poradie": 1,
+       "suma": 1400000,
+       "stav": "Načerpaná",
+       "datum": "2025-12-15",
+       "plan": "2025-12-15",
+       "ucel": "Hrubá stavba, 1. časť",
+       "cerpana": true,
+       "podmienky": []
+      },
+      {
+       "id": "T-PL-2",
+       "poradie": 2,
+       "suma": 1500000,
+       "stav": "Načerpaná",
+       "datum": "2026-04-17",
+       "plan": "2026-04-15",
+       "ucel": "Hrubá stavba, 2. časť",
+       "cerpana": true,
+       "podmienky": []
+      },
+      {
+       "id": "T-PL-3",
+       "poradie": 3,
+       "suma": 1500000,
+       "stav": "Načerpaná",
+       "datum": "2026-08-20",
+       "plan": "2026-08-14",
+       "ucel": "Hrubá stavba dokončenie, TZB",
+       "cerpana": true,
+       "podmienky": []
+      },
+      {
+       "id": "T-PL-4",
+       "poradie": 4,
+       "suma": 1200000,
+       "stav": "Plánovaná",
+       "plan": "2026-11-25",
+       "ucel": "TZB, fasáda a strecha",
+       "cerpana": false,
+       "dni": 23,
+       "vOkne": true,
+       "podmienky": [
+        {
+         "id": "PC01",
+         "typ": "predpredaj_pct",
+         "popis": "Predané byty (zmluvy o budúcej) aspoň 60 %",
+         "ciel": 60,
+         "zodpovedny": "Riaditeľ predaja",
+         "ok": true,
+         "hodnota": 68.8,
+         "chybaZmluv": 0
+        },
+        {
+         "id": "PC02",
+         "typ": "krytie_x",
+         "popis": "Krytie úveru zmluvami po čerpaní aspoň 1,45×",
+         "ciel": 1.45,
+         "zodpovedny": "Riaditeľ predaja",
+         "ok": false,
+         "hodnota": 1.39,
+         "chybaEur": 319500,
+         "chybaZmluv": 2,
+         "cerpanePo": 5600000
+        },
+        {
+         "id": "PC03",
+         "typ": "manualne",
+         "popis": "Potvrdenie technického dozoru o dokončení hrubej stavby",
+         "ciel": null,
+         "zodpovedny": "Stavbyvedúci",
+         "ok": true
+        },
+        {
+         "id": "PC04",
+         "typ": "manualne",
+         "popis": "Aktualizovaný rozpočet potvrdený technickým dozorom",
+         "ciel": null,
+         "zodpovedny": "Finančný riaditeľ",
+         "ok": false
+        }
+       ],
+       "nesplnene": 2,
+       "projekcia": "2026-11-23",
+       "oneskorenie": 0,
+       "dopadVk": 0,
+       "cerpanePo": 5600000
+      },
+      {
+       "id": "T-PL-5",
+       "poradie": 5,
+       "suma": 600000,
+       "stav": "Plánovaná",
+       "plan": "2027-03-15",
+       "ucel": "Dokončovacie práce, vonkajšie úpravy",
+       "cerpana": false,
+       "dni": 133,
+       "vOkne": false,
+       "podmienky": [
+        {
+         "id": "PC05",
+         "typ": "predpredaj_pct",
+         "popis": "Predané byty (zmluvy o budúcej) aspoň 80 %",
+         "ciel": 80,
+         "zodpovedny": "Riaditeľ predaja",
+         "ok": false,
+         "hodnota": 68.8,
+         "chybaZmluv": 4
+        },
+        {
+         "id": "PC06",
+         "typ": "krytie_x",
+         "popis": "Krytie úveru zmluvami po čerpaní aspoň 1,45×",
+         "ciel": 1.45,
+         "zodpovedny": "Riaditeľ predaja",
+         "ok": false,
+         "hodnota": 1.26,
+         "chybaEur": 1189500,
+         "chybaZmluv": 5,
+         "cerpanePo": 6200000
+        },
+        {
+         "id": "PC07",
+         "typ": "manualne",
+         "popis": "Potvrdenie technického dozoru o 70 % dokončenia technických zariadení",
+         "ciel": null,
+         "zodpovedny": "Stavbyvedúci",
+         "ok": false
+        }
+       ],
+       "nesplnene": 3,
+       "projekcia": "2026-12-23",
+       "oneskorenie": 0,
+       "dopadVk": 0,
+       "cerpanePo": 6200000
+      }
+     ],
+     "krytie": {
+      "krytie": 1.77,
+      "kovenant": 1.3,
+      "limit": 6200000,
+      "krytieLimitu": 1.26,
+      "dalsia": "T-PL-4",
+      "dalsiaSuma": 1200000,
+      "dalsiaPlan": "2026-11-25",
+      "poDalsej": 1.39,
+      "chybaPo": 0
+     },
+     "tempoCiele": [
+      {
+       "typ": "tranza",
+       "nazov": "80 % predaných bytov pre 5. tranžu",
+       "tranza": "T-PL-5",
+       "termin": "2027-03-15",
+       "chyba": 4,
+       "dni": 133,
+       "potrebne": 0.92,
+       "pomer": 0.3051378446115288,
+       "hit": false,
+       "projekcia": "2026-12-13"
+      },
+      {
+       "typ": "vypredanie",
+       "nazov": "vypredanie do kolaudácie",
+       "termin": "2027-06-30",
+       "chyba": 10,
+       "dni": 240,
+       "potrebne": 1.27,
+       "pomer": 0.4227430555555556,
+       "hit": false,
+       "projekcia": "2027-02-12"
+      }
+     ],
+     "rozpocet": {
+      "polozky": [
+       {
+        "id": "R-PL-01",
+        "projekt": "PL",
+        "polozka": "Pozemok",
+        "skupina": "Pozemok",
+        "rozpocet": 1350000,
+        "zazmluvnene": 1350000,
+        "vyfakturovane": 1350000,
+        "dokoncenie": 100,
+        "odhad": 1350000,
+        "dodavatel": "Kúpna zmluva, Lamač",
+        "aktualizovane": "2026-10-31",
+        "eac": 1350000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-PL-02",
+        "projekt": "PL",
+        "polozka": "Projekcia a inžiniering",
+        "skupina": "Príprava",
+        "rozpocet": 450000,
+        "zazmluvnene": 470000,
+        "vyfakturovane": 420000,
+        "dokoncenie": 90,
+        "odhad": 470000,
+        "dodavatel": "Atelier Kontúra s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 470000,
+        "odchylka": 4.4
+       },
+       {
+        "id": "R-PL-03",
+        "projekt": "PL",
+        "polozka": "Hrubá stavba",
+        "skupina": "Výstavba",
+        "rozpocet": 2300000,
+        "zazmluvnene": 2340000,
+        "vyfakturovane": 2310000,
+        "dokoncenie": 100,
+        "odhad": 2340000,
+        "dodavatel": "Stavby Hron a.s.",
+        "aktualizovane": "2026-10-31",
+        "eac": 2340000,
+        "odchylka": 1.7
+       },
+       {
+        "id": "R-PL-04",
+        "projekt": "PL",
+        "polozka": "Technické zariadenia budov (TZB)",
+        "skupina": "Výstavba",
+        "rozpocet": 1100000,
+        "zazmluvnene": 1240000,
+        "vyfakturovane": 360000,
+        "dokoncenie": 30,
+        "odhad": 1260000,
+        "dodavatel": "TZB Servis Západ s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 1260000,
+        "odchylka": 14.5
+       },
+       {
+        "id": "R-PL-05",
+        "projekt": "PL",
+        "polozka": "Fasáda a strecha",
+        "skupina": "Výstavba",
+        "rozpocet": 600000,
+        "zazmluvnene": 650000,
+        "vyfakturovane": 120000,
+        "dokoncenie": 20,
+        "odhad": 660000,
+        "dodavatel": "Fasády Morava s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 660000,
+        "odchylka": 10
+       },
+       {
+        "id": "R-PL-06",
+        "projekt": "PL",
+        "polozka": "Dokončovacie práce",
+        "skupina": "Výstavba",
+        "rozpocet": 850000,
+        "zazmluvnene": 300000,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 880000,
+        "dodavatel": "Interiér Plus s.r.o. (čiastočne)",
+        "aktualizovane": "2026-10-31",
+        "eac": 880000,
+        "odchylka": 3.5
+       },
+       {
+        "id": "R-PL-07",
+        "projekt": "PL",
+        "polozka": "Vonkajšie úpravy a prípojky",
+        "skupina": "Výstavba",
+        "rozpocet": 250000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 250000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 250000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-PL-08",
+        "projekt": "PL",
+        "polozka": "Marketing a predaj",
+        "skupina": "Predaj",
+        "rozpocet": 200000,
+        "zazmluvnene": 160000,
+        "vyfakturovane": 140000,
+        "dokoncenie": 65,
+        "odhad": 210000,
+        "dodavatel": "Agentúra Svetlík, portály",
+        "aktualizovane": "2026-10-31",
+        "eac": 210000,
+        "odchylka": 5
+       },
+       {
+        "id": "R-PL-09",
+        "projekt": "PL",
+        "polozka": "Rezerva na nepredvídané náklady",
+        "skupina": "Rezerva",
+        "rozpocet": 300000,
+        "zazmluvnene": null,
+        "vyfakturovane": null,
+        "dokoncenie": null,
+        "odhad": null,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": null,
+        "odchylka": null
+       }
+      ],
+      "spolu": 7400000,
+      "eacSpolu": 7420000,
+      "rezerva": 300000,
+      "pouzita": 320000,
+      "pouzitaPct": 106.7,
+      "dokoncenie": 53.9,
+      "nakladyDoDokoncenia": 2720000,
+      "vkTreba": 0,
+      "vkZostava": 50000,
+      "nadTol": [
+       {
+        "id": "R-PL-04",
+        "projekt": "PL",
+        "polozka": "Technické zariadenia budov (TZB)",
+        "skupina": "Výstavba",
+        "rozpocet": 1100000,
+        "zazmluvnene": 1240000,
+        "vyfakturovane": 360000,
+        "dokoncenie": 30,
+        "odhad": 1260000,
+        "dodavatel": "TZB Servis Západ s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 1260000,
+        "odchylka": 14.5
+       },
+       {
+        "id": "R-PL-05",
+        "projekt": "PL",
+        "polozka": "Fasáda a strecha",
+        "skupina": "Výstavba",
+        "rozpocet": 600000,
+        "zazmluvnene": 650000,
+        "vyfakturovane": 120000,
+        "dokoncenie": 20,
+        "odhad": 660000,
+        "dodavatel": "Fasády Morava s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 660000,
+        "odchylka": 10
+       }
+      ]
+     },
+     "irr": {
+      "pBp": 18.1,
+      "p": 19.8,
+      "vkBp": 22.4,
+      "vk": 23.9,
+      "pMix": 19.5,
+      "ziskBp": 1186702,
+      "zisk": 1256979,
+      "naklady": 7420000,
+      "prijmy": 9026179,
+      "urokyOdhad": 349200,
+      "ciel": 18,
+      "marza": 16.9,
+      "marzaBp": 16,
+      "vplyvPredaja": 1.4,
+      "vplyvNakladov": 0.3
+     },
+     "stres": [
+      {
+       "k": "zaklad",
+       "nazov": "Aktuálny odhad",
+       "irrP": 19.8,
+       "irrVk": 23.9,
+       "zisk": 1256979
+      },
+      {
+       "k": "ceny",
+       "nazov": "Ceny voľných jednotiek −5 %",
+       "irrP": 18.2,
+       "irrVk": 21.6,
+       "zisk": 1122763
+      },
+      {
+       "k": "naklady",
+       "nazov": "Zostávajúce náklady +5 %",
+       "irrP": 18.1,
+       "irrVk": 21.6,
+       "zisk": 1120979
+      },
+      {
+       "k": "oneskorenie",
+       "nazov": "Kolaudácia o 3 mesiace neskôr",
+       "irrP": 16.6,
+       "irrVk": 20,
+       "zisk": 1173279
+      },
+      {
+       "k": "urok",
+       "nazov": "Úrok +1 p. b.",
+       "irrP": 19.8,
+       "irrVk": 22.8,
+       "zisk": 1192312
+      },
+      {
+       "k": "spolu",
+       "nazov": "Všetko naraz",
+       "irrP": 13.9,
+       "irrVk": 14.6,
+       "zisk": 822897
+      }
+     ]
+    },
+    {
+     "kod": "NZ",
+     "nazov": "Nové Záhrady Senec",
+     "kolaudacia": "2028-03-31",
+     "faza": "Základy",
+     "byty": 20,
+     "sold": 3,
+     "soldPct": 15,
+     "zmluvy": 741800,
+     "cerpane": 350000,
+     "tempo": 1,
+     "sold90": 3,
+     "uver": {
+      "id": "U-NZ",
+      "projekt": "NZ",
+      "banka": "Slovenská sporiteľňa",
+      "typ": "Developerský úver",
+      "limit": 2100000,
+      "urok": 5.9,
+      "splatnost": "2029-09-30",
+      "kovenant": 1.2
+     },
+     "pavg": 183252.9411764706,
+     "vkPlan": 850000,
+     "vkVlozeny": 800000,
+     "ciel": 18,
+     "tranze": [
+      {
+       "id": "T-NZ-1",
+       "poradie": 1,
+       "suma": 350000,
+       "stav": "Načerpaná",
+       "datum": "2026-10-16",
+       "plan": "2026-10-15",
+       "ucel": "Základy",
+       "cerpana": true,
+       "podmienky": []
+      },
+      {
+       "id": "T-NZ-2",
+       "poradie": 2,
+       "suma": 600000,
+       "stav": "Plánovaná",
+       "plan": "2026-12-15",
+       "ucel": "Hrubá stavba, 1. časť",
+       "cerpana": false,
+       "dni": 43,
+       "vOkne": true,
+       "podmienky": [
+        {
+         "id": "PC08",
+         "typ": "predpredaj_pct",
+         "popis": "Predané byty (zmluvy o budúcej) aspoň 30 %",
+         "ciel": 30,
+         "zodpovedny": "Riaditeľ predaja",
+         "ok": false,
+         "hodnota": 15,
+         "chybaZmluv": 3
+        },
+        {
+         "id": "PC09",
+         "typ": "krytie_x",
+         "popis": "Krytie úveru zmluvami po čerpaní aspoň 1,0×",
+         "ciel": 1,
+         "zodpovedny": "Riaditeľ predaja",
+         "ok": false,
+         "hodnota": 0.78,
+         "chybaEur": 208200,
+         "chybaZmluv": 2,
+         "cerpanePo": 950000
+        },
+        {
+         "id": "PC10",
+         "typ": "vlastny_kapital_eur",
+         "popis": "Vložený vlastný kapitál aspoň 800 000 €",
+         "ciel": 800000,
+         "zodpovedny": "Finančný riaditeľ",
+         "ok": true,
+         "hodnota": 800000,
+         "chybaEur": 0
+        },
+        {
+         "id": "PC11",
+         "typ": "manualne",
+         "popis": "Potvrdenie technického dozoru o dokončení základov",
+         "ciel": null,
+         "zodpovedny": "Stavbyvedúci",
+         "ok": false
+        }
+       ],
+       "nesplnene": 3,
+       "projekcia": "2027-02-02",
+       "oneskorenie": 49,
+       "dopadVk": 33800,
+       "cerpanePo": 950000
+      },
+      {
+       "id": "T-NZ-3",
+       "poradie": 3,
+       "suma": 600000,
+       "stav": "Plánovaná",
+       "plan": "2027-05-14",
+       "ucel": "Hrubá stavba, TZB",
+       "cerpana": false,
+       "dni": 193,
+       "vOkne": false,
+       "podmienky": [
+        {
+         "id": "PC12",
+         "typ": "predpredaj_pct",
+         "popis": "Predané byty (zmluvy o budúcej) aspoň 45 %",
+         "ciel": 45,
+         "zodpovedny": "Riaditeľ predaja",
+         "ok": false,
+         "hodnota": 15,
+         "chybaZmluv": 6
+        },
+        {
+         "id": "PC13",
+         "typ": "krytie_x",
+         "popis": "Krytie úveru zmluvami po čerpaní aspoň 1,1×",
+         "ciel": 1.1,
+         "zodpovedny": "Riaditeľ predaja",
+         "ok": false,
+         "hodnota": 0.48,
+         "chybaEur": 963200,
+         "chybaZmluv": 6,
+         "cerpanePo": 1550000
+        }
+       ],
+       "nesplnene": 2,
+       "projekcia": "2027-05-04",
+       "oneskorenie": 0,
+       "dopadVk": 0,
+       "cerpanePo": 1550000
+      },
+      {
+       "id": "T-NZ-4",
+       "poradie": 4,
+       "suma": 550000,
+       "stav": "Plánovaná",
+       "plan": "2027-10-15",
+       "ucel": "Fasáda, dokončovacie práce",
+       "cerpana": false,
+       "dni": 347,
+       "vOkne": false,
+       "podmienky": [
+        {
+         "id": "PC14",
+         "typ": "predpredaj_pct",
+         "popis": "Predané byty (zmluvy o budúcej) aspoň 60 %",
+         "ciel": 60,
+         "zodpovedny": "Riaditeľ predaja",
+         "ok": false,
+         "hodnota": 15,
+         "chybaZmluv": 9
+        }
+       ],
+       "nesplnene": 1,
+       "projekcia": "2027-08-03",
+       "oneskorenie": 0,
+       "dopadVk": 0,
+       "cerpanePo": 2100000
+      }
+     ],
+     "krytie": {
+      "krytie": 2.12,
+      "kovenant": 1.2,
+      "limit": 2100000,
+      "krytieLimitu": 0.35,
+      "dalsia": "T-NZ-2",
+      "dalsiaSuma": 600000,
+      "dalsiaPlan": "2026-12-15",
+      "poDalsej": 0.78,
+      "chybaPo": 398200
+     },
+     "tempoCiele": [
+      {
+       "typ": "banka",
+       "nazov": "podmienka banky 30 %",
+       "termin": "2026-12-31",
+       "chyba": 3,
+       "dni": 59,
+       "potrebne": 1.55,
+       "pomer": 1.5476694915254237,
+       "hit": true,
+       "projekcia": "2027-02-02"
+      },
+      {
+       "typ": "tranza",
+       "nazov": "30 % predaných bytov pre 2. tranžu",
+       "tranza": "T-NZ-2",
+       "termin": "2026-12-15",
+       "chyba": 3,
+       "dni": 43,
+       "potrebne": 2.12,
+       "pomer": 2.123546511627907,
+       "hit": true,
+       "projekcia": "2027-02-02"
+      },
+      {
+       "typ": "tranza",
+       "nazov": "45 % predaných bytov pre 3. tranžu",
+       "tranza": "T-NZ-3",
+       "termin": "2027-05-14",
+       "chyba": 6,
+       "dni": 193,
+       "potrebne": 0.95,
+       "pomer": 0.9462435233160622,
+       "hit": false,
+       "projekcia": "2027-05-04"
+      },
+      {
+       "typ": "tranza",
+       "nazov": "60 % predaných bytov pre 4. tranžu",
+       "tranza": "T-NZ-4",
+       "termin": "2027-10-15",
+       "chyba": 9,
+       "dni": 347,
+       "potrebne": 0.79,
+       "pomer": 0.7894452449567724,
+       "hit": false,
+       "projekcia": "2027-08-03"
+      },
+      {
+       "typ": "vypredanie",
+       "nazov": "vypredanie do kolaudácie",
+       "termin": "2028-03-31",
+       "chyba": 17,
+       "dni": 515,
+       "potrebne": 1,
+       "pomer": 1.004733009708738,
+       "hit": false,
+       "projekcia": "2028-04-03"
+      }
+     ],
+     "rozpocet": {
+      "polozky": [
+       {
+        "id": "R-NZ-01",
+        "projekt": "NZ",
+        "polozka": "Pozemok",
+        "skupina": "Pozemok",
+        "rozpocet": 550000,
+        "zazmluvnene": 550000,
+        "vyfakturovane": 550000,
+        "dokoncenie": 100,
+        "odhad": 550000,
+        "dodavatel": "Kúpna zmluva, Senec",
+        "aktualizovane": "2026-10-31",
+        "eac": 550000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-02",
+        "projekt": "NZ",
+        "polozka": "Projekcia a inžiniering",
+        "skupina": "Príprava",
+        "rozpocet": 180000,
+        "zazmluvnene": 180000,
+        "vyfakturovane": 160000,
+        "dokoncenie": 90,
+        "odhad": 180000,
+        "dodavatel": "Atelier Kontúra s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 180000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-03",
+        "projekt": "NZ",
+        "polozka": "Hrubá stavba",
+        "skupina": "Výstavba",
+        "rozpocet": 950000,
+        "zazmluvnene": 965000,
+        "vyfakturovane": 120000,
+        "dokoncenie": 12,
+        "odhad": 960000,
+        "dodavatel": "Stavby Hron a.s.",
+        "aktualizovane": "2026-10-31",
+        "eac": 960000,
+        "odchylka": 1.1
+       },
+       {
+        "id": "R-NZ-04",
+        "projekt": "NZ",
+        "polozka": "Technické zariadenia budov (TZB)",
+        "skupina": "Výstavba",
+        "rozpocet": 420000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 420000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 420000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-05",
+        "projekt": "NZ",
+        "polozka": "Fasáda a strecha",
+        "skupina": "Výstavba",
+        "rozpocet": 220000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 220000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 220000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-06",
+        "projekt": "NZ",
+        "polozka": "Dokončovacie práce",
+        "skupina": "Výstavba",
+        "rozpocet": 300000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 300000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 300000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-07",
+        "projekt": "NZ",
+        "polozka": "Vonkajšie úpravy a prípojky",
+        "skupina": "Výstavba",
+        "rozpocet": 80000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 80000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 80000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-08",
+        "projekt": "NZ",
+        "polozka": "Marketing a predaj",
+        "skupina": "Predaj",
+        "rozpocet": 70000,
+        "zazmluvnene": 52000,
+        "vyfakturovane": 40000,
+        "dokoncenie": 45,
+        "odhad": 80000,
+        "dodavatel": "Agentúra Svetlík, portály, billboard",
+        "aktualizovane": "2026-10-31",
+        "eac": 80000,
+        "odchylka": 14.3
+       },
+       {
+        "id": "R-NZ-09",
+        "projekt": "NZ",
+        "polozka": "Rezerva na nepredvídané náklady",
+        "skupina": "Rezerva",
+        "rozpocet": 140000,
+        "zazmluvnene": null,
+        "vyfakturovane": null,
+        "dokoncenie": null,
+        "odhad": null,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": null,
+        "odchylka": null
+       }
+      ],
+      "spolu": 2910000,
+      "eacSpolu": 2910000,
+      "rezerva": 140000,
+      "pouzita": 20000,
+      "pouzitaPct": 14.3,
+      "dokoncenie": 5.8,
+      "nakladyDoDokoncenia": 2040000,
+      "vkTreba": 0,
+      "vkZostava": 50000,
+      "nadTol": [
+       {
+        "id": "R-NZ-08",
+        "projekt": "NZ",
+        "polozka": "Marketing a predaj",
+        "skupina": "Predaj",
+        "rozpocet": 70000,
+        "zazmluvnene": 52000,
+        "vyfakturovane": 40000,
+        "dokoncenie": 45,
+        "odhad": 80000,
+        "dodavatel": "Agentúra Svetlík, portály, billboard",
+        "aktualizovane": "2026-10-31",
+        "eac": 80000,
+        "odchylka": 14.3
+       }
+      ]
+     },
+     "irr": {
+      "pBp": 17.3,
+      "p": 12.8,
+      "vkBp": 21.4,
+      "vk": 15,
+      "pMix": 12.7,
+      "ziskBp": 484573,
+      "zisk": 316890,
+      "naklady": 2910000,
+      "prijmy": 3353740,
+      "urokyOdhad": 126850,
+      "ciel": 18,
+      "marza": 10.9,
+      "marzaBp": 16.7,
+      "vplyvPredaja": -4.6,
+      "vplyvNakladov": 0.1
+     },
+     "stres": [
+      {
+       "k": "zaklad",
+       "nazov": "Aktuálny odhad",
+       "irrP": 12.8,
+       "irrVk": 15,
+       "zisk": 316890
+      },
+      {
+       "k": "ceny",
+       "nazov": "Ceny voľných jednotiek −5 %",
+       "irrP": 8.9,
+       "irrVk": 8.9,
+       "zisk": 179357
+      },
+      {
+       "k": "naklady",
+       "nazov": "Zostávajúce náklady +5 %",
+       "irrP": 9.7,
+       "irrVk": 10.5,
+       "zisk": 214890
+      },
+      {
+       "k": "oneskorenie",
+       "nazov": "Kolaudácia o 3 mesiace neskôr",
+       "irrP": 10.7,
+       "irrVk": 12.3,
+       "zisk": 285915
+      },
+      {
+       "k": "urok",
+       "nazov": "Úrok +1 p. b.",
+       "irrP": 12.8,
+       "irrVk": 14.1,
+       "zisk": 295390
+      },
+      {
+       "k": "spolu",
+       "nazov": "Všetko naraz",
+       "irrP": 4.9,
+       "irrVk": 0.9,
+       "zisk": 19632
+      }
+     ]
+    }
+   ],
+   "f1": {
+    "on": true,
+    "items": [
+     {
+      "projekt": "PL",
+      "id": "T-PL-4",
+      "poradie": 4,
+      "suma": 1200000,
+      "stav": "Plánovaná",
+      "plan": "2026-11-25",
+      "ucel": "TZB, fasáda a strecha",
+      "cerpana": false,
+      "dni": 23,
+      "vOkne": true,
+      "podmienky": [
+       {
+        "id": "PC01",
+        "typ": "predpredaj_pct",
+        "popis": "Predané byty (zmluvy o budúcej) aspoň 60 %",
+        "ciel": 60,
+        "zodpovedny": "Riaditeľ predaja",
+        "ok": true,
+        "hodnota": 68.8,
+        "chybaZmluv": 0
+       },
+       {
+        "id": "PC02",
+        "typ": "krytie_x",
+        "popis": "Krytie úveru zmluvami po čerpaní aspoň 1,45×",
+        "ciel": 1.45,
+        "zodpovedny": "Riaditeľ predaja",
+        "ok": false,
+        "hodnota": 1.39,
+        "chybaEur": 319500,
+        "chybaZmluv": 2,
+        "cerpanePo": 5600000
+       },
+       {
+        "id": "PC03",
+        "typ": "manualne",
+        "popis": "Potvrdenie technického dozoru o dokončení hrubej stavby",
+        "ciel": null,
+        "zodpovedny": "Stavbyvedúci",
+        "ok": true
+       },
+       {
+        "id": "PC04",
+        "typ": "manualne",
+        "popis": "Aktualizovaný rozpočet potvrdený technickým dozorom",
+        "ciel": null,
+        "zodpovedny": "Finančný riaditeľ",
+        "ok": false
+       }
+      ],
+      "nesplnene": 2,
+      "projekcia": "2026-11-23",
+      "oneskorenie": 0,
+      "dopadVk": 0,
+      "cerpanePo": 5600000
+     },
+     {
+      "projekt": "NZ",
+      "id": "T-NZ-2",
+      "poradie": 2,
+      "suma": 600000,
+      "stav": "Plánovaná",
+      "plan": "2026-12-15",
+      "ucel": "Hrubá stavba, 1. časť",
+      "cerpana": false,
+      "dni": 43,
+      "vOkne": true,
+      "podmienky": [
+       {
+        "id": "PC08",
+        "typ": "predpredaj_pct",
+        "popis": "Predané byty (zmluvy o budúcej) aspoň 30 %",
+        "ciel": 30,
+        "zodpovedny": "Riaditeľ predaja",
+        "ok": false,
+        "hodnota": 15,
+        "chybaZmluv": 3
+       },
+       {
+        "id": "PC09",
+        "typ": "krytie_x",
+        "popis": "Krytie úveru zmluvami po čerpaní aspoň 1,0×",
+        "ciel": 1,
+        "zodpovedny": "Riaditeľ predaja",
+        "ok": false,
+        "hodnota": 0.78,
+        "chybaEur": 208200,
+        "chybaZmluv": 2,
+        "cerpanePo": 950000
+       },
+       {
+        "id": "PC10",
+        "typ": "vlastny_kapital_eur",
+        "popis": "Vložený vlastný kapitál aspoň 800 000 €",
+        "ciel": 800000,
+        "zodpovedny": "Finančný riaditeľ",
+        "ok": true,
+        "hodnota": 800000,
+        "chybaEur": 0
+       },
+       {
+        "id": "PC11",
+        "typ": "manualne",
+        "popis": "Potvrdenie technického dozoru o dokončení základov",
+        "ciel": null,
+        "zodpovedny": "Stavbyvedúci",
+        "ok": false
+       }
+      ],
+      "nesplnene": 3,
+      "projekcia": "2027-02-02",
+      "oneskorenie": 49,
+      "dopadVk": 33800,
+      "cerpanePo": 950000
+     }
+    ],
+    "count": 2,
+    "level": "red",
+    "days": 60
+   },
+   "f2": {
+    "on": true,
+    "items": [
+     {
+      "projekt": "NZ",
+      "krytie": 2.12,
+      "kovenant": 1.2,
+      "limit": 2100000,
+      "krytieLimitu": 0.35,
+      "dalsia": "T-NZ-2",
+      "dalsiaSuma": 600000,
+      "dalsiaPlan": "2026-12-15",
+      "poDalsej": 0.78,
+      "chybaPo": 398200,
+      "level": "yellow"
+     }
+    ],
+    "count": 1,
+    "level": "yellow",
+    "buffer": 10,
+    "all": [
+     {
+      "projekt": "PL",
+      "krytie": 1.77,
+      "kovenant": 1.3,
+      "limit": 6200000,
+      "krytieLimitu": 1.26,
+      "dalsia": "T-PL-4",
+      "dalsiaSuma": 1200000,
+      "dalsiaPlan": "2026-11-25",
+      "poDalsej": 1.39,
+      "chybaPo": 0,
+      "level": "green"
+     },
+     {
+      "projekt": "NZ",
+      "krytie": 2.12,
+      "kovenant": 1.2,
+      "limit": 2100000,
+      "krytieLimitu": 0.35,
+      "dalsia": "T-NZ-2",
+      "dalsiaSuma": 600000,
+      "dalsiaPlan": "2026-12-15",
+      "poDalsej": 0.78,
+      "chybaPo": 398200,
+      "level": "yellow"
+     }
+    ]
+   },
+   "f3": {
+    "on": true,
+    "items": [
+     {
+      "projekt": "NZ",
+      "tempo": 1,
+      "typ": "banka",
+      "nazov": "podmienka banky 30 %",
+      "termin": "2026-12-31",
+      "chyba": 3,
+      "dni": 59,
+      "potrebne": 1.55,
+      "pomer": 1.5476694915254237,
+      "hit": true,
+      "projekcia": "2027-02-02"
+     },
+     {
+      "projekt": "NZ",
+      "tempo": 1,
+      "typ": "tranza",
+      "nazov": "30 % predaných bytov pre 2. tranžu",
+      "tranza": "T-NZ-2",
+      "termin": "2026-12-15",
+      "chyba": 3,
+      "dni": 43,
+      "potrebne": 2.12,
+      "pomer": 2.123546511627907,
+      "hit": true,
+      "projekcia": "2027-02-02"
+     }
+    ],
+    "count": 2,
+    "level": "red",
+    "pct": 30
+   },
+   "f4": {
+    "on": true,
+    "items": [
+     {
+      "projekt": "PL",
+      "flags": [
+       {
+        "typ": "rezerva",
+        "level": "red"
+       },
+       {
+        "typ": "polozky",
+        "level": "yellow"
+       }
+      ],
+      "level": "red",
+      "polozky": [
+       {
+        "id": "R-PL-01",
+        "projekt": "PL",
+        "polozka": "Pozemok",
+        "skupina": "Pozemok",
+        "rozpocet": 1350000,
+        "zazmluvnene": 1350000,
+        "vyfakturovane": 1350000,
+        "dokoncenie": 100,
+        "odhad": 1350000,
+        "dodavatel": "Kúpna zmluva, Lamač",
+        "aktualizovane": "2026-10-31",
+        "eac": 1350000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-PL-02",
+        "projekt": "PL",
+        "polozka": "Projekcia a inžiniering",
+        "skupina": "Príprava",
+        "rozpocet": 450000,
+        "zazmluvnene": 470000,
+        "vyfakturovane": 420000,
+        "dokoncenie": 90,
+        "odhad": 470000,
+        "dodavatel": "Atelier Kontúra s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 470000,
+        "odchylka": 4.4
+       },
+       {
+        "id": "R-PL-03",
+        "projekt": "PL",
+        "polozka": "Hrubá stavba",
+        "skupina": "Výstavba",
+        "rozpocet": 2300000,
+        "zazmluvnene": 2340000,
+        "vyfakturovane": 2310000,
+        "dokoncenie": 100,
+        "odhad": 2340000,
+        "dodavatel": "Stavby Hron a.s.",
+        "aktualizovane": "2026-10-31",
+        "eac": 2340000,
+        "odchylka": 1.7
+       },
+       {
+        "id": "R-PL-04",
+        "projekt": "PL",
+        "polozka": "Technické zariadenia budov (TZB)",
+        "skupina": "Výstavba",
+        "rozpocet": 1100000,
+        "zazmluvnene": 1240000,
+        "vyfakturovane": 360000,
+        "dokoncenie": 30,
+        "odhad": 1260000,
+        "dodavatel": "TZB Servis Západ s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 1260000,
+        "odchylka": 14.5
+       },
+       {
+        "id": "R-PL-05",
+        "projekt": "PL",
+        "polozka": "Fasáda a strecha",
+        "skupina": "Výstavba",
+        "rozpocet": 600000,
+        "zazmluvnene": 650000,
+        "vyfakturovane": 120000,
+        "dokoncenie": 20,
+        "odhad": 660000,
+        "dodavatel": "Fasády Morava s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 660000,
+        "odchylka": 10
+       },
+       {
+        "id": "R-PL-06",
+        "projekt": "PL",
+        "polozka": "Dokončovacie práce",
+        "skupina": "Výstavba",
+        "rozpocet": 850000,
+        "zazmluvnene": 300000,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 880000,
+        "dodavatel": "Interiér Plus s.r.o. (čiastočne)",
+        "aktualizovane": "2026-10-31",
+        "eac": 880000,
+        "odchylka": 3.5
+       },
+       {
+        "id": "R-PL-07",
+        "projekt": "PL",
+        "polozka": "Vonkajšie úpravy a prípojky",
+        "skupina": "Výstavba",
+        "rozpocet": 250000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 250000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 250000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-PL-08",
+        "projekt": "PL",
+        "polozka": "Marketing a predaj",
+        "skupina": "Predaj",
+        "rozpocet": 200000,
+        "zazmluvnene": 160000,
+        "vyfakturovane": 140000,
+        "dokoncenie": 65,
+        "odhad": 210000,
+        "dodavatel": "Agentúra Svetlík, portály",
+        "aktualizovane": "2026-10-31",
+        "eac": 210000,
+        "odchylka": 5
+       },
+       {
+        "id": "R-PL-09",
+        "projekt": "PL",
+        "polozka": "Rezerva na nepredvídané náklady",
+        "skupina": "Rezerva",
+        "rozpocet": 300000,
+        "zazmluvnene": null,
+        "vyfakturovane": null,
+        "dokoncenie": null,
+        "odhad": null,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": null,
+        "odchylka": null
+       }
+      ],
+      "spolu": 7400000,
+      "eacSpolu": 7420000,
+      "rezerva": 300000,
+      "pouzita": 320000,
+      "pouzitaPct": 106.7,
+      "dokoncenie": 53.9,
+      "nakladyDoDokoncenia": 2720000,
+      "vkTreba": 0,
+      "vkZostava": 50000,
+      "nadTol": [
+       {
+        "id": "R-PL-04",
+        "projekt": "PL",
+        "polozka": "Technické zariadenia budov (TZB)",
+        "skupina": "Výstavba",
+        "rozpocet": 1100000,
+        "zazmluvnene": 1240000,
+        "vyfakturovane": 360000,
+        "dokoncenie": 30,
+        "odhad": 1260000,
+        "dodavatel": "TZB Servis Západ s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 1260000,
+        "odchylka": 14.5
+       },
+       {
+        "id": "R-PL-05",
+        "projekt": "PL",
+        "polozka": "Fasáda a strecha",
+        "skupina": "Výstavba",
+        "rozpocet": 600000,
+        "zazmluvnene": 650000,
+        "vyfakturovane": 120000,
+        "dokoncenie": 20,
+        "odhad": 660000,
+        "dodavatel": "Fasády Morava s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 660000,
+        "odchylka": 10
+       }
+      ]
+     },
+     {
+      "projekt": "NZ",
+      "flags": [
+       {
+        "typ": "polozky",
+        "level": "yellow"
+       }
+      ],
+      "level": "yellow",
+      "polozky": [
+       {
+        "id": "R-NZ-01",
+        "projekt": "NZ",
+        "polozka": "Pozemok",
+        "skupina": "Pozemok",
+        "rozpocet": 550000,
+        "zazmluvnene": 550000,
+        "vyfakturovane": 550000,
+        "dokoncenie": 100,
+        "odhad": 550000,
+        "dodavatel": "Kúpna zmluva, Senec",
+        "aktualizovane": "2026-10-31",
+        "eac": 550000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-02",
+        "projekt": "NZ",
+        "polozka": "Projekcia a inžiniering",
+        "skupina": "Príprava",
+        "rozpocet": 180000,
+        "zazmluvnene": 180000,
+        "vyfakturovane": 160000,
+        "dokoncenie": 90,
+        "odhad": 180000,
+        "dodavatel": "Atelier Kontúra s.r.o.",
+        "aktualizovane": "2026-10-31",
+        "eac": 180000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-03",
+        "projekt": "NZ",
+        "polozka": "Hrubá stavba",
+        "skupina": "Výstavba",
+        "rozpocet": 950000,
+        "zazmluvnene": 965000,
+        "vyfakturovane": 120000,
+        "dokoncenie": 12,
+        "odhad": 960000,
+        "dodavatel": "Stavby Hron a.s.",
+        "aktualizovane": "2026-10-31",
+        "eac": 960000,
+        "odchylka": 1.1
+       },
+       {
+        "id": "R-NZ-04",
+        "projekt": "NZ",
+        "polozka": "Technické zariadenia budov (TZB)",
+        "skupina": "Výstavba",
+        "rozpocet": 420000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 420000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 420000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-05",
+        "projekt": "NZ",
+        "polozka": "Fasáda a strecha",
+        "skupina": "Výstavba",
+        "rozpocet": 220000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 220000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 220000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-06",
+        "projekt": "NZ",
+        "polozka": "Dokončovacie práce",
+        "skupina": "Výstavba",
+        "rozpocet": 300000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 300000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 300000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-07",
+        "projekt": "NZ",
+        "polozka": "Vonkajšie úpravy a prípojky",
+        "skupina": "Výstavba",
+        "rozpocet": 80000,
+        "zazmluvnene": 0,
+        "vyfakturovane": 0,
+        "dokoncenie": 0,
+        "odhad": 80000,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": 80000,
+        "odchylka": 0
+       },
+       {
+        "id": "R-NZ-08",
+        "projekt": "NZ",
+        "polozka": "Marketing a predaj",
+        "skupina": "Predaj",
+        "rozpocet": 70000,
+        "zazmluvnene": 52000,
+        "vyfakturovane": 40000,
+        "dokoncenie": 45,
+        "odhad": 80000,
+        "dodavatel": "Agentúra Svetlík, portály, billboard",
+        "aktualizovane": "2026-10-31",
+        "eac": 80000,
+        "odchylka": 14.3
+       },
+       {
+        "id": "R-NZ-09",
+        "projekt": "NZ",
+        "polozka": "Rezerva na nepredvídané náklady",
+        "skupina": "Rezerva",
+        "rozpocet": 140000,
+        "zazmluvnene": null,
+        "vyfakturovane": null,
+        "dokoncenie": null,
+        "odhad": null,
+        "dodavatel": "",
+        "aktualizovane": "2026-10-31",
+        "eac": null,
+        "odchylka": null
+       }
+      ],
+      "spolu": 2910000,
+      "eacSpolu": 2910000,
+      "rezerva": 140000,
+      "pouzita": 20000,
+      "pouzitaPct": 14.3,
+      "dokoncenie": 5.8,
+      "nakladyDoDokoncenia": 2040000,
+      "vkTreba": 0,
+      "vkZostava": 50000,
+      "nadTol": [
+       {
+        "id": "R-NZ-08",
+        "projekt": "NZ",
+        "polozka": "Marketing a predaj",
+        "skupina": "Predaj",
+        "rozpocet": 70000,
+        "zazmluvnene": 52000,
+        "vyfakturovane": 40000,
+        "dokoncenie": 45,
+        "odhad": 80000,
+        "dodavatel": "Agentúra Svetlík, portály, billboard",
+        "aktualizovane": "2026-10-31",
+        "eac": 80000,
+        "odchylka": 14.3
+       }
+      ]
+     }
+    ],
+    "count": 2,
+    "level": "red",
+    "tol": 5,
+    "rezPp": 10
+   },
+   "f5": {
+    "on": true,
+    "items": [
+     {
+      "projekt": "NZ",
+      "pBp": 17.3,
+      "p": 12.8,
+      "vkBp": 21.4,
+      "vk": 15,
+      "pMix": 12.7,
+      "ziskBp": 484573,
+      "zisk": 316890,
+      "naklady": 2910000,
+      "prijmy": 3353740,
+      "urokyOdhad": 126850,
+      "ciel": 18,
+      "marza": 10.9,
+      "marzaBp": 16.7,
+      "vplyvPredaja": -4.6,
+      "vplyvNakladov": 0.1,
+      "level": "red"
+     }
+    ],
+    "count": 1,
+    "level": "red",
+    "pp": 2,
+    "all": [
+     {
+      "projekt": "PL",
+      "pBp": 18.1,
+      "p": 19.8,
+      "vkBp": 22.4,
+      "vk": 23.9,
+      "pMix": 19.5,
+      "ziskBp": 1186702,
+      "zisk": 1256979,
+      "naklady": 7420000,
+      "prijmy": 9026179,
+      "urokyOdhad": 349200,
+      "ciel": 18,
+      "marza": 16.9,
+      "marzaBp": 16,
+      "vplyvPredaja": 1.4,
+      "vplyvNakladov": 0.3,
+      "level": "green"
+     },
+     {
+      "projekt": "NZ",
+      "pBp": 17.3,
+      "p": 12.8,
+      "vkBp": 21.4,
+      "vk": 15,
+      "pMix": 12.7,
+      "ziskBp": 484573,
+      "zisk": 316890,
+      "naklady": 2910000,
+      "prijmy": 3353740,
+      "urokyOdhad": 126850,
+      "ciel": 18,
+      "marza": 10.9,
+      "marzaBp": 16.7,
+      "vplyvPredaja": -4.6,
+      "vplyvNakladov": 0.1,
+      "level": "red"
+     }
+    ]
+   },
+   "f6": {
+    "on": true,
+    "items": [
+     {
+      "projekt": "PL",
+      "ciel": 18,
+      "scenare": [
+       {
+        "k": "zaklad",
+        "nazov": "Aktuálny odhad",
+        "irrP": 19.8,
+        "irrVk": 23.9,
+        "zisk": 1256979
+       },
+       {
+        "k": "ceny",
+        "nazov": "Ceny voľných jednotiek −5 %",
+        "irrP": 18.2,
+        "irrVk": 21.6,
+        "zisk": 1122763
+       },
+       {
+        "k": "naklady",
+        "nazov": "Zostávajúce náklady +5 %",
+        "irrP": 18.1,
+        "irrVk": 21.6,
+        "zisk": 1120979
+       },
+       {
+        "k": "oneskorenie",
+        "nazov": "Kolaudácia o 3 mesiace neskôr",
+        "irrP": 16.6,
+        "irrVk": 20,
+        "zisk": 1173279
+       },
+       {
+        "k": "urok",
+        "nazov": "Úrok +1 p. b.",
+        "irrP": 19.8,
+        "irrVk": 22.8,
+        "zisk": 1192312
+       },
+       {
+        "k": "spolu",
+        "nazov": "Všetko naraz",
+        "irrP": 13.9,
+        "irrVk": 14.6,
+        "zisk": 822897
+       }
+      ],
+      "podCielom": [
+       "Všetko naraz"
+      ],
+      "strata": [],
+      "najhorsi": {
+       "k": "spolu",
+       "nazov": "Všetko naraz",
+       "irrP": 13.9,
+       "irrVk": 14.6,
+       "zisk": 822897
+      },
+      "level": "yellow"
+     },
+     {
+      "projekt": "NZ",
+      "ciel": 18,
+      "scenare": [
+       {
+        "k": "zaklad",
+        "nazov": "Aktuálny odhad",
+        "irrP": 12.8,
+        "irrVk": 15,
+        "zisk": 316890
+       },
+       {
+        "k": "ceny",
+        "nazov": "Ceny voľných jednotiek −5 %",
+        "irrP": 8.9,
+        "irrVk": 8.9,
+        "zisk": 179357
+       },
+       {
+        "k": "naklady",
+        "nazov": "Zostávajúce náklady +5 %",
+        "irrP": 9.7,
+        "irrVk": 10.5,
+        "zisk": 214890
+       },
+       {
+        "k": "oneskorenie",
+        "nazov": "Kolaudácia o 3 mesiace neskôr",
+        "irrP": 10.7,
+        "irrVk": 12.3,
+        "zisk": 285915
+       },
+       {
+        "k": "urok",
+        "nazov": "Úrok +1 p. b.",
+        "irrP": 12.8,
+        "irrVk": 14.1,
+        "zisk": 295390
+       },
+       {
+        "k": "spolu",
+        "nazov": "Všetko naraz",
+        "irrP": 4.9,
+        "irrVk": 0.9,
+        "zisk": 19632
+       }
+      ],
+      "podCielom": [
+       "Ceny voľných jednotiek −5 %",
+       "Zostávajúce náklady +5 %",
+       "Kolaudácia o 3 mesiace neskôr",
+       "Úrok +1 p. b.",
+       "Všetko naraz"
+      ],
+      "strata": [],
+      "najhorsi": {
+       "k": "spolu",
+       "nazov": "Všetko naraz",
+       "irrP": 4.9,
+       "irrVk": 0.9,
+       "zisk": 19632
+      },
+      "level": "yellow"
+     }
+    ],
+    "count": 2,
+    "level": "yellow",
+    "params": {
+     "on": true,
+     "cena": 5,
+     "naklady": 5,
+     "mesiace": 3,
+     "urok": 1
+    },
+    "all": [
+     {
+      "projekt": "PL",
+      "ciel": 18,
+      "scenare": [
+       {
+        "k": "zaklad",
+        "nazov": "Aktuálny odhad",
+        "irrP": 19.8,
+        "irrVk": 23.9,
+        "zisk": 1256979
+       },
+       {
+        "k": "ceny",
+        "nazov": "Ceny voľných jednotiek −5 %",
+        "irrP": 18.2,
+        "irrVk": 21.6,
+        "zisk": 1122763
+       },
+       {
+        "k": "naklady",
+        "nazov": "Zostávajúce náklady +5 %",
+        "irrP": 18.1,
+        "irrVk": 21.6,
+        "zisk": 1120979
+       },
+       {
+        "k": "oneskorenie",
+        "nazov": "Kolaudácia o 3 mesiace neskôr",
+        "irrP": 16.6,
+        "irrVk": 20,
+        "zisk": 1173279
+       },
+       {
+        "k": "urok",
+        "nazov": "Úrok +1 p. b.",
+        "irrP": 19.8,
+        "irrVk": 22.8,
+        "zisk": 1192312
+       },
+       {
+        "k": "spolu",
+        "nazov": "Všetko naraz",
+        "irrP": 13.9,
+        "irrVk": 14.6,
+        "zisk": 822897
+       }
+      ],
+      "podCielom": [
+       "Všetko naraz"
+      ],
+      "strata": [],
+      "najhorsi": {
+       "k": "spolu",
+       "nazov": "Všetko naraz",
+       "irrP": 13.9,
+       "irrVk": 14.6,
+       "zisk": 822897
+      },
+      "level": "yellow"
+     },
+     {
+      "projekt": "NZ",
+      "ciel": 18,
+      "scenare": [
+       {
+        "k": "zaklad",
+        "nazov": "Aktuálny odhad",
+        "irrP": 12.8,
+        "irrVk": 15,
+        "zisk": 316890
+       },
+       {
+        "k": "ceny",
+        "nazov": "Ceny voľných jednotiek −5 %",
+        "irrP": 8.9,
+        "irrVk": 8.9,
+        "zisk": 179357
+       },
+       {
+        "k": "naklady",
+        "nazov": "Zostávajúce náklady +5 %",
+        "irrP": 9.7,
+        "irrVk": 10.5,
+        "zisk": 214890
+       },
+       {
+        "k": "oneskorenie",
+        "nazov": "Kolaudácia o 3 mesiace neskôr",
+        "irrP": 10.7,
+        "irrVk": 12.3,
+        "zisk": 285915
+       },
+       {
+        "k": "urok",
+        "nazov": "Úrok +1 p. b.",
+        "irrP": 12.8,
+        "irrVk": 14.1,
+        "zisk": 295390
+       },
+       {
+        "k": "spolu",
+        "nazov": "Všetko naraz",
+        "irrP": 4.9,
+        "irrVk": 0.9,
+        "zisk": 19632
+       }
+      ],
+      "podCielom": [
+       "Ceny voľných jednotiek −5 %",
+       "Zostávajúce náklady +5 %",
+       "Kolaudácia o 3 mesiace neskôr",
+       "Úrok +1 p. b.",
+       "Všetko naraz"
+      ],
+      "strata": [],
+      "najhorsi": {
+       "k": "spolu",
+       "nazov": "Všetko naraz",
+       "irrP": 4.9,
+       "irrVk": 0.9,
+       "zisk": 19632
+      },
+      "level": "yellow"
+     }
+    ]
+   }
+  },
+  "texty": {
+   "nadpis": "Čerpanie tranže",
+   "podnadpis": "T-PL-4: 2 podmienky nesplnené",
+   "zhrnutie": "PL: čerpané 4,40 mil. € z 6,20 mil. €, krytie zmluvami 1,77×, IRR vlastného kapitálu 23,9 % pri cieli 18 %. NZ: čerpané 350 000 € z 2,10 mil. €, krytie zmluvami 2,12×, IRR vlastného kapitálu 15,0 % pri cieli 18 %.",
+   "f1": "T-PL-4 (1,20 mil. €, 25. 11. 2026), nesplnené: krytie po čerpaní 1,39× z požadovaných 1,45× (chýbajú zmluvy za 319 500 €, zhruba 2 byty); aktualizovaný rozpočet potvrdený technickým dozorom (finančný riaditeľ). T-NZ-2 (600 000 €, 15. 12. 2026), nesplnené: predaných 15 % bytov z požadovaných 30 % (chýba 3 zmluvy); krytie po čerpaní 0,78× z požadovaných 1,00× (chýbajú zmluvy za 208 200 €, zhruba 2 byty); potvrdenie technického dozoru o dokončení základov (stavbyvedúci). Pri dnešnom tempe predaja splníte podmienky predaja až 2. 2. 2027; posun čerpania o 49 dní by vyžadoval ďalších 33 800 € vlastných zdrojov.",
+   "f2": "PL: zmluvy kryjú čerpaný úver 1,77×, kovenant 1,30×. NZ: zmluvy kryjú čerpaný úver 2,12×, kovenant 1,20×. Po čerpaní T-NZ-2 by krytie kleslo na 0,78×, chýbajú zmluvy za 398 200 €.",
+   "f3": "NZ, podmienka banky 30 % do 31. 12. 2026: treba 3 zmluvy, teda 1,55 mesačne; posledných 90 dní 1 mesačne, pri tomto tempe až 2. 2. 2027. NZ, 30 % predaných bytov pre 2. tranžu do 15. 12. 2026: treba 3 zmluvy, teda 2,12 mesačne; posledných 90 dní 1 mesačne, pri tomto tempe až 2. 2. 2027.",
+   "f4": "PL: rezerva 300 000 € je minutá na 106,7 % (prekročenia položiek spolu 320 000 €) pri 53,9 % dokončenia stavby; nad rozpočtom Technické zariadenia budov (TZB) +14,5 %, Fasáda a strecha +10 %. NZ: nad rozpočtom Marketing a predaj +14,3 %.",
+   "f5": "PL: IRR projektu 19,8 % (plán 18,1 %), vlastného kapitálu 23,9 % (plán 22,4 %); zmena oproti plánu z predaja +1,4 p. b., z nákladov +0,3 p. b. NZ: IRR projektu 12,8 % (plán 17,3 %), vlastného kapitálu 15,0 % (plán 21,4 %); zmena oproti plánu z predaja −4,6 p. b., z nákladov +0,1 p. b.",
+   "f6": "PL: najhorší scenár „Všetko naraz“ s IRR vlastného kapitálu 14,6 % a ziskom 822 900 €. NZ: najhorší scenár „Všetko naraz“ s IRR vlastného kapitálu 0,9 % a ziskom 19 600 €.",
+   "kroky": [
+    "T-PL-4: do 25. 11. podpísať 2 zmluvy o budúcej zmluve, prednostne z rezervácií.",
+    "T-PL-4: zabezpečiť aktualizovaný rozpočet potvrdený technickým dozorom do 25. 11..",
+    "T-NZ-2: do 15. 12. podpísať 3 zmluvy o budúcej zmluve, prednostne z rezervácií."
+   ],
+   "zistenie": "T-PL-4 sa má čerpať 25. 11. 2026, nesplnené sú tieto podmienky: krytie po čerpaní 1,39× z požadovaných 1,45× (chýbajú zmluvy za 319 500 €, zhruba 2 byty); aktualizovaný rozpočet potvrdený technickým dozorom (finančný riaditeľ)."
+  }
+ }
+}

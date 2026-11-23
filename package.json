@@ -1,0 +1,11 @@
+{
+  "name": "first-mate",
+  "private": true,
+  "type": "module",
+  "description": "First Mate · AI analytik pre real estate (Books & Mirror)",
+  "scripts": {
+    "test": "node tests/golden/run.mjs",
+    "golden": "node tests/golden/extract.mjs"
+  },
+  "engines": { "node": ">=20" }
+}
