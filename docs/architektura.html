@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First Mate cieľová architektúra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE work: technický plán, ktorý sa dá aj ukázať klientovi
+   IDEA plán stavby: jeden pôdorys (repozitár), z ktorého sa stavajú panely pre rôzne typy firiem
+   PICTURE mapa systému: ľudia → Claude Code → repozitár → výstupy, každý prvok sa dá rozkliknúť
+   COLOUR Books & Mirror papier a atrament, modrá ako hlavná; typy firiem: realitka zelená, developer modrá, stavebná firma oranžová
+   TYPE Geist + Geist Mono
+   LAYOUT nadpis a legenda hore, mapa cez celú šírku s detailom vpravo; na telefóne pod sebou */
+:root{color-scheme:light dark;
+--bg:light-dark(#F9F9F5,#111214);--ink:light-dark(#0B0B0C,#F1F0EA);--muted:light-dark(#55524A,#A9A69C);
+--sand:light-dark(#EAE6DB,#24231F);--line:light-dark(#CFCABC,#3A3833);--card:light-dark(#FFFFFF,#1A1B1E);
+--blue:light-dark(#1B2CC1,#8C98FF);--tint:light-dark(#D8DCF6,#262B55);
+--re:light-dark(#0B7A5C,#4FD1A5);--re-t:light-dark(#D3EEE4,#12372C);
+--dv:light-dark(#1B2CC1,#8C98FF);--dv-t:light-dark(#D8DCF6,#262B55);
+--st:light-dark(#B45A0A,#F2A35E);--st-t:light-dark(#F6E2CC,#3E2A14);
+--no:light-dark(#A3261B,#FF8A7A);}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Geist",Arial,Helvetica,sans-serif;overflow-x:clip}
+.band{padding:clamp(28px,4vw,56px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+h1{font-size:clamp(32px,4.4vw,50px);line-height:1.05;letter-spacing:-.02em;margin:0 0 12px;text-wrap:balance}
+h2{font-size:clamp(26px,3vw,36px);line-height:1.08;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+h3{font-size:19px;margin:0 0 6px;letter-spacing:-.01em}
+p{margin:0 0 10px}
+.lead{font-size:17px;max-width:70ch;color:var(--ink)}
+.note{font-size:14px;color:var(--muted)}
+.mono{font-family:"Geist Mono",Menlo,Consolas,monospace;font-size:13px}
+.top{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:end}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid var(--ink)}
+.ic{width:18px;height:18px;flex:none;vertical-align:-3px}
+.map{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1.15fr);gap:20px;margin-top:22px}
+.flow{display:grid;grid-template-columns:minmax(0,.8fr) 26px minmax(0,.8fr) 26px minmax(0,2.4fr) 26px minmax(0,1fr);align-items:stretch}
+.col{display:flex;flex-direction:column;gap:10px}
+.colh{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:2px}
+.arr{display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:22px;font-weight:700}
+.tile{all:unset;box-sizing:border-box;display:block;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px;line-height:1.3;position:relative;min-height:44px}
+.tile b{display:block;font-size:15px;font-weight:600}
+.tile small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.tile:hover{border-color:var(--ink)}
+.tile:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.tile.on{border-color:var(--blue);box-shadow:inset 0 0 0 2px var(--blue)}
+.tile.re{border-left:6px solid var(--re)}.tile.dv{border-left:6px solid var(--dv)}.tile.st{border-left:6px dashed var(--st)}
+.tile .gear{position:absolute;top:8px;right:8px;color:var(--blue)}
+.repo{background:var(--sand);border:2px solid var(--ink);border-radius:12px;padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.repo>.rh{grid-column:1/-1;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.zone{display:flex;flex-direction:column;gap:6px}
+.zone>.zh{font-size:13px;font-weight:600;color:var(--muted)}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.det{background:var(--card);border:1px solid var(--ink);border-radius:12px;padding:18px;position:sticky;top:12px;align-self:start}
+.det .k{font-size:13px;color:var(--muted);font-weight:600;margin-top:12px}
+.det ul{margin:4px 0 0;padding-left:18px}
+.det li{margin:2px 0}
+.perm{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.perm div{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 7px;border-radius:99px;white-space:nowrap}
+.b-re{background:var(--re-t);color:var(--re)}.b-dv{background:var(--dv-t);color:var(--dv)}.b-st{background:var(--st-t);color:var(--st)}
+.b-both{background:linear-gradient(90deg,var(--re-t) 50%,var(--dv-t) 50%);color:var(--ink)}
+.alt{background:var(--sand)}
+.demo{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;margin-top:18px}
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:99px;overflow:hidden;flex-wrap:wrap}
+.seg button{all:unset;cursor:pointer;padding:10px 16px;font-size:15px;font-weight:600;min-height:24px}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.seg button:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}
+.pan{background:var(--card);border:1px solid var(--ink);border-radius:12px;overflow:hidden;margin-top:12px}
+.pbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);align-items:center}
+.pbar strong{font-size:20px;letter-spacing:-.01em}
+.menu{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.menu span{padding:10px 12px;font-size:13px;font-weight:600;border-right:1px solid var(--line)}
+.menu span i{font-style:normal;color:var(--muted);margin-right:5px}
+.menu span.off{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px 0}
+.chip{all:unset;cursor:pointer;font-size:13px;padding:6px 10px;border:1px solid var(--line);border-radius:99px;min-height:20px}
+.chip[aria-pressed=true]{border-color:var(--ink);background:var(--sand);font-weight:600}
+.chip:focus-visible{outline:3px solid var(--blue)}
+.uc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 16px 16px}
+.ucc{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.ucc:hover{border-color:var(--ink)}.ucc:focus-visible{outline:3px solid var(--blue)}
+.ucc.on{box-shadow:inset 0 0 0 2px var(--blue);border-color:var(--blue)}
+.ucc b{font-size:14px;line-height:1.25}
+.ucc .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.druh{font-size:12px;padding:1px 6px;border:1px solid var(--ink);border-radius:4px}
+.druh.tip{border-style:solid;border-color:var(--muted);color:var(--muted)}
+.druh.demo{border-style:dashed}
+.druh.navrh{border-style:dotted;color:var(--muted)}
+.druh.signal{background:var(--ink);color:var(--bg)}
+.pfoot{padding:8px 16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.code{background:var(--card);border:1px solid var(--ink);border-radius:12px;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--ink);flex-wrap:wrap}
+.tabs button{all:unset;cursor:pointer;padding:12px 14px;font-size:14px;font-weight:600;min-height:20px}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--bg)}
+.tabs button:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}
+pre{margin:0;padding:14px 16px;font:13px/1.5 "Geist Mono",Menlo,Consolas,monospace;overflow-x:auto;white-space:pre}
+.cbar{padding:10px 16px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{all:unset;cursor:pointer;border:1px solid var(--ink);border-radius:99px;padding:9px 16px;font-size:14px;font-weight:600;min-height:24px}
+.btn:focus-visible{outline:3px solid var(--blue)}
+.flows{margin-top:16px}
+.steps{list-style:none;margin:14px 0 0;padding:0;counter-reset:s;display:flex;flex-direction:column;gap:0;border-left:3px solid var(--ink);max-width:900px}
+.steps li{counter-increment:s;position:relative;padding:4px 0 18px 26px}
+.steps li::before{content:counter(s);position:absolute;left:-15px;top:2px;width:27px;height:27px;border-radius:50%;background:var(--bg);border:2px solid var(--ink);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.steps li.a::before{background:var(--blue);border-color:var(--blue);color:#fff}
+.steps .who{font-size:13px;color:var(--muted);font-weight:600;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.steps .auto{color:var(--blue);display:inline-flex;gap:4px;align-items:center}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:600;border-bottom:2px solid var(--ink)}
+td.c{text-align:center;width:13%}
+td .sub{display:block;font-size:13px;color:var(--muted)}
+.layers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
+.ly{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.ly .t{font-size:13px;font-weight:700}
+.ly .heat{height:6px;border-radius:3px;margin:8px 0 10px}
+.log{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:12px}
+.log div{border-top:3px solid var(--blue);padding-top:8px;font-size:14px}
+.log b{display:block;font-size:15px}
+footer{font-size:13px;color:var(--muted)}
+@media(max-width:1000px){.map{grid-template-columns:1fr}.det{position:static}.demo{grid-template-columns:1fr}.layers{grid-template-columns:repeat(2,minmax(0,1fr))}.log{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.top{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arr{transform:rotate(90deg);height:26px}.repo{grid-template-columns:1fr}.uc{grid-template-columns:1fr}}
+@media(max-width:600px){table{font-size:13px}th,td{padding:6px 4px}.layers,.log{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:no-preference){.tile,.ucc{transition:border-color .15s,box-shadow .15s}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13 7l4 4" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-pub" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v5h16v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-view" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-auto" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8-8-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-admin" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M18 3l1 2 2 .3-1.5 1.5.4 2.2-1.9-1-1.9 1 .4-2.2L15 5.3 17 5z" fill="currentColor"/></symbol>
+</svg>
+
+<section class="band">
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>First Mate: jedno jadro pre všetky typy firiem</h1>
+      <p class="lead">Jeden panel s prepínačom typu firmy. Use casy a nastavenia klientov žijú mimo kódu v spoločnom repozitári, na ktorom Branislav aj Marcel pracujú v Claude Code v cloude. Každá zmena sa zapíše sama.</p>
+    </div>
+    <div>
+      <div class="legend" aria-label="Legenda farieb">
+        <span><i class="sw" style="background:var(--re)"></i>Realitka</span>
+        <span><i class="sw" style="background:var(--dv)"></i>Developer</span>
+        <span><i class="sw" style="background:var(--st);border-style:dashed"></i>Stavebná firma (neskôr)</span>
+        <span><span class="badge b-both">oboje</span></span>
+      </div>
+      <div class="legend" style="margin-top:10px" aria-label="Legenda ikon">
+        <span><svg class="ic"><use href="#i-edit"/></svg>mení zdroj</span>
+        <span><svg class="ic"><use href="#i-pub"/></svg>zverejňuje</span>
+        <span><svg class="ic"><use href="#i-view"/></svg>len používa</span>
+        <span style="color:var(--no)"><svg class="ic"><use href="#i-lock"/></svg>nemôže</span>
+        <span style="color:var(--blue)"><svg class="ic"><use href="#i-auto"/></svg>deje sa samo</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="map">
+    <div class="flow" id="flow">
+      <div class="col">
+        <div class="colh">Kto pracuje</div>
+        <button class="tile" data-id="branislav"><b>Branislav</b><small>vlastník repozitára a demo panela</small></button>
+        <button class="tile" data-id="marcel"><b>Marcel</b><small>collaborator, rovnaké práva na zdroj</small></button>
+        <button class="tile" data-id="klient"><b>Klient</b><small>používa svoj panel, repozitár nevidí</small></button>
+      </div>
+      <div class="arr" aria-hidden="true">→</div>
+      <div class="col">
+        <div class="colh">Kde</div>
+        <button class="tile" data-id="cloud"><b>Claude Code v cloude</b><small>claude.ai/code, nič na počítači</small></button>
+        <button class="tile" data-id="issues"><b>GitHub Issues</b><small>úlohy a nápady</small></button>
+        <button class="tile" data-id="cowork"><b>Cowork u klienta</b><small>ranný brífing z priečinka</small></button>
+      </div>
+      <div class="arr" aria-hidden="true">→</div>
+      <div class="repo" aria-label="Repozitár first-mate">
+        <div class="rh"><h3>Repozitár branislavcrep/first-mate</h3><span class="note">jediný zdroj pravdy</span></div>
+        <div class="zone"><div class="zh">Pamäť a denník</div>
+          <button class="tile" data-id="claudemd"><b>CLAUDE.md + hot.md</b><small>pravidlá a čo sa práve deje</small></button>
+          <button class="tile" data-id="dennik"><svg class="ic gear"><use href="#i-auto"/></svg><b>dennik/ + CHANGELOG.md</b><small>kto, kedy, čo, verzie</small></button>
+        </div>
+        <div class="zone"><div class="zh">Jadro panela</div>
+          <button class="tile" data-id="panel"><b>panel/</b><small>jeden kód: brífing, tím, rozvrh, Slack, e-mail</small></button>
+          <button class="tile" data-id="moduly"><b>panel/usecases/*.js</b><small>výpočty, jeden súbor na use case</small></button>
+        </div>
+        <div class="zone"><div class="zh">Katalóg use casov</div>
+          <button class="tile" data-id="katalog"><b>usecases/usecases.json</b><small>signály, tipy, dema, návrhy s badgeom typu</small></button>
+          <button class="tile" data-id="typy"><b>usecases/typy.json</b><small>typy firiem, farby, predvolené menu</small></button>
+        </div>
+        <div class="zone"><div class="zh">Dáta podľa typu</div>
+          <div class="trio">
+            <button class="tile re" data-id="data-re"><b>realitka</b><small>3 CSV</small></button>
+            <button class="tile dv" data-id="data-dv"><b>developer</b><small>8 CSV</small></button>
+            <button class="tile st" data-id="data-st"><b>stavebná</b><small>neskôr</small></button>
+          </div>
+        </div>
+        <div class="zone"><div class="zh">Klienti</div>
+          <button class="tile" data-id="klienti"><b>klienti/&lt;klient&gt;/nastavenia.json</b><small>názov, typ, menu, use casy, kanály</small></button>
+        </div>
+        <div class="zone"><div class="zh">Nástroje a príkazy</div>
+          <button class="tile" data-id="nastroje"><b>tools/ + .claude/</b><small>/novy-klient, /release, /export-usecases, hooky</small></button>
+        </div>
+      </div>
+      <div class="arr" aria-hidden="true">→</div>
+      <div class="col">
+        <div class="colh">Výstupy</div>
+        <button class="tile" data-id="demo"><svg class="ic gear"><use href="#i-auto"/></svg><b>Demo panel</b><small>s prepínačom, účet Branislava</small></button>
+        <button class="tile" data-id="kopia"><b>Marcelova kópia</b><small>ten istý zdroj, jeho účet</small></button>
+        <button class="tile" data-id="klientpanel"><b>Klientske panely</b><small>zamknuté na typ klienta</small></button>
+        <button class="tile" data-id="balik"><b>Inštalačný balík</b><small>ZIP: priečinok, plugin, návod</small></button>
+        <button class="tile" data-id="export"><b>Export use casov</b><small>CSV a Sheets</small></button>
+      </div>
+    </div>
+    <aside class="det" id="det" aria-live="polite"></aside>
+  </div>
+  <p class="note" style="margin-top:12px">Kliknite na ľubovoľný prvok mapy. Vpravo sa ukáže, čo to je, kto ho môže meniť a čo sa deje automaticky.</p>
+</div>
+</section>
+
+<section class="band alt">
+<div class="wrap">
+  <h2>Jeden panel, menu a use casy podľa typu firmy</h2>
+  <p class="lead">Prepínač mení dáta, menu aj zoznam use casov. Menu aj názov klienta berie panel z nastavení, use casy z katalógu. Kliknutím na kartu uvidíte jej záznam v katalógu.</p>
+  <div class="demo">
+    <div>
+      <div class="seg" role="group" aria-label="Typ firmy" id="seg">
+        <button data-t="realitka" aria-pressed="false">Realitka</button>
+        <button data-t="developer" aria-pressed="true">Developer</button>
+        <button data-t="stavebna" aria-pressed="false">Stavebná firma</button>
+      </div>
+      <div class="pan">
+        <div class="pbar"><strong id="pName">Ukážka · developer</strong><span id="pType"></span></div>
+        <div class="menu" id="pMenu"></div>
+        <div class="chips" id="chips" role="group" aria-label="Druh"></div>
+        <div class="uc" id="uc"></div>
+        <div class="pfoot"><span id="pCount"></span><span>First Mate v1.0 · zostavené 23. 11. 2026</span></div>
+      </div>
+      <p class="note" style="margin-top:8px">Ukážka štruktúry. Signály sú skutočné use casy z dnešných panelov, tipy a dema sú výber, návrhy pre stavebnú firmu sú príklady.</p>
+    </div>
+    <div class="code">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="tCfg" aria-selected="true">nastavenia.json</button>
+        <button role="tab" id="tRec" aria-selected="false">záznam use casu</button>
+      </div>
+      <pre id="code"></pre>
+      <div class="cbar"><button class="btn" id="copy">Kopírovať</button><span class="note" id="cnote"></span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="band">
+<div class="wrap">
+  <h2>Postupy: ako sa s First Mate pracuje</h2>
+  <p class="lead">Každý postup začína vetou v Claude Code. Modré kroky sa dejú samy, človek len zadáva a schvaľuje.</p>
+  <div class="tabs flows" role="tablist" id="ftabs" style="border:1px solid var(--ink);border-radius:10px;overflow:hidden"></div>
+  <ol class="steps" id="steps"></ol>
+</div>
+</section>
+
+<section class="band alt">
+<div class="wrap">
+  <h2>Kto čo môže</h2>
+  <p class="lead">Zdroj v repozitári môžu meniť Branislav aj Marcel. Artefakt patrí účtu, ktorý ho zverejnil. Konektory sa vždy použijú z účtu toho, kto v paneli klikne.</p>
+  <div class="scroll">
+    <table id="perm"><thead><tr><th>Činnosť</th><th>Branislav</th><th>Marcel</th><th>Klient</th><th>Automaticky</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+</section>
+
+<section class="band">
+<div class="wrap">
+  <h2>Pamäť a denník podľa tenkého kontextu</h2>
+  <p class="lead">Claude na začiatku session číta len pravidlá a krátky stav, zvyšok si vyžiada podľa indexu. Denník a verzie vznikajú mechanicky, nie z pamäti človeka.</p>
+  <div class="layers" id="layers"></div>
+  <h3 style="margin-top:26px">Denník: päť stôp každej zmeny</h3>
+  <div class="log" id="log"></div>
+</div>
+</section>
+
+<section class="band alt">
+<div class="wrap"><footer>First Mate · Books &amp; Mirror · návrh cieľového stavu, 23. 11. 2026. Názvy súborov a príkazov sú návrh, finálne sa potvrdia pri prechode.</footer></div>
+</section>
+
+<script>
+{
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const I = (id, c) => `<svg class="ic"${c ? ` style="color:${c}"` : ""}><use href="#i-${id}"/></svg>`;
+const P = { edit: I("edit"), pub: I("pub"), view: I("view"), lock: I("lock","var(--no)"), auto: I("auto","var(--blue)"), send: I("send"), admin: I("admin") };
+
+const DET = {
+  branislav: { t: "Branislav", z: "Ľudia", co: "Vlastník repozitára a demo panela. Pracuje v Claude Code v cloude, zakladá klientov, vydáva verzie.", sub: ["Spravuje prístup k repozitáru (pozýva, odoberá)", "Jediný zverejňuje hlavný demo panel", "V jeho účte beží nočné znovuzverejnenie dema"], perm: [["admin","Správa repozitára"],["edit","Mení všetky zdroje"],["pub","Zverejňuje demo panel aj vlastné verzie"]] },
+  marcel: { t: "Marcel", z: "Ľudia", co: "Collaborator v repozitári s rovnakými právami na zdroj. Jeho zmeny sa po teste zlúčia do main bez schvaľovania a cez nočné zverejnenie sa dostanú aj do demo panela.", sub: ["Potrebuje GitHub účet a vlastný Claude Pro", "Zverejňuje vlastnú kópiu a klientske verzie zo svojho účtu"], perm: [["edit","Mení všetky zdroje"],["pub","Zverejňuje svoju kópiu a klientske panely"],["lock","Nezverejňuje priamo demo panel Branislava (na Pro nie je rola editora)"]] },
+  klient: { t: "Klient", z: "Ľudia", co: "Používa panel zamknutý na svoj typ firmy, vo svojom účte Claude, so svojimi konektormi.", sub: ["Repozitár nevidí", "Dáta mení len cez First Mate a až po potvrdení", "Ranný brífing mu beží v Cowork z priečinka First Mate"], perm: [["view","Používa svoj panel"],["send","Posiela cez svoj Slack a e-mail"],["lock","Nemení jadro ani katalóg"]] },
+  cloud: { t: "Claude Code v cloude", z: "Kde", co: "Session beží na serveri Anthropicu. Na začiatku si sama naklonuje repozitár, prečíta CLAUDE.md a hot.md, na konci uloží zmeny späť do GitHubu.", sub: ["Bez sťahovania na počítač", "Čo sa neuloží do GitHubu, zmizne", "Spustí Python skripty, testy a zverejní artefakt"], auto: "Načítanie pravidiel na štarte a uloženie na konci (hook)", perm: [["edit","Branislav aj Marcel, každý zo svojho účtu"]] },
+  issues: { t: "GitHub Issues", z: "Kde", co: "Štruktúrovaná pamäť: úlohy, nápady a chyby. Claude ich v cloude číta aj zatvára a prepojí so zmenou v kóde.", sub: ["Štítky: realitka, developer, stavebná, jadro, klient-xy", "Hotová úloha sa zatvorí commitom „closes #12“"], auto: "Zatvorenie úlohy pri zlúčení zmeny", perm: [["edit","Branislav aj Marcel"]] },
+  cowork: { t: "Cowork u klienta", z: "Kde", co: "U klienta beží plugin First Mate nad priečinkom s CSV. Ranný brífing posiela plánovaná úloha, keď je počítač zapnutý.", sub: ["Plugin aj priečinok vznikajú z repozitára príkazom /novy-klient", "Klient s repozitárom nepracuje"], perm: [["view","Klient"]] },
+  claudemd: { t: "CLAUDE.md + hot.md", z: "Pamäť a denník", co: "Teplá pamäť. CLAUDE.md sú pravidlá hry (štart a koniec session, kde čo leží). hot.md je stav projektu, max 500 slov, prepisuje sa.", sub: ["CLAUDE.md do 80 riadkov", "Každý priečinok má index.md s riadkom na súbor", "Pri súbežnej práci Claude pred zápisom stiahne najnovšiu verziu"], auto: "Prepis hot.md na konci session (pravidlo + hook)", perm: [["edit","Branislav aj Marcel"]] },
+  dennik: { t: "dennik/ + CHANGELOG.md", z: "Pamäť a denník", co: "Denník vzniká sám: git eviduje autora a čas každej zmeny, dennik/RRRR-MM.md dostane riadok na session, CHANGELOG.md eviduje verzie jadra.", sub: ["dennik/2026-11.md: dátum · kto · čo · prečo", "CHANGELOG.md: v1.0, v1.1… z príkazu /release", "klienti/xy/verzie.md: ktorá verzia beží u klienta a kde"], auto: "Zápis do denníka po každej session, záznam verzie pri /release a /novy-klient", perm: [["auto","Píše Claude, ľudia čítajú"]] },
+  panel: { t: "panel/ (jadro)", z: "Jadro panela", co: "Jeden kód panela pre všetky typy firiem: načítanie CSV, posun dátumov, brífing, AI text, Slack, e-mail, tím, rozvrh, architektúra, tipy. Vylepšenie sa robí raz.", sub: ["index.html, styles.css, app.js", "Prepínač typu sa zobrazí len ak nastavenia.prepinac = true", "Päta: verzia jadra a dátum zostavenia"], perm: [["edit","Branislav aj Marcel"]] },
+  moduly: { t: "panel/usecases/*.js", z: "Jadro panela", co: "Výpočty use casov, ktoré sa nedajú zapísať ako jednoduché pravidlo: IRR, stres test, podmienky tranží, krytie úveru. Jeden súbor na use case, názov = ID z katalógu.", sub: ["Jednoduché pravidlá (počet dní, hranica) stačí zapísať do katalógu", "Každý modul má test nad ukážkovými CSV", "Referenčný Python model ostáva na overenie financií"], perm: [["edit","Branislav aj Marcel"]] },
+  katalog: { t: "usecases/usecases.json", z: "Katalóg use casov", co: "Jeden zoznam všetkého, čo First Mate vie. Každý záznam má trvalé ID, druh (signál, tip, demo, návrh), typy firiem, kategóriu, parametre, zdroje dát a stav.", sub: ["Panel zobrazí len use casy pre zvolený typ", "Export do CSV a Sheets príkazom /export-usecases", "Neskôr import do vlastného CRM alebo Notion z toho istého súboru"], perm: [["edit","Branislav aj Marcel"]] },
+  typy: { t: "usecases/typy.json", z: "Katalóg use casov", co: "Zoznam typov firiem: názov, farba badgeu, predvolené menu a zoznam potrebných CSV. Nový typ (Stavebná firma) = nový záznam a priečinok s dátami.", sub: ["realitka · developer · stavebna-firma", "Prepínač v demo paneli sa tvorí z tohto súboru"], perm: [["edit","Branislav aj Marcel"]] },
+  "data-re": { t: "data/realitka/", z: "Dáta podľa typu", co: "Ukážkové dáta fiktívnej realitky: 40 nehnuteľností, 447 dopytov, 171 obhliadok, 6 maklérov.", sub: ["nehnutelnosti.csv, dopyty.csv, obhliadky.csv", "manifest.md s referenčným dátumom pre posun", "slovnik_dat.md"], perm: [["edit","Branislav aj Marcel"]] },
+  "data-dv": { t: "data/developer/", z: "Dáta podľa typu", co: "Ukážkové dáta developera: 2 projekty, 63 jednotiek, 41 dopytov, 3 predajcovia a simulované financie (úvery, tranže, podmienky, rozpočet, cash-flow).", sub: ["3 CSV predaja + 5 finančných", "manifest.md, slovnik_dat.md, slovnik_dat_financie.md"], perm: [["edit","Branislav aj Marcel"]] },
+  "data-st": { t: "data/stavebna-firma/", z: "Dáta podľa typu", co: "Pripravené miesto pre ďalší typ firmy. Kým nie sú dáta, typ sa v prepínači ukáže s use casmi v stave návrh.", sub: ["Postup v záložke Nový typ firmy"], perm: [["edit","Branislav aj Marcel"]] },
+  klienti: { t: "klienti/<klient>/", z: "Klienti", co: "Jeden priečinok na klienta. nastavenia.json určuje názov, typ firmy, prepínač, menu (zapnutie, poradie, názvy), zapnuté use casy a hranice, Slack kanály, e-mail a tím.", sub: ["klienti/demo/ pre demo panel (prepinac: true)", "klienti/immocap/ prvý klient", "verzie.md: čo a kde beží", "Vlastné dáta klienta sa do repozitára nedávajú"], perm: [["edit","Branislav aj Marcel"]] },
+  nastroje: { t: "tools/ + .claude/", z: "Nástroje a príkazy", co: "Príkazy, ktoré robia zakaždým to isté: /novy-klient, /build, /release, /export-usecases, /zverejni-demo. Hooky v .claude/settings.json zapíšu denník a uložia zmeny.", sub: ["tools/build.py: jadro + nastavenia → hotový panel", "tools/export_usecases.py: katalóg → CSV", "plugin/: First Mate pre Cowork klienta"], auto: "Hooky na konci session", perm: [["edit","Branislav aj Marcel"]] },
+  demo: { t: "Demo panel", z: "Výstupy", co: "Hlavný panel na predvádzanie s prepínačom všetkých typov. Artefakt v účte Branislava, jedna stabilná adresa.", sub: ["Každú noc sa sám znovu zverejní, ak sa main zmenil", "V päte je verzia, podľa ktorej sa pozná, či je aktuálny", "Staré dva panely ostanú ako archív s odkazom sem"], auto: "Nočné znovuzverejnenie z main", perm: [["pub","Branislav"],["lock","Marcel ho nezverejňuje priamo, len cez repozitár"],["view","Ostatní po nazdieľaní"]] },
+  kopia: { t: "Marcelova kópia", z: "Výstupy", co: "Ten istý panel z toho istého repozitára, zverejnený v Marcelovom účte. Na jeho prezentácie, s jeho nastaveniami a konektormi.", sub: ["Vlastná adresa a vlastná databáza nastavení", "Môže mať rovnaké nočné znovuzverejnenie"], auto: "Voliteľne nočné znovuzverejnenie", perm: [["pub","Marcel"]] },
+  klientpanel: { t: "Klientske panely", z: "Výstupy", co: "Panel zamknutý na typ klienta, s jeho názvom, menu a use casmi. Vzniká príkazom /novy-klient, zverejní sa v účte klienta alebo ide do inštalačného balíka.", sub: ["Bez prepínača a bez cudzích ukážkových dát", "Neaktualizuje sa sám: nová verzia = znova /build klienta"], perm: [["pub","Kto ho vyrobil, alebo klient vo svojom účte"],["view","Klient"]] },
+  balik: { t: "Inštalačný balík", z: "Výstupy", co: "ZIP pre klienta na jeho počítač: priečinok First Mate s dátami, plugin pre Cowork, klientsky panel, návod v PDF.", sub: ["Vzniká z repozitára, nie ručne", "Verzia balíka sa zapíše do klienti/xy/verzie.md"], auto: "Záznam verzie", perm: [["pub","Branislav alebo Marcel"]] },
+  export: { t: "Export use casov", z: "Výstupy", co: "Katalóg ako tabuľka: CSV v repozitári a Sheets artefakt na prezeranie, filtrovanie a ponuky. Neskôr import do vlastného CRM.", sub: ["Stĺpce: ID, názov, druh, typy, kategória, stav, zdroje dát", "Neskôr: odhad hodín pre nacenenie"], perm: [["pub","Branislav alebo Marcel"]] }
+};
+function showDet(id) {
+  const d = DET[id]; if (!d) return;
+  $$(".tile").forEach(t => t.classList.toggle("on", t.dataset.id === id));
+  $("#det").innerHTML = `<div class="note">${esc(d.z)}</div><h3 style="font-size:22px">${esc(d.t)}</h3><p>${esc(d.co)}</p>`
+    + (d.sub ? `<div class="k">Podrobnosti</div><ul>${d.sub.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "")
+    + `<div class="k">Kto</div><div class="perm">${d.perm.map(([i, t]) => `<div>${P[i]}<span>${esc(t)}</span></div>`).join("")}</div>`
+    + (d.auto ? `<div class="k">Automaticky</div><div class="perm"><div>${P.auto}<span>${esc(d.auto)}</span></div></div>` : "");
+}
+$("#flow").addEventListener("click", e => { const t = e.target.closest(".tile"); if (t) showDet(t.dataset.id); });
+showDet("katalog");
+
+const TYPES = {
+  realitka: { n: "Realitka", b: "b-re", menu: [["Brífing",1],["Projekty",0],["Financie",0],["Tím",1],["Signály",1],["Rozvrh",1],["Architektúra",1]], data: "data/realitka" },
+  developer: { n: "Developer", b: "b-dv", menu: [["Brífing",1],["Projekty",1],["Financie",1],["Tím",1],["Signály",1],["Rozvrh",1],["Architektúra",1]], data: "data/developer" },
+  stavebna: { n: "Stavebná firma", b: "b-st", menu: [["Brífing",1],["Zákazky",1],["Financie",1],["Tím",1],["Signály",1],["Rozvrh",1],["Architektúra",0]], data: "data/stavebna-firma" }
+};
+const UC = [
+  ["dopyty-bez-reakcie","Dopyty bez reakcie","signal",["realitka","developer"],"predaj",{realitka:{hours:48},developer:{hours:24}},"CRM: dopyty, čas prvej reakcie, predajca"],
+  ["cas-prvej-reakcie","Čas prvej reakcie","signal",["realitka","developer"],"predaj",{fastHours:4},"CRM: dopyty a reakcie"],
+  ["zaujem-bez-obhliadky","Záujem bez obhliadky","signal",["realitka"],"predaj",{minViews:200,days:14},"Portály: zobrazenia, CRM: obhliadky"],
+  ["koncia-exkluzivity","Končiace exkluzivity","signal",["realitka"],"predaj",{days:14},"Zmluvy s majiteľmi"],
+  ["podmienka-banky","Podmienka banky","signal",["developer"],"predaj",{days:90},"CRM alebo cenník, úverová zmluva"],
+  ["zalohy-po-splatnosti","Zálohy po splatnosti","signal",["developer"],"predaj",{graceDays:0},"Zmluvy, účtovníctvo"],
+  ["koncia-rezervacie","Končiace rezervácie","signal",["developer"],"predaj",{days:5},"CRM: rezervácie"],
+  ["obhliadky-bez-kroku","Obhliadky bez ďalšieho kroku","signal",["developer"],"predaj",{days:3},"CRM: obhliadky"],
+  ["klientske-zmeny","Klientske zmeny","signal",["developer"],"predaj",{days:21},"Harmonogram zmien štandardu"],
+  ["leziaky","Ležiaky a vypredané typy","signal",["developer"],"predaj",{minViews:150,minDays:60},"Cenník, web projektu"],
+  ["obchodne-priestory","Obchodné priestory","signal",["developer"],"predaj",{days:180},"CRM, cenník"],
+  ["podmienky-tranzi","Podmienky čerpania tranží","signal",["developer"],"financie",{days:60},"Úverová zmluva, výpis z úverového účtu, TDI"],
+  ["krytie-uveru","Krytie úveru zmluvami","signal",["developer"],"financie",{buffer:10},"Úverová zmluva, CRM"],
+  ["tempo-predaja","Potrebné tempo predaja","signal",["developer"],"financie",{pct:30},"CRM, úverová zmluva"],
+  ["rozpocet-rezerva","Rozpočet a rezerva","signal",["developer"],"financie",{tol:5,rezPp:10},"Rozpočet, účtovníctvo, TDI"],
+  ["irr","IRR projektu a vlastného kapitálu","signal",["developer"],"financie",{pp:2},"Štúdia uskutočniteľnosti, cash-flow"],
+  ["stres-test","Stres test","signal",["developer"],"financie",{cena:5,naklady:5,mesiace:3,urok:1},"Cash-flow, cenník, úver"],
+  ["tip-vysvetli-cislo","Vysvetli číslo z brífingu","tip",["realitka","developer"],"vsetko",null,"Brífing"],
+  ["tip-prerozdel-dopyty","Prerozdeľ dopyty bez reakcie","tip",["realitka","developer"],"predaj",null,"CRM"],
+  ["tip-co-ak","Prepočet „čo ak“ pri zmene ceny","tip",["developer"],"financie",null,"Cenník, cash-flow"],
+  ["demo-n015","Nová ponuka N015 → kupujúci → e-mail → CRM","demo",["realitka"],"predaj",null,"CRM, Gmail"],
+  ["demo-brifing-vlakno","Ranný brífing a otázka vo vlákne Slacku","demo",["realitka","developer"],"vsetko",null,"Slack"],
+  ["demo-financny-brifing","Finančný brífing pre majiteľa","demo",["developer"],"financie",null,"E-mail"],
+  ["navrh-viacprace","Viacpráce bez podpísaného dodatku","navrh",["stavebna"],"financie",null,"Rozpočet zákazky, dodatky"],
+  ["navrh-subdodavky","Subdodávky po termíne","navrh",["stavebna"],"vyroba",null,"Harmonogram, objednávky"]
+];
+const DRUH = { signal: "Signál", tip: "Tip", demo: "Demo", navrh: "Návrh" };
+const badge = ty => ty.length > 1 ? `<span class="badge b-both">oboje</span>` : `<span class="badge ${TYPES[ty[0]].b}">${TYPES[ty[0]].n}</span>`;
+let cur = "developer", druh = "vsetky", sel = null, tab = "cfg";
+
+function cfg() {
+  const T = TYPES[cur];
+  const ucs = UC.filter(u => u[3].includes(cur) && u[2] !== "navrh").map(u => u[0]);
+  return { klient: "Ukážka · " + T.n.toLowerCase(), typ: cur, prepinac: true,
+    menu: T.menu.map(([n, on]) => ({ zalozka: n.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""), nazov: n, zapnute: !!on })),
+    usecasy: ucs.length ? ucs.slice(0, 4).concat(ucs.length > 4 ? ["…"] : []) : ["(zatiaľ len návrhy)"],
+    slack: { kanal: cur === "realitka" ? "#first-mate-demo" : "#first-mate-developer" },
+    email: { sluzba: "Gmail" }, data: TYPES[cur].data };
+}
+function rec(u) {
+  const o = { id: u[0], nazov: u[1], druh: u[2], typy: u[3], kategoria: u[4], stav: u[2] === "navrh" ? "navrh" : "hotovy" };
+  if (u[5]) o.parametre = u[5];
+  if (u[2] === "signal") o.vypocet = u[4] === "financie" ? "panel/usecases/" + u[0] + ".js" : "pravidlo v katalógu alebo modul";
+  o.zdroje_dat = u[6];
+  return o;
+}
+function renderCode() {
+  $("#tCfg").setAttribute("aria-selected", tab === "cfg"); $("#tRec").setAttribute("aria-selected", tab === "rec");
+  const u = UC.find(x => x[0] === sel);
+  if (tab === "rec" && !u) { $("#code").textContent = "Kliknite na kartu use casu vľavo."; $("#cnote").textContent = ""; return; }
+  $("#code").textContent = JSON.stringify(tab === "cfg" ? cfg() : rec(u), null, 2);
+  $("#cnote").textContent = tab === "cfg" ? "klienti/demo/nastavenia.json (skrátené)" : "jeden záznam z usecases/usecases.json";
+}
+function renderPanel() {
+  const T = TYPES[cur];
+  $$("#seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.t === cur));
+  $("#pName").textContent = "Ukážka · " + T.n.toLowerCase();
+  $("#pType").innerHTML = `<span class="badge ${T.b}">${T.n}</span>`;
+  let n = 0;
+  $("#pMenu").innerHTML = T.menu.map(([m, on]) => `<span class="${on ? "" : "off"}"><i>${on ? String(++n).padStart(2, "0") : ""}</i>${esc(m)}</span>`).join("");
+  const list = UC.filter(u => u[3].includes(cur));
+  const kinds = ["vsetky"].concat(Object.keys(DRUH).filter(k => list.some(u => u[2] === k)));
+  if (!kinds.includes(druh)) druh = "vsetky";
+  $("#chips").innerHTML = kinds.map(k => `<button class="chip" data-k="${k}" aria-pressed="${k === druh}">${k === "vsetky" ? "Všetko" : DRUH[k]} (${k === "vsetky" ? list.length : list.filter(u => u[2] === k).length})</button>`).join("");
+  const vis = list.filter(u => druh === "vsetky" || u[2] === druh);
+  $("#uc").innerHTML = vis.map(u => `<button class="ucc${u[0] === sel ? " on" : ""}" data-id="${u[0]}"><b>${esc(u[1])}</b><span class="row"><span class="druh ${u[2]}">${DRUH[u[2]]}</span>${badge(u[3])}<span class="note">${esc(u[4])}</span></span></button>`).join("");
+  $("#pCount").textContent = `${vis.length} z ${UC.length} use casov v katalógu`;
+  renderCode();
+}
+$("#seg").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { cur = b.dataset.t; sel = null; tab = "cfg"; renderPanel(); } });
+$("#chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { druh = b.dataset.k; renderPanel(); } });
+$("#uc").addEventListener("click", e => { const b = e.target.closest(".ucc"); if (b) { sel = b.dataset.id; tab = "rec"; renderPanel(); } });
+$("#tCfg").addEventListener("click", () => { tab = "cfg"; renderCode(); });
+$("#tRec").addEventListener("click", () => { tab = "rec"; renderCode(); });
+$("#copy").addEventListener("click", async e => { try { await navigator.clipboard.writeText($("#code").textContent); e.target.textContent = "Skopírované"; } catch (x) { e.target.textContent = "Označte a skopírujte"; } setTimeout(() => { e.target.textContent = "Kopírovať"; }, 1600); });
+renderPanel();
+
+const FLOWS = [
+  ["Vylepšenie jadra", [
+    ["Branislav alebo Marcel", "Otvorí Claude Code v cloude s repozitárom first-mate a napíše, čo chce zmeniť, napríklad „pridaj do brífingu porovnanie s minulým týždňom“.", 0],
+    ["Claude", "Prečíta CLAUDE.md, hot.md a index priečinka panel/. Celý repozitár nečíta.", 1],
+    ["Claude", "Upraví jadro raz a otestuje ho na dátach realitky aj developera.", 1],
+    ["Človek", "Pozrie si testovaciu verziu panela vo svojom účte a schváli ju.", 0],
+    ["Claude", "Zlúči zmenu do main, zapíše riadok do dennik/, prepíše hot.md, zatvorí súvisiacu úlohu v Issues.", 1],
+    ["Nočná úloha", "V noci znovu zverejní demo panel Branislava. Klientske panely sa nemenia, kým sa znova nezostavia.", 1]]],
+  ["Nový klient", [
+    ["Branislav alebo Marcel", "Napíše /novy-klient XY. Claude sa opýta na typ firmy, e-mail (Gmail alebo Outlook), Slack kanály, tím a prepínač.", 0],
+    ["Claude", "Vytvorí klienti/xy/nastavenia.json podľa šablóny a zapíše klienta do klienti/index.md.", 1],
+    ["Claude", "Spustí tools/build.py: z jadra a nastavení vznikne panel zamknutý na typ klienta a inštalačný balík.", 1],
+    ["Človek", "Skontroluje panel a pošle balík klientovi alebo ho zverejní vo svojom účte na ukážku.", 0],
+    ["Claude", "Zapíše do klienti/xy/verzie.md verziu jadra a adresu panela, založí úlohu „Inštalácia XY“.", 1]]],
+  ["Nový use case", [
+    ["Branislav alebo Marcel", "Opíše use case slovami: čo má sledovať, pre koho, z akých dát a pri akej hranici.", 0],
+    ["Claude", "Navrhne záznam do usecases.json: ID, druh, typy firiem, kategóriu, parametre a zdroje dát.", 1],
+    ["Claude", "Ak ide o jednoduché pravidlo, stačí záznam. Ak o výpočet, napíše modul panel/usecases/<id>.js a test na ukážkových CSV.", 1],
+    ["Človek", "Schváli. Use case sa objaví v paneli pri typoch, ktoré má v badgei.", 0],
+    ["Claude", "Aktualizuje export do CSV a Sheets a zapíše zmenu do denníka.", 1]]],
+  ["Nový typ firmy", [
+    ["Branislav alebo Marcel", "Napíše „pridaj typ Stavebná firma“ a dodá popis firmy a ukážkové dáta (alebo nechá Claude vymyslieť fiktívne).", 0],
+    ["Claude", "Pridá typ do typy.json (názov, farba, predvolené menu, napríklad Projekty → Zákazky) a priečinok data/stavebna-firma/ so slovníkom dát.", 1],
+    ["Claude", "Označí existujúce use casy, ktoré sedia aj stavebnej firme, a nové pridá v stave návrh.", 1],
+    ["Človek", "Odsúhlasí. Prepínač v demo paneli ukáže nový typ automaticky.", 0]]],
+  ["Vydanie verzie", [
+    ["Branislav alebo Marcel", "Napíše /release, keď je sada zmien hotová.", 0],
+    ["Claude", "Zhrnie zmeny od poslednej verzie do CHANGELOG.md, označí verziu v gite (napríklad v1.2) a zmení číslo v päte panela.", 1],
+    ["Claude", "Vypíše klientov, ktorí bežia na staršej verzii, podľa klienti/*/verzie.md.", 1],
+    ["Človek", "Rozhodne, ktorým klientom sa pošle nová verzia.", 0]]],
+  ["Prezentácia", [
+    ["Prezentujúci", "Otvorí svoj panel (Branislav demo, Marcel svoju kópiu). Verzia v päte ukáže, či je aktuálny.", 0],
+    ["Prezentujúci", "Prepne typ firmy podľa klienta. Menu, dáta aj use casy sa zmenia naraz.", 0],
+    ["Prezentujúci", "Pošle ranný brífing do demo Slacku. Ide cez jeho vlastné konektory.", 0],
+    ["Prezentujúci", "Ukáže katalóg use casov s badgemi a vyberie s klientom, čo ho zaujíma. Z toho vznikne /novy-klient.", 0]]]
+];
+let fi = 0;
+function renderFlows() {
+  $("#ftabs").innerHTML = FLOWS.map((f, i) => `<button role="tab" data-i="${i}" aria-selected="${i === fi}">${esc(f[0])}</button>`).join("");
+  $("#steps").innerHTML = FLOWS[fi][1].map(([k, t, a]) => `<li class="${a ? "a" : ""}"><div class="who">${esc(k)}${a ? `<span class="auto">${P.auto}samo</span>` : ""}</div>${esc(t)}</li>`).join("");
+}
+$("#ftabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { fi = +b.dataset.i; renderFlows(); } });
+renderFlows();
+
+const PERM = [
+  ["Meniť zdroj v repozitári", "jadro, katalóg, dáta, nastavenia klientov", "edit", "edit", "lock", "—"],
+  ["Zlúčiť zmenu do main", "Claude po teste, bez schvaľovania", "edit", "edit", "lock", "—"],
+  ["Spravovať prístup k repozitáru", "pozvať alebo odobrať collaboratora", "admin", "lock", "lock", "—"],
+  ["Zverejniť hlavný demo panel", "artefakt v účte Branislava", "pub", "lock", "lock", "auto"],
+  ["Zverejniť vlastnú kópiu panela", "každý vo svojom účte", "pub", "pub", "—", "auto"],
+  ["Vytvoriť klientsku verziu", "/novy-klient a /build", "pub", "pub", "lock", "—"],
+  ["Vydať verziu jadra", "/release", "edit", "edit", "lock", "—"],
+  ["Používať nazdieľaný panel", "otvoriť, prepínať, čítať", "view", "view", "view", "—"],
+  ["Posielať brífing do Slacku a e-mailom", "vždy cez konektory toho, kto klikne", "send", "send", "send", "—"],
+  ["Meniť nastavenia v paneli", "tím, rozvrh, príjemcovia: len vo svojej kópii", "edit", "edit", "edit", "—"],
+  ["Zapisovať denník a hot.md", "po každej session", "—", "—", "—", "auto"]
+];
+const cell = v => v === "—" ? `<span class="note">—</span>` : P[v];
+$("#perm tbody").innerHTML = PERM.map(r => `<tr><td>${esc(r[0])}<span class="sub">${esc(r[1])}</span></td>${r.slice(2).map(v => `<td class="c">${cell(v)}</td>`).join("")}</tr>`).join("");
+
+const LAYERS = [
+  ["Horúca", "Aktuálna konverzácia v Claude Code", "Rastie počas session, po nej sa zahodí. Nič podstatné v nej neostáva.", "var(--no)"],
+  ["Teplá", "CLAUDE.md + hot.md", "Načíta sa vždy na štarte. Pravidlá do 80 riadkov, stav max 500 slov, prepisuje sa.", "var(--st)"],
+  ["Studená", "docs/, usecases/, klienti/, data/", "Načíta sa len na vyžiadanie podľa index.md v každom priečinku.", "var(--blue)"],
+  ["Štruktúrovaná", "GitHub Issues", "Úlohy, nápady, chyby. Zatvorené úlohy nezaberajú miesto v kontexte.", "var(--re)"]
+];
+$("#layers").innerHTML = LAYERS.map(l => `<div class="ly"><div class="t">${esc(l[0])}</div><div class="heat" style="background:${l[3]}"></div><b>${esc(l[1])}</b><p class="note" style="margin-top:4px">${esc(l[2])}</p></div>`).join("");
+const LOG = [
+  ["Git história", "Autor, čas a obsah každej zmeny. Nedá sa obísť."],
+  ["dennik/RRRR-MM.md", "Riadok na session: kto, čo, prečo. Zapíše hook."],
+  ["CHANGELOG.md", "Verzie jadra a čo priniesli. Vzniká z /release."],
+  ["Päta panela", "Verzia a dátum zostavenia v každom paneli."],
+  ["klienti/xy/verzie.md", "Ktorá verzia beží u klienta a kde."]
+];
+$("#log").innerHTML = LOG.map(l => `<div><b>${esc(l[0])}</b>${esc(l[1])}</div>`).join("");
+}
+</script>
+</body>
+</html>

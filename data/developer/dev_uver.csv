@@ -1,0 +1,3 @@
+﻿id;projekt_id;banka;typ;limit_eur;urok_pct;splatnost;kovenant_krytie_x;poznamka;created_at
+U-PL;PL;Tatra banka;Developerský úver;6200000;5,4;2028-06-30;1,3;Krytie = hodnota podpísaných zmlúv (s DPH) / čerpaný úver;2026-11-19T18:30
+U-NZ;NZ;Slovenská sporiteľňa;Developerský úver;2100000;5,9;2029-09-30;1,2;Krytie = hodnota podpísaných zmlúv (s DPH) / čerpaný úver;2026-11-19T18:30

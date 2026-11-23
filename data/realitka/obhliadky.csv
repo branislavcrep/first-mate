@@ -1,0 +1,172 @@
+﻿id;kod_obhliadky;kontakt;nehnutelnost;datum_obhliadky;makler;vysledok;spatna_vazba;created_at;attio_id
+O0001;O0001;K0178;N001;2026-10-10T09:50;Tomáš Kováč;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:12;a9dba0af-6878-4c01-933c-28219feb39d3
+O0002;O0002;K0187;N002;2026-09-27T11:00;Tomáš Kováč;nemá záujem;hlučná ulica;2026-10-27T17:13;f088dea8-925a-4faf-a507-c14591c05350
+O0003;O0003;K0107;N002;2026-09-23T18:50;Tomáš Kováč;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:13;19f9ef50-1c33-48b2-a6bb-0bb672397e75
+O0004;O0004;K0148;N002;2026-09-09T10:20;Tomáš Kováč;nemá záujem;chcel balkón;2026-10-27T17:13;af1f58ce-b356-4add-95bb-5bdd66a44947
+O0005;O0005;K0120;N002;2026-10-11T14:20;Tomáš Kováč;záujem;chce druhú obhliadku s partnerom;2026-10-27T17:13;e8c32e9f-f2ee-448b-accb-7e75f44b1f57
+O0006;O0006;K0227;N002;2026-10-18T16:50;Tomáš Kováč;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;81c9e2b4-9467-48a7-9753-a92160b88a34
+O0007;O0007;K0172;N003;2026-11-01T11:15;Tomáš Kováč;nemá záujem;malá kuchyňa;2026-10-27T17:13;cc1f983e-9edc-45e5-962b-77966d602bde
+O0008;O0008;K0135;N003;2026-09-30T18:45;Tomáš Kováč;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:13;c275b692-c90f-4fd7-94ce-4d5690eb6e25
+O0009;O0009;K0098;N003;2026-11-02T13:15;Tomáš Kováč;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:13;3aba4b68-7af3-404e-82b1-0d12b50f14f6
+O0010;O0010;K0210;N003;2026-08-31T13:30;Tomáš Kováč;zvažuje;dispozícia sedí;2026-10-27T17:13;8dd27acf-e561-4cab-a8d2-834d3a882198
+O0011;O0011;K0107;N003;2026-09-30T15:30;Tomáš Kováč;nemá záujem;chcel balkón;2026-10-27T17:13;a84329fd-3338-433c-9963-464e71aee850
+O0012;O0012;K0226;N003;2026-09-24T17:10;Tomáš Kováč;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;90aadf8f-f8eb-4e3b-964c-8b4634e4bd6f
+O0013;O0013;K0065;N003;2026-09-29T10:15;Tomáš Kováč;nemá záujem;tmavý byt;2026-10-27T17:13;82247715-a553-4ef2-8c64-a1ff6c407c58
+O0014;O0014;K0071;N004;2026-10-06T17:05;Simona Lukáčová;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;06aeb721-94de-428f-a975-00237690ff01
+O0015;O0015;K0123;N004;2026-10-07T14:20;Simona Lukáčová;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;17bfcf1c-aaca-4210-9ef6-72d07dffb29f
+O0016;O0016;K0170;N005;2026-06-09T09:00;Tomáš Kováč;nemá záujem;chcel balkón;2026-10-27T17:12;3e45cb0b-632e-44ee-9223-cc6c3a44db5a
+O0017;O0017;K0148;N005;2026-09-30T12:20;Tomáš Kováč;zvažuje;pekný výhľad, cena OK;2026-10-27T17:13;6fa0a2a1-4811-47c4-bff1-fb164c206079
+O0018;O0018;K0150;N005;2026-08-17T14:30;Tomáš Kováč;nemá záujem;hlučná ulica;2026-10-27T17:13;8cfd9228-6817-47df-9bd1-b7ae6bb9eac2
+O0019;O0019;K0110;N006;2026-10-05T11:05;Juraj Šimko;záujem;páči sa, rieši hypotéku;2026-10-27T17:13;6ba866c8-ed9b-4c80-b480-3fa2eabfb833
+O0020;O0020;K0216;N006;2026-11-02T14:00;Juraj Šimko;záujem;dispozícia sedí;2026-10-27T17:13;6b4d0a7f-a5c2-42e3-aeab-16d47b4c95a1
+O0021;O0021;K0214;N006;2026-09-22T10:40;Juraj Šimko;nemá záujem;chcel balkón;2026-10-27T17:13;913912cf-6288-4274-ae8f-e2ec4683152d
+O0022;O0022;K0227;N006;2026-09-25T09:00;Juraj Šimko;nemá záujem;chcel balkón;2026-10-27T17:13;7e2f4fde-44d2-4f78-9559-d5662a784d7f
+O0023;O0023;K0205;N006;2026-10-19T18:45;Juraj Šimko;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;138b2956-d94f-427c-aa4b-2927bd7c3a2f
+O0024;O0024;K0155;N007;2026-07-03T17:00;Juraj Šimko;zvažuje;pekný výhľad, cena OK;2026-10-27T17:12;6959aa72-a7b8-4e42-a7cd-0b7e14e308d1
+O0025;O0025;K0195;N007;2026-10-15T09:15;Juraj Šimko;nemá záujem;tmavý byt;2026-10-27T17:13;2557fb0b-9cc2-4876-820b-f1a00b7273b9
+O0026;O0026;K0224;N007;2026-10-03T14:05;Juraj Šimko;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;f48470cc-a51b-4d43-9bb2-4d03de04eef8
+O0027;O0027;K0052;N007;2026-07-25T09:50;Juraj Šimko;záujem;chce druhú obhliadku s partnerom;2026-10-27T17:12;2f8e41f0-f308-43ed-a73b-b3dd555c6d12
+O0028;O0028;K0182;N007;2026-10-24T11:05;Juraj Šimko;nemá záujem;hlučná ulica;2026-10-27T17:13;aa9c9235-9581-412f-b8a4-d19e7fe51eae
+O0029;O0029;K0111;N007;2026-09-05T17:20;Juraj Šimko;nemá záujem;ďaleko od MHD;2026-10-27T17:13;f563e063-83e7-4b5d-bd58-22f93f31b842
+O0030;O0030;K0213;N008;2026-10-13T16:40;Peter Molnár;nemá záujem;chcel balkón;2026-10-27T17:13;80ad6279-2644-40a2-978a-1c9c1d96a810
+O0031;O0031;K0068;N008;2026-10-03T13:10;Peter Molnár;nemá záujem;ďaleko od MHD;2026-10-27T17:13;d229b82e-2801-42c4-9a39-ec4e19c5eea3
+O0032;O0032;K0217;N008;2026-11-02T12:50;Peter Molnár;záujem;pekný výhľad, cena OK;2026-10-27T17:13;3787a54f-4c59-42a6-ad86-b3039a4a3f71
+O0033;O0033;K0154;N009;2026-06-22T12:15;Tomáš Kováč;zvažuje;pekný výhľad, cena OK;2026-10-27T17:12;dcd9d931-3cd3-4dcf-a258-d4c29ee8c571
+O0034;O0034;K0193;N009;2026-07-19T17:05;Tomáš Kováč;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:12;1a80b447-bc32-4578-bce3-ff4ee7fa8db7
+O0035;O0035;K0129;N009;2026-06-25T15:05;Tomáš Kováč;nemá záujem;tmavý byt;2026-10-27T17:12;811c806f-34bd-48f4-a304-4198562bb057
+O0036;O0036;K0106;N009;2026-07-17T16:00;Tomáš Kováč;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:12;244bfa02-90d0-4fdd-a58a-fce1eafd71d4
+O0037;O0037;K0050;N009;2026-07-20T15:40;Tomáš Kováč;nemá záujem;tmavý byt;2026-10-27T17:12;3813dff1-6794-42f4-a3a1-517bcde3382b
+O0038;O0038;K0042;N009;2026-10-11T17:05;Tomáš Kováč;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;730cadd2-7ffb-4c73-82ce-c4f5bd635543
+O0039;O0039;K0189;N010;2026-06-17T14:45;Peter Molnár;nemá záujem;hlučná ulica;2026-10-27T17:12;d3d14775-c1ec-40ff-b73c-95898e687768
+O0040;O0040;K0107;N010;2026-10-14T18:20;Peter Molnár;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;64d860b6-ca64-45c7-804b-9da522fe6791
+O0041;O0041;K0209;N011;2026-08-25T10:20;Simona Lukáčová;nemá záujem;hlučná ulica;2026-10-27T17:13;8b0c6e1c-a844-4c6f-b02f-03e6e8e5c2c6
+O0042;O0042;K0100;N011;2026-09-21T14:05;Simona Lukáčová;nemá záujem;malá kuchyňa;2026-10-27T17:13;48ac5240-d32c-469d-ac08-d9a4f8d35585
+O0043;O0043;K0137;N011;2026-10-17T17:40;Simona Lukáčová;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;ebc14a10-0c00-404c-8651-6f3c7310b6c7
+O0044;O0044;K0163;N012;2026-08-21T18:10;Tomáš Kováč;záujem;pekný výhľad, cena OK;2026-10-27T17:13;c2cc41ef-1d26-49cc-8316-dbe750498322
+O0045;O0045;K0087;N012;2026-08-06T16:45;Tomáš Kováč;nemá záujem;hlučná ulica;2026-10-27T17:13;e2899388-7de2-4880-acc0-673c2acc623d
+O0046;O0046;K0164;N012;2026-08-09T13:10;Tomáš Kováč;nemá záujem;chcel balkón;2026-10-27T17:13;148c2367-08a5-4ac3-8ff6-33a9b4b14482
+O0047;O0047;K0177;N012;2026-08-11T15:50;Tomáš Kováč;nemá záujem;ďaleko od MHD;2026-10-27T17:13;363cdd25-e98e-4d08-98dc-b3218904aa54
+O0048;O0048;K0148;N012;2026-10-20T16:40;Tomáš Kováč;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;f5e580e7-73c3-4868-a6f5-47b1dba767d2
+O0049;O0049;K0209;N013;2026-05-28T17:00;Tomáš Kováč;zvažuje;dispozícia sedí;2026-10-27T17:12;02d6e624-db8c-4db1-8161-ffbcab16069a
+O0050;O0050;K0139;N013;2026-06-09T16:45;Tomáš Kováč;záujem;zvažuje, porovnáva s inou ponukou;2026-10-27T17:12;c4403c26-7d43-4f93-a253-e25780aebca7
+O0051;O0051;K0044;N013;2026-06-22T14:20;Tomáš Kováč;nemá záujem;tmavý byt;2026-10-27T17:12;dc81b9c1-d8fc-43ab-9e33-e5657642c719
+O0052;O0052;K0196;N013;2026-07-10T10:50;Tomáš Kováč;zvažuje;pekný výhľad, cena OK;2026-10-27T17:12;cc8426e7-8940-47d6-adae-fd94f009a1bc
+O0053;O0053;K0105;N013;2026-06-17T16:00;Tomáš Kováč;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:12;a989d174-6587-40ec-ac88-cb60fcbac575
+O0054;O0054;K0070;N013;2026-06-22T14:50;Tomáš Kováč;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:12;20e5d603-a5a0-44bb-b519-ffbf7c3b4ce2
+O0055;O0055;K0128;N013;2026-10-29T12:10;Tomáš Kováč;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;d2092050-202e-4fcf-95ec-21cf050eb47b
+O0056;O0056;K0061;N014;2026-10-28T17:30;Katarína Bartošová;nemá záujem;tmavý byt;2026-10-27T17:13;84c40455-6d73-4ce6-8117-b7c5a2743086
+O0057;O0057;K0142;N014;2026-10-22T15:10;Katarína Bartošová;záujem;dispozícia sedí;2026-10-27T17:13;c691b9ab-bf2f-4a95-8be3-c641ce331dcc
+O0058;O0058;K0071;N014;2026-10-07T14:30;Katarína Bartošová;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:13;0fadd831-0eac-49f9-83b4-67c1cc230776
+O0059;O0059;K0066;N014;2026-10-22T16:00;Katarína Bartošová;záujem;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;ef8b7842-2f24-4bc6-8ef7-f6c706361d80
+O0060;O0060;K0165;N015;2026-09-16T16:05;Katarína Bartošová;záujem;dispozícia sedí;2026-10-27T17:13;c2efd91f-23b6-4333-9b64-c33a75c3bee9
+O0061;O0061;K0231;N015;2026-10-09T10:30;Katarína Bartošová;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:13;f09b35dd-1dc5-4f1a-a437-650aa0e1e012
+O0062;O0062;K0214;N015;2026-09-12T16:45;Katarína Bartošová;zvažuje;pekný výhľad, cena OK;2026-10-27T17:13;5f7df260-5f07-47be-8694-a8c783aed947
+O0063;O0063;K0121;N015;2026-10-24T18:50;Katarína Bartošová;nemá záujem;tmavý byt;2026-10-27T17:13;59edc840-1810-4ad9-87f3-1bd60c4e732d
+O0064;O0064;K0086;N016;2026-07-09T13:30;Lucia Hudáková;nemá záujem;chcel balkón;2026-10-27T17:12;a00cf9d3-c4da-4e41-89a9-189d6f9bc962
+O0065;O0065;K0177;N016;2026-07-12T12:00;Lucia Hudáková;nemá záujem;chcel balkón;2026-10-27T17:12;f7d74f9a-22eb-4524-892f-241ae6db5725
+O0066;O0066;K0102;N016;2026-07-02T11:10;Lucia Hudáková;záujem;páči sa, rieši hypotéku;2026-10-27T17:12;011919c5-4104-41f5-8bf8-1cafc54276cd
+O0067;O0067;K0123;N016;2026-07-27T16:00;Lucia Hudáková;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:12;223bd8bf-3bb9-46f7-b0bf-7bc11adee992
+O0068;O0068;K0100;N016;2026-10-29T15:30;Lucia Hudáková;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;08dfc1d4-3674-4763-a501-c558d3211a8a
+O0069;O0069;K0138;N017;2026-06-04T12:45;Peter Molnár;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:12;7578ea59-4f1c-451f-b85f-061ae8eaf103
+O0070;O0070;K0065;N017;2026-06-08T17:50;Peter Molnár;záujem;páči sa, rieši hypotéku;2026-10-27T17:12;c564dce7-c5f6-4255-998e-3d521b56b6df
+O0071;O0071;K0132;N017;2026-07-21T14:45;Peter Molnár;zvažuje;pekný výhľad, cena OK;2026-10-27T17:12;e64ee97d-2ec6-4c2a-9fd4-510ffb9a23d6
+O0072;O0072;K0221;N017;2026-06-23T16:20;Peter Molnár;zvažuje;dispozícia sedí;2026-10-27T17:12;2932db3f-cb2e-4f34-90ba-14bd68f236da
+O0073;O0073;K0194;N017;2026-05-31T09:50;Peter Molnár;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:12;407746df-cc91-4cc1-a983-088e90608d2c
+O0074;O0074;K0182;N017;2026-06-08T11:10;Peter Molnár;nemá záujem;malá kuchyňa;2026-10-27T17:12;949019f6-b626-46a5-81c7-0def13615097
+O0075;O0075;K0140;N017;2026-06-02T09:15;Peter Molnár;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:12;8f0d9d4f-20d3-4628-9328-32b6af6f9966
+O0076;O0076;K0166;N017;2026-06-15T09:20;Peter Molnár;nemá záujem;ďaleko od MHD;2026-10-27T17:12;d873c0ab-9b2e-4e10-a2f3-c3b871102654
+O0077;O0077;K0186;N017;2026-07-12T15:05;Peter Molnár;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:12;0e2b1e45-48b1-40f2-ab82-fd29b4a8ea6d
+O0078;O0078;K0083;N017;2026-10-06T17:45;Peter Molnár;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;27e52a2b-f751-45d3-830c-5d97e4e609fe
+O0079;O0079;K0182;N018;2026-07-22T13:30;Simona Lukáčová;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:12;6db4c1b9-581c-4843-98fd-4ca6f041c37a
+O0080;O0080;K0096;N018;2026-07-04T18:20;Simona Lukáčová;nemá záujem;malá kuchyňa;2026-10-27T17:12;61b4779c-96ad-4b65-ac0d-57384d4b8d6c
+O0081;O0081;K0043;N018;2026-07-02T12:10;Simona Lukáčová;záujem;pekný výhľad, cena OK;2026-10-27T17:12;4ee3d249-95f5-47bf-8bd6-3d11e5ad85a0
+O0082;O0082;K0213;N018;2026-08-02T15:10;Simona Lukáčová;zvažuje;dispozícia sedí;2026-10-27T17:13;b8cf56f5-bbce-4540-aac1-14026026734e
+O0083;O0083;K0175;N018;2026-06-23T15:30;Simona Lukáčová;záujem;chce druhú obhliadku s partnerom;2026-10-27T17:12;901949c3-77ee-4e7c-af17-8d2f5dfc68c5
+O0084;O0084;K0092;N018;2026-07-22T11:20;Simona Lukáčová;zvažuje;pekný výhľad, cena OK;2026-10-27T17:12;df8c6162-e25f-460d-89fd-a2afbe638d1e
+O0085;O0085;K0128;N018;2026-08-09T17:20;Simona Lukáčová;zvažuje;pekný výhľad, cena OK;2026-10-27T17:13;3099f2c4-0651-44ea-8f28-3137ecd727af
+O0086;O0086;K0164;N018;2026-07-05T09:20;Simona Lukáčová;záujem;zvažuje, porovnáva s inou ponukou;2026-10-27T17:12;d393a5c0-47e2-46ce-8301-15fc918ba671
+O0087;O0087;K0219;N018;2026-07-27T14:05;Simona Lukáčová;nemá záujem;ďaleko od MHD;2026-10-27T17:12;a10a3c7d-7773-4e53-9ce9-b83ccbc7dfae
+O0088;O0088;K0223;N018;2026-07-04T14:30;Simona Lukáčová;nemá záujem;malá kuchyňa;2026-10-27T17:12;0a7a8f6d-beea-4454-975f-6a1ceb084566
+O0089;O0089;K0227;N018;2026-10-19T13:30;Simona Lukáčová;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;1cf542d2-be70-4f04-ae66-bd1fe8e52df3
+O0090;O0090;K0093;N019;2026-10-28T10:40;Juraj Šimko;zvažuje;pekný výhľad, cena OK;2026-10-27T17:12;0744e304-bb85-4d15-af9e-257244cf04c2
+O0091;O0091;K0208;N019;2026-10-26T08:30;Juraj Šimko;záujem;zvažuje, porovnáva s inou ponukou;2026-10-27T17:12;e5194b75-0b12-4749-94f0-fc1d5af1930f
+O0092;O0092;K0163;N020;2026-06-22T16:10;Peter Molnár;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:12;e81b1bd5-43bd-4852-bf4d-b36b5864bb00
+O0093;O0093;K0193;N020;2026-07-04T12:50;Peter Molnár;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:12;8a3a39b5-5c30-48ce-958c-fe7faf25afea
+O0094;O0094;K0142;N020;2026-07-06T15:20;Peter Molnár;záujem;chce druhú obhliadku s partnerom;2026-10-27T17:12;53a584d3-1c6e-4a41-93c4-b2b3aa4bd4c1
+O0095;O0095;K0114;N020;2026-06-25T16:05;Peter Molnár;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:12;de4b16bc-41c0-41d4-ad2e-bc059e5d387c
+O0096;O0096;K0082;N020;2026-06-25T17:10;Peter Molnár;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:12;1156c672-21c0-46b0-9e58-c161d3a7d67c
+O0097;O0097;K0209;N020;2026-10-04T15:20;Peter Molnár;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;76f4d7f7-fb75-4fc9-aecd-ba57eecdad00
+O0098;O0098;K0196;N021;2026-11-02T18:00;Peter Molnár;zvažuje;pekný výhľad, cena OK;2026-10-27T17:13;358952e9-59f3-4814-986f-8ff941c02396
+O0099;O0099;K0113;N021;2026-09-22T14:30;Peter Molnár;záujem;dispozícia sedí;2026-10-27T17:13;ed95085c-4c63-433c-a5a6-6e40571ec30a
+O0100;O0100;K0235;N022;2026-10-29T16:15;Lucia Hudáková;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:13;4ce8fb90-906f-4248-9480-e4f4e85e8441
+O0101;O0101;K0074;N022;2026-09-21T13:15;Lucia Hudáková;nemá záujem;hlučná ulica;2026-10-27T17:13;c029967b-f0fb-46fb-8618-7751e01fe7fb
+O0102;O0102;K0050;N022;2026-09-09T15:00;Lucia Hudáková;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:13;872b9953-ff99-4623-8e0e-af8be986d810
+O0103;O0103;K0169;N024;2026-09-27T10:50;Lucia Hudáková;nemá záujem;hlučná ulica;2026-10-27T17:13;3d28b0f4-fce1-4c88-bc0e-c6c4fc3e144c
+O0104;O0104;K0074;N024;2026-09-12T18:05;Lucia Hudáková;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:13;d89e6445-20ab-4571-bd76-b77c6138eb14
+O0105;O0105;K0160;N024;2026-10-04T12:30;Lucia Hudáková;nemá záujem;tmavý byt;2026-10-27T17:13;b28381d0-6a37-4fc6-880e-402890534eda
+O0106;O0106;K0090;N024;2026-10-15T10:00;Lucia Hudáková;záujem;dispozícia sedí;2026-10-27T17:13;8a461ad3-e747-4e96-a703-c7cbfc277d17
+O0107;O0107;K0077;N024;2026-10-09T14:50;Lucia Hudáková;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;b0a319d6-ce2e-4020-99d5-5ece9e158b45
+O0108;O0108;K0134;N025;2026-10-12T10:45;Peter Molnár;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:13;2ac75794-3a22-4680-a9cc-2620b29d057f
+O0109;O0109;K0073;N025;2026-09-24T17:45;Peter Molnár;nemá záujem;tmavý byt;2026-10-27T17:13;28aa4447-321f-4c53-a85d-47be86f4440d
+O0110;O0110;K0192;N025;2026-10-04T18:40;Peter Molnár;záujem;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;a21e9419-f39b-47a9-8885-8c1573c4b3c0
+O0111;O0111;K0152;N025;2026-10-13T18:45;Peter Molnár;rezervácia;podpísaná rezervačná zmluva;2026-10-27T17:13;c2b53ea1-d94f-4c51-8aae-9e27276d55e4
+O0112;O0112;K0058;N026;2026-10-12T10:15;Lucia Hudáková;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:13;920b5e4f-42a3-40b7-90c0-f7022f0dbc2c
+O0113;O0113;K0076;N026;2026-09-15T16:15;Lucia Hudáková;zvažuje;pekný výhľad, cena OK;2026-10-27T17:13;caa9ab69-4a94-4930-9dad-5bd9078bc8fa
+O0114;O0114;K0215;N026;2026-10-25T09:00;Lucia Hudáková;nemá záujem;tmavý byt;2026-10-27T17:13;51370b24-e058-496b-b671-8e2575cfefe3
+O0115;O0115;K0220;N027;2026-07-20T16:10;Tomáš Kováč;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:12;7a440bed-ea75-4920-a36c-26eaae829fc1
+O0116;O0116;K0200;N027;2026-07-21T18:00;Tomáš Kováč;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:12;d964efe3-2912-4ba2-9554-9e949e664969
+O0117;O0117;K0177;N027;2026-08-11T13:10;Tomáš Kováč;zvažuje;dispozícia sedí;2026-10-27T17:13;2a976e18-9cd4-41c6-8856-44e06f1cadd8
+O0118;O0118;K0218;N027;2026-10-29T08:20;Tomáš Kováč;nemá záujem;chcel balkón;2026-10-27T17:13;01d25f1c-f308-4372-9d43-afd1a4c0af0b
+O0119;O0119;K0193;N027;2026-10-01T11:15;Tomáš Kováč;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:13;027d53f8-d055-4f88-a2b3-b2e4aeb1b2dd
+O0120;O0120;K0162;N027;2026-07-28T16:20;Tomáš Kováč;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:12;3df940fd-d9b7-4c70-821f-c0fa09517281
+O0121;O0121;K0176;N027;2026-08-19T13:30;Tomáš Kováč;nemá záujem;ďaleko od MHD;2026-10-27T17:13;ec808a7d-2039-4496-8431-e500c0de3077
+O0122;O0122;K0109;N027;2026-08-28T12:50;Tomáš Kováč;nemá záujem;chcel balkón;2026-10-27T17:13;f5a3c52a-f160-442b-9889-31cc63385b80
+O0123;O0123;K0044;N027;2026-10-20T09:05;Tomáš Kováč;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:13;32756ef3-5359-4562-b12f-460b2a3d2da5
+O0124;O0124;K0209;N028;2026-08-20T11:40;Simona Lukáčová;záujem;pekný výhľad, cena OK;2026-10-27T17:13;b6a9c924-4d31-4279-9523-af16bb1010e5
+O0125;O0125;K0236;N028;2026-08-15T16:20;Simona Lukáčová;nemá záujem;malá kuchyňa;2026-10-27T17:13;3dd646a0-2dd4-45c5-a9c2-208286a9551e
+O0126;O0126;K0150;N028;2026-07-29T09:20;Simona Lukáčová;zvažuje;dispozícia sedí;2026-10-27T17:12;7065352f-6ecc-4fb3-a55a-3bb50be04b2b
+O0127;O0127;K0086;N028;2026-09-19T13:05;Simona Lukáčová;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:13;bff1b80c-4961-4d59-a7d0-fc7680b1b0b2
+O0128;O0128;K0192;N029;2026-09-22T09:00;Juraj Šimko;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:13;c2ce8a9a-4bfb-46c6-9990-cb7ebd8f0478
+O0129;O0129;K0158;N029;2026-10-02T09:45;Juraj Šimko;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:13;cbca44e3-eb07-4e1e-88fd-5c33a270cd70
+O0130;O0130;K0052;N030;2026-09-20T18:05;Juraj Šimko;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;6b693545-5889-4490-bb45-ec38c1b7944a
+O0131;O0131;K0068;N030;2026-09-08T14:05;Juraj Šimko;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:13;16597dca-412f-44ed-9e72-73edf3a319b5
+O0132;O0132;K0042;N030;2026-11-01T11:20;Juraj Šimko;nemá záujem;hlučná ulica;2026-10-27T17:13;ba269014-b74f-458a-958e-152fe39c2e54
+O0133;O0133;K0156;N030;2026-09-27T10:20;Juraj Šimko;nemá záujem;chcel balkón;2026-10-27T17:13;8d725411-f777-4e5a-80b1-91cf2b104022
+O0134;O0134;K0199;N030;2026-10-24T10:10;Juraj Šimko;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;b45ce3d8-5fd2-469f-9f15-2bec2ad328be
+O0135;O0135;K0113;N030;2026-10-09T17:10;Juraj Šimko;záujem;páči sa, rieši hypotéku;2026-10-27T17:13;692471b4-5dcc-435a-aa85-c9525d2b6c64
+O0136;O0136;K0086;N032;2026-07-13T09:00;Katarína Bartošová;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:12;a61ac03b-11db-4ea0-b3ac-d591088b2876
+O0137;O0137;K0195;N032;2026-08-24T12:45;Katarína Bartošová;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:13;7cbc7316-4801-40fc-aa05-5fa4b794c1e2
+O0138;O0138;K0051;N032;2026-10-24T10:50;Katarína Bartošová;zvažuje;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;77ddfc2b-8a58-4f7f-a34f-2718b3373c3d
+O0139;O0139;K0045;N032;2026-10-16T16:10;Katarína Bartošová;záujem;chce druhú obhliadku s partnerom;2026-10-27T17:13;f003cc61-04a6-4719-9803-009f9f61e707
+O0140;O0140;K0088;N032;2026-07-24T17:00;Katarína Bartošová;zvažuje;dispozícia sedí;2026-10-27T17:12;7150212e-ad7d-4626-9e78-270cd3d8fb22
+O0141;O0141;K0150;N032;2026-08-22T18:30;Katarína Bartošová;nemá záujem;malá kuchyňa;2026-10-27T17:13;6a6fcf50-8d96-47f4-9e49-6b98b6baf1ff
+O0142;O0142;K0134;N033;2026-08-04T17:05;Lucia Hudáková;nemá záujem;hlučná ulica;2026-10-27T17:13;3c649017-6529-4237-bb6b-0ab457e0b8c5
+O0143;O0143;K0229;N033;2026-07-07T13:00;Lucia Hudáková;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:12;858a048e-9ebb-4925-9d0c-84d851157829
+O0144;O0144;K0136;N033;2026-10-23T13:45;Lucia Hudáková;nemá záujem;chcel balkón;2026-10-27T17:13;35cb5037-2a31-4894-b856-5ebb8c8221b8
+O0145;O0145;K0079;N033;2026-07-04T14:40;Lucia Hudáková;nemá záujem;vysoké poplatky do fondu opráv;2026-10-27T17:12;864e0189-f410-4779-a829-fc8489f290b6
+O0146;O0146;K0114;N033;2026-06-21T09:30;Lucia Hudáková;záujem;páči sa, rieši hypotéku;2026-10-27T17:12;e5a17575-2177-473a-bf11-83ccf94e3476
+O0147;O0147;K0153;N033;2026-10-05T14:45;Lucia Hudáková;nemá záujem;hlučná ulica;2026-10-27T17:13;b9a79997-97bf-4cbe-af41-5f397cb3387c
+O0148;O0148;K0155;N033;2026-09-13T12:00;Lucia Hudáková;zvažuje;dispozícia sedí;2026-10-27T17:13;d0fa5f6e-bd62-413f-8206-6a7428ba7fa2
+O0149;O0149;K0090;N033;2026-07-29T14:40;Lucia Hudáková;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:13;46874847-9d89-4456-89ac-e8a038c32489
+O0150;O0150;K0227;N034;2026-10-09T14:05;Katarína Bartošová;zvažuje;pekný výhľad, cena OK;2026-10-27T17:13;1bd9fa2a-1145-469e-9b81-c74f1bc5e868
+O0151;O0151;K0234;N034;2026-09-29T18:10;Katarína Bartošová;nemá záujem;ďaleko od MHD;2026-10-27T17:13;65fd54d7-e67b-4e9b-83e5-25b78982fee9
+O0152;O0152;K0218;N036;2026-07-16T15:05;Juraj Šimko;nemá záujem;pôvodný stav, drahé na rekonštrukciu;2026-10-27T17:12;b297cb93-3227-43eb-9c7f-91ffbd5870a3
+O0153;O0153;K0060;N036;2026-07-30T09:50;Juraj Šimko;nemá záujem;pôvodný stav, drahé na rekonštrukciu;2026-10-27T17:13;2db6bf58-526c-4895-8c14-ce6d0be9e504
+O0154;O0154;K0192;N036;2026-08-14T13:00;Juraj Šimko;nemá záujem;pôvodný stav, drahé na rekonštrukciu;2026-10-27T17:13;0c41b86c-cfc3-4fcf-9708-1ab809848337
+O0155;O0155;K0234;N036;2026-09-12T11:30;Juraj Šimko;nemá záujem;pôvodný stav, drahé na rekonštrukciu;2026-10-27T17:13;280c12f5-bc0c-4141-8d0a-c5aa668b3dfe
+O0156;O0156;K0048;N036;2026-09-23T14:30;Juraj Šimko;nemá záujem;tmavý byt;2026-10-27T17:13;af4afbfa-c4cb-4b14-94d6-54f7d0f883f8
+O0157;O0157;K0095;N037;2026-08-07T11:30;Lucia Hudáková;záujem;páči sa, rieši hypotéku;2026-10-27T17:13;6241c144-cb72-4bcf-8179-9ecbba651d83
+O0158;O0158;K0138;N037;2026-09-04T10:50;Lucia Hudáková;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:13;862ec8aa-42ad-4d5b-879f-1bc5d0af27dc
+O0159;O0159;K0075;N037;2026-10-01T15:20;Lucia Hudáková;zvažuje;páči sa, rieši hypotéku;2026-10-27T17:13;9586fa82-e236-4045-9d0a-3cfde02e3cd3
+O0160;O0160;K0157;N037;2026-10-22T12:05;Lucia Hudáková;zvažuje;chce druhú obhliadku s partnerom;2026-10-27T17:13;20515584-78a3-4aa3-9e94-7655a901efe3
+O0161;O0161;K0162;N037;2026-10-29T16:05;Lucia Hudáková;záujem;chce druhú obhliadku s partnerom;2026-10-27T17:13;deefbcaa-cff4-4cb5-829e-46eab5dfac3f
+O0162;O0162;K0071;N038;2026-08-25T10:30;Tomáš Kováč;záujem;zvažuje, porovnáva s inou ponukou;2026-10-27T17:13;3f9b4c89-7afa-4d33-b1bf-6ed33e0d13b5
+O0163;O0163;K0091;N038;2026-09-24T16:20;Tomáš Kováč;záujem;chce druhú obhliadku s partnerom;2026-10-27T17:13;6747f8fa-433b-42df-86d0-21f468a7fb98
+O0164;O0164;K0236;N038;2026-10-16T16:40;Tomáš Kováč;nemá záujem;tmavý byt;2026-10-27T17:13;cf6d4fae-42fe-4eff-b9c7-cd011569e1b2
+O0165;O0165;K0165;N038;2026-10-25T15:15;Tomáš Kováč;záujem;chce druhú obhliadku s partnerom;2026-10-27T17:13;abf1f31f-d992-431c-bb3a-cf29e082893a
+O0166;O0166;K0058;N040;2026-09-06T14:10;Katarína Bartošová;nemá záujem;cena vysoká, kúpeľňa na rekonštrukciu;2026-10-27T17:13;165e9807-8e9a-4611-a9ef-8336b274e54c
+O0167;O0167;K0118;N040;2026-09-17T17:45;Katarína Bartošová;zvažuje;páči sa pozemok, ale cena;2026-10-27T17:13;662573b2-d77e-4024-b3c7-7ccc256a7dab
+O0168;O0168;K0160;N040;2026-09-28T13:50;Katarína Bartošová;nemá záujem;kúpeľňa a kúrenie na výmenu, cena by mala byť nižšie;2026-10-27T17:13;95c7a217-26bc-4ae3-b429-23deb85b0e39
+O0169;O0169;K0128;N040;2026-10-09T09:40;Katarína Bartošová;zvažuje;zvažuje, ale cena vzhľadom na stav;2026-10-27T17:13;bbbe2b64-4cfb-4f3a-aa9d-0fdeb6c205b7
+O0170;O0170;K0071;N040;2026-10-20T16:00;Katarína Bartošová;nemá záujem;pekný dom, kúpeľňa pôvodná – ponúkol by menej;2026-10-27T17:13;f3511574-53b5-4c1d-87bf-5574f8e7f4fd
+O0171;O0171;K0049;N040;2026-10-28T10:45;Katarína Bartošová;nemá záujem;cena nad rozpočet o ~15 tis.;2026-10-27T17:13;2ad05ab9-6209-4bbb-b8b7-c614825683d1

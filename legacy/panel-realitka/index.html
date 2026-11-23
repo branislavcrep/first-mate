@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Mate · ovládací panel realitky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F9F9F5;--sand:#EAE6DB;--ink:#0B0B0C;--muted:#55524A;--blue:#1B2CC1;--tint:#D8DCF6;--line:#CFCABC;--white:#FFFFFF;--sans:"Geist",Arial,Helvetica,sans-serif;--mono:"Geist Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box;border-radius:0}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--blue)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+.mono{font-family:var(--mono)}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.kicker b{color:var(--blue);font-weight:500}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.blue{color:var(--blue)}
+/* top */
+.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--ink)}
+.brand{font-weight:700;font-size:17px;letter-spacing:-.2px}
+.demo{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.demo span{background:var(--tint);color:var(--blue);padding:3px 7px;margin-left:8px}
+.hero{padding:44px 0 30px}
+.hero h1{font-size:64px;line-height:1;margin:14px 0 14px;font-weight:700;letter-spacing:-2px}
+.hero h1 i{font-style:normal;color:var(--blue)}
+.hero p{margin:0;max-width:640px;color:var(--muted);font-size:17px}
+.conn{display:flex;flex-wrap:wrap;gap:12px 22px;margin-top:26px}
+.chip{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted)}
+.dot{width:9px;height:9px;border:1.5px solid var(--muted);display:inline-block}
+.dot.ok{background:var(--blue);border-color:var(--blue)}
+.dot.bad{background:var(--ink);border-color:var(--ink)}
+/* nav */
+nav{display:flex;gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);overflow-x:auto}
+nav a{flex:1;min-width:140px;padding:14px 16px;text-decoration:none;color:var(--ink);font-family:var(--mono);font-size:12px;letter-spacing:1.8px;text-transform:uppercase;border-right:1px solid var(--line);white-space:nowrap}
+nav a:last-child{border-right:0}
+nav a span{color:var(--blue);margin-right:8px}
+nav a.on{background:var(--ink);color:var(--paper)}
+nav a.on span{color:var(--tint)}
+nav a:hover:not(.on){background:var(--sand)}
+main{padding:40px 0 80px}
+.view{display:none}.view.on{display:block}
+h2{font-size:32px;line-height:1.15;margin:12px 0 10px;letter-spacing:-.8px}
+h2 small{font-family:var(--mono);font-weight:400;font-size:16px;color:var(--muted);letter-spacing:0}
+.lead{color:var(--muted);max-width:680px;margin:0 0 28px}
+/* cards */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--ink)}
+.card{background:var(--white);padding:26px 26px 24px}
+.grid2 .card+.card{border-left:1px solid var(--ink)}
+.card h3{font-size:24px;margin:10px 0 6px;letter-spacing:-.5px}
+.card p{margin:0 0 18px;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:6px;margin:0 0 16px}
+input[type=text],input[type=email],input[type=number],input[type=time],select{font-family:var(--sans);font-size:15px;padding:10px 12px;border:1px solid var(--ink);background:var(--white);color:var(--ink);outline:none;width:100%}
+input:focus,select:focus{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+input.err{border-color:var(--blue);background:var(--tint)}
+.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:14px 18px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;min-width:240px}
+.btn:hover{background:var(--blue);border-color:var(--blue)}
+.btn:disabled{background:var(--line);border-color:var(--line);color:var(--muted);cursor:default}
+.btn.is-locked:disabled{background:var(--ink);border-color:var(--ink);color:var(--paper);cursor:progress}
+.btn.ghost.is-locked:disabled{background:transparent;color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+.btn.small{min-width:0;padding:8px 12px;font-size:11px}
+.link{background:none;border:0;padding:0;font:inherit;color:var(--blue);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.note{font-size:13px;color:var(--muted);margin-top:10px}
+.msg{margin-top:12px;font-size:14px;padding:10px 12px;border-left:3px solid var(--blue);background:var(--tint)}
+.msg.warn{border-left-color:var(--ink);background:var(--sand)}
+.hidden{display:none!important}
+/* progress */
+.run{margin-top:28px;border:1px solid var(--ink);background:var(--white)}
+.run-head{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--ink)}
+.steps{list-style:none;margin:0;padding:6px 20px 14px}
+.steps li{display:grid;grid-template-columns:44px 1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--sand);align-items:baseline}
+.steps li:last-child{border-bottom:0}
+.steps .n{font-family:var(--mono);font-size:20px;color:var(--line)}
+.steps li.active .n,.steps li.done .n{color:var(--blue)}
+.steps .t{font-weight:600}
+.steps .d{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.steps .s{font-family:var(--mono);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)}
+.steps li.active .s{color:var(--blue)}
+.steps li.active .s::after{content:"";display:inline-block;width:6px;height:6px;background:var(--blue);margin-left:8px;animation:blink 1s steps(2) infinite}
+.steps li.err .s{color:var(--ink);font-weight:500}
+@keyframes blink{50%{opacity:0}}
+/* preview */
+.pv-head{display:flex;justify-content:space-between;align-items:end;margin:44px 0 14px;gap:16px;flex-wrap:wrap}
+.tabs2{display:flex;border:1px solid var(--ink)}
+.databar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.seg{display:flex;border:1px solid var(--ink)}.seg button{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:0;background:var(--white);cursor:pointer;color:var(--ink)}.seg button.on{background:var(--ink);color:var(--paper)}.seg button:disabled{opacity:.45;cursor:default}
+.databar .note{margin:0;flex-basis:100%}#dbMsg{flex-basis:100%}#dbMsg .msg{margin-top:0}
+.tabs2 button{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:9px 14px;border:0;background:var(--white);cursor:pointer}
+.tabs2 button.on{background:var(--ink);color:var(--paper)}
+.pv{border:1px solid var(--ink);background:var(--paper);min-height:120px}
+.pv .empty{padding:40px 24px;color:var(--muted);text-align:center}
+.slackpv{background:#fff;padding:22px 24px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:15px;line-height:1.5;color:#1d1c1d;white-space:pre-wrap}
+.slackpv .who{display:flex;gap:10px;align-items:center;margin-bottom:6px;white-space:normal}
+.slackpv .av{width:36px;height:36px;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px}
+.slackpv .nm{font-weight:700}.slackpv .app{font-size:11px;background:#e8e8e8;padding:1px 4px;color:#555;margin-left:4px}
+.log{margin-top:40px}
+.log table{width:100%;border-collapse:collapse}
+.log th{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:400;text-align:left;padding:0 0 8px;border-bottom:2px solid var(--ink)}
+.log td{padding:10px 0;border-bottom:1px solid var(--sand);vertical-align:top}
+/* team */
+.team{border:1px solid var(--ink);background:var(--white)}
+.trow{display:grid;grid-template-columns:1.3fr .9fr 1.2fr 1.6fr 1fr 64px 36px;gap:10px;padding:10px 16px;align-items:center;border-bottom:1px solid var(--sand)}
+.trow.head{border-bottom:2px solid var(--ink);padding-top:14px}
+.trow input,.trow select{padding:8px 10px;font-size:14px}
+.trow .x{background:none;border:0;font-size:20px;cursor:pointer;color:var(--muted)}
+.trow .x:hover{color:var(--blue)}
+.toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);user-select:none}
+.toggle input{display:none}
+.toggle .box{width:34px;height:18px;border:1px solid var(--ink);position:relative;background:var(--white)}
+.toggle .box::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;background:var(--line);transition:left .15s}
+.toggle input:checked+.box{background:var(--ink)}
+.toggle input:checked+.box::after{left:18px;background:var(--paper)}
+.saved{font-family:var(--mono);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin:20px 0}
+/* signals */
+.sig{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--ink)}
+.sg{background:var(--white);padding:24px;border-bottom:1px solid var(--ink)}
+.sg:nth-child(odd){border-right:1px solid var(--ink)}
+.sg:nth-last-child(-n+2){border-bottom:0}
+.sg.off{background:var(--paper)}
+.sg.off .sg-body{opacity:.45}
+.sg-top{display:flex;justify-content:space-between;align-items:center}
+.sg h3{font-size:20px;margin:12px 0 6px;letter-spacing:-.3px}
+.sg p{color:var(--muted);margin:0 0 16px;font-size:14px}
+.params{display:flex;gap:14px;flex-wrap:wrap}
+.params label{display:flex;flex-direction:column;gap:6px;width:200px}
+.now{display:flex;align-items:baseline;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--sand)}
+.now .v{font-size:30px;font-weight:700;letter-spacing:-.5px}
+.now .v.hl{color:var(--blue)}
+/* schedule */
+.days{display:flex;border:1px solid var(--ink);width:max-content;max-width:100%;flex-wrap:wrap}
+.days button{width:56px;padding:12px 0;font-family:var(--mono);font-size:12px;letter-spacing:1.2px;text-transform:uppercase;border:0;border-right:1px solid var(--line);background:var(--white);cursor:pointer}
+.days button:last-child{border-right:0}
+.days button.on{background:var(--ink);color:var(--paper)}
+.checks{display:flex;flex-direction:column;gap:12px}
+.checks label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.checks input{width:18px;height:18px;accent-color:var(--blue);margin-top:2px}
+.auto{background:var(--sand);border-left:4px solid var(--blue);padding:18px 20px;margin-top:24px}
+.ctable{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--ink)}
+.ctable th{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:400;text-align:left;padding:14px 16px 8px;border-bottom:2px solid var(--ink)}
+.ctable td{padding:14px 16px;border-bottom:1px solid var(--sand);vertical-align:middle}
+/* architecture */
+figure{margin:0;border:1px solid var(--ink);background:var(--white);padding:24px}
+figure>svg{width:100%;height:auto;display:block;color:var(--ink)}
+.legend svg{display:inline-block;flex:none}
+figcaption{margin-top:16px;color:var(--muted);font-size:14px;border-top:1px solid var(--sand);padding-top:14px}
+.legend{display:flex;gap:26px;flex-wrap:wrap;margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ink);border-top:0;background:var(--white)}
+.cols3>div{padding:22px 24px}
+.cols3>div+div{border-left:1px solid var(--ink)}
+.cols3 h4{margin:8px 0 8px;font-size:17px}
+.cols3 ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
+footer{border-top:1px solid var(--ink);padding:22px 0 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+/* dataset overlay */
+.dslink{background:none;border:0;padding:0;margin-left:14px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+.dslink:hover{color:var(--blue);text-decoration-color:var(--blue)}
+.ds-ov{position:fixed;inset:0;background:rgba(11,11,12,.42);z-index:50;display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:48px 18px}
+.ds{background:var(--paper);border:1px solid var(--ink);max-width:880px;width:100%;padding:30px 32px 26px;position:relative}
+.ds .close{position:absolute;top:14px;right:16px;background:none;border:0;font-size:24px;cursor:pointer;color:var(--muted);line-height:1}
+.ds .close:hover{color:var(--blue)}
+.ds h2{margin:10px 0 4px}
+.ds .sub{color:var(--muted);font-size:14px;margin:0 0 22px}
+.tiles{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--ink);background:var(--white)}
+.tile{padding:16px 14px 14px;border-right:1px solid var(--line)}
+.tile:last-child{border-right:0}
+.tile .v{font-size:32px;font-weight:700;letter-spacing:-1px;line-height:1}
+.tile .k{font-family:var(--mono);font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.dsgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px 32px;margin-top:24px}
+.dsblk h4{margin:0 0 4px;font-size:15px}
+.dsblk .meta{font-size:13px;color:var(--muted);margin:0 0 10px}
+.stack{display:flex;height:16px;border:1px solid var(--ink);background:var(--white)}
+.stack i{display:block;height:100%}
+.keys{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:12.5px;color:var(--muted)}
+.keys span{display:inline-flex;align-items:center;gap:6px}
+.keys b{color:var(--ink);font-weight:600}
+.sw{width:10px;height:10px;border:1px solid var(--ink);display:inline-block}
+.c1{background:var(--blue)}.c2{background:var(--ink)}.c3{background:var(--tint)}.c4{background:var(--sand)}
+.hb{display:grid;grid-template-columns:118px 1fr 22px;gap:8px;align-items:center;font-size:13px;margin:5px 0}
+.hb .tr{height:10px;background:var(--sand)}
+.hb .tr i{display:block;height:100%;background:var(--blue)}
+.hb .n{font-family:var(--mono);font-size:12px;text-align:right}
+.mk{display:flex;flex-wrap:wrap;gap:6px}
+.mk span{font-size:13px;border:1px solid var(--line);background:var(--white);padding:3px 8px}
+.ds .foot{margin-top:24px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+@media (max-width:820px){.tiles{grid-template-columns:repeat(3,1fr)}.tile:nth-child(3){border-right:0}.tile:nth-child(-n+3){border-bottom:1px solid var(--line)}.dsgrid{grid-template-columns:1fr}}
+@media (max-width:820px){
+ .wrap{padding:0 18px}.hero h1{font-size:46px}
+ .grid2,.sig,.cols3{grid-template-columns:1fr}.grid2 .card+.card,.cols3>div+div{border-left:0;border-top:1px solid var(--ink)}
+ .sg:nth-child(odd){border-right:0}.sg:nth-last-child(2){border-bottom:1px solid var(--ink)}
+ .trow{grid-template-columns:1fr 1fr;gap:8px}.trow.head{display:none}.trow .x{justify-self:end}
+ .btn{min-width:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">Books &amp; Mirror</div>
+    <div class="demo">Ukážka <span>fiktívne dáta</span><button class="dslink" id="dsOpen" type="button">Dáta ukážky</button></div>
+  </div>
+  <section class="hero">
+    <div>
+      <div class="kicker"><b>Ovládací panel</b> · verzia pre realitnú kanceláriu<a class="dslink" href="https://claude.ai/artifact/Thwr8YV58gP7RprXQHRw2Y" target="_blank" rel="noopener">verzia pre developera →</a></div>
+      <h1>First Mate<i>.</i></h1>
+      <p>Čísla z CRM prídu samy tam, kde tím pracuje. Kód ich spočíta, AI vysvetlí a navrhne, čo s nimi urobiť dnes.</p>
+      <div class="conn" id="conn"></div>
+      <div class="databar" id="dataBar">
+        <span class="chip"><i class="dot ok"></i><span id="dbLabel">Dáta: CSV</span></span>
+        <div class="seg" role="group" aria-label="Dátumy v dátach"><button type="button" data-shift="1" class="on">Posunuté k dnešku</button><button type="button" data-shift="0">Pôvodné dátumy</button></div>
+        <button class="link" id="dbUpload" type="button">Nahrať vlastné CSV</button><button class="link hidden" id="dbReset" type="button">Späť na ukážku</button>
+        <input type="file" id="dbFile" accept=".csv,.md,.txt,text/csv" multiple hidden>
+        <div class="note" id="dbShift"></div>
+        <div id="dbMsg"></div>
+      </div>
+    </div>
+  </section>
+  <nav id="nav">
+    <a href="#brifing" data-v="brifing"><span>01</span>Brífing</a>
+    <a href="#tim" data-v="tim"><span>02</span>Tím</a>
+    <a href="#signaly" data-v="signaly"><span>03</span>Signály</a>
+    <a href="#rozvrh" data-v="rozvrh"><span>04</span>Rozvrh</a>
+    <a href="#architektura" data-v="architektura"><span>05</span>Architektúra</a>
+  </nav>
+
+  <main>
+  <!-- 01 BRÍFING -->
+  <section class="view" id="v-brifing">
+    <div class="kicker"><b>01</b>&nbsp;&nbsp;Ranný brífing</div>
+    <h2>Poslať brífing teraz <small>/ <span id="today"></span></small></h2>
+    <p class="lead">Jedno kliknutie: First Mate načíta aktuálne dáta z CSV exportu CRM, spočíta signály, AI ich vysvetlí a navrhne kroky na dnes. Výsledok odíde tam, kam ho pošlete.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="lbl">Kanál 01 · Slack</div>
+        <h3>#first-mate-demo</h3>
+        <p>Celý brífing do kanála tímu. Vo vlákne sa dá pýtať ďalej a pokračovať v Claude príkazom <span class="mono blue">/first-mate</span>.</p>
+        <button class="btn" id="btnSlack">Poslať do Slacku <span>→</span></button>
+      </div>
+      <div class="card">
+        <div class="lbl">Kanál 02 · E-mail</div>
+        <h3>Brífing e-mailom</h3>
+        <div class="field">
+          <label class="lbl" for="emailTo">Komu</label>
+          <input type="email" id="emailTo" autocomplete="email">
+        </div>
+        <button class="btn" id="btnEmail">Poslať e-mailom <span>→</span></button>
+        <div id="emailErr" class="msg warn hidden"></div>
+      </div>
+    </div>
+
+    <div class="run hidden" id="run">
+      <div class="run-head"><div class="lbl" id="runTitle">Priebeh</div><div class="saved" id="runTime"></div></div>
+      <ol class="steps" id="steps"></ol>
+      <div id="runMsg" style="padding:0 20px 18px"></div>
+    </div>
+
+    <div class="pv-head">
+      <div>
+        <div class="kicker"><b>Náhľad</b>&nbsp;&nbsp;posledného brífingu</div>
+        <div class="note" id="pvInfo">Zatiaľ nič. Náhľad sa zobrazí po prvom výpočte.</div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <button class="link" id="btnRecalc">Prepočítať bez odoslania</button>
+        <div class="tabs2"><button data-pv="email" class="on">E-mail</button><button data-pv="slack">Slack</button></div>
+      </div>
+    </div>
+    <div class="pv" id="pv"><div class="empty">Kliknite na „Prepočítať bez odoslania“ alebo pošlite brífing.</div></div>
+
+    <div class="log">
+      <div class="kicker"><b>História</b>&nbsp;&nbsp;odoslaných brífingov</div>
+      <table style="margin-top:12px"><thead><tr><th style="width:150px">Kedy</th><th style="width:200px">Kanál</th><th>Hlavná správa</th></tr></thead><tbody id="logBody"><tr><td colspan="3" class="note">Zatiaľ nič neodišlo.</td></tr></tbody></table>
+    </div>
+  </section>
+
+  <!-- 02 TÍM -->
+  <section class="view" id="v-tim">
+    <div class="kicker"><b>02</b>&nbsp;&nbsp;Tím a príjemcovia</div>
+    <h2>Kto dostane čo <small>/ každý len to, čo sa ho týka</small></h2>
+    <p class="lead">Manažér dostane celý brífing. Maklér dostane osobný brífing: svoje dopyty, svoje ponuky a svoje kroky na dnes. Maklér sa páruje s menom v dátach.</p>
+    <div class="team" id="team"></div>
+    <div class="bar">
+      <button class="link" id="addMember">+ Pridať člena tímu</button>
+      <span class="saved" id="teamSaved"></span>
+    </div>
+    <div class="bar" style="margin-top:8px">
+      <button class="btn" id="btnTeam">Poslať brífingy tímu <span>→</span></button>
+      <span class="note" id="teamInfo"></span>
+    </div>
+    <div class="note">Na adresy @example.com z dát First Mate nikdy neposiela. Na ukážku zadajte adresy, ktoré viete otvoriť.</div>
+    <div class="run hidden" id="teamRun">
+      <div class="run-head"><div class="lbl">Odosielanie tímu</div><div class="saved" id="teamRunTime"></div></div>
+      <ol class="steps" id="teamSteps"></ol>
+      <div id="teamMsg" style="padding:0 20px 18px"></div>
+    </div>
+  </section>
+
+  <!-- 03 SIGNÁLY -->
+  <section class="view" id="v-signaly">
+    <div class="kicker"><b>03</b>&nbsp;&nbsp;Nastavenie signálov</div>
+    <h2>Čo First Mate sleduje <small>/ hranice si určí kancelária</small></h2>
+    <p class="lead">Žiadna čierna skrinka. Každý signál je pravidlo, ktoré sa dá zapnúť, vypnúť a nastaviť. Čísla „dnes“ sa prepočítajú hneď po zmene z posledných načítaných dát.</p>
+    <div class="bar" style="margin-top:0">
+      <label class="field" style="flex-direction:row;align-items:center;gap:12px;margin:0"><span class="lbl">Porovnávacie obdobie</span>
+        <select id="period" style="width:auto"><option value="7">7 dní</option><option value="14">14 dní</option></select></label>
+      <div style="display:flex;gap:14px;align-items:center"><span class="saved" id="sigSaved"></span><button class="btn small ghost" id="btnLoad">Načítať dáta</button></div>
+    </div>
+    <div class="sig" id="sig"></div>
+  </section>
+
+  <!-- 04 ROZVRH -->
+  <section class="view" id="v-rozvrh">
+    <div class="kicker"><b>04</b>&nbsp;&nbsp;Rozvrh a prepojenia</div>
+    <h2>Kedy a kam <small>/ ranný brífing bez klikania</small></h2>
+    <p class="lead">Nastavte dni, čas a kanály ranného brífingu. Pod tým je stav prepojení na CRM a komunikačné kanály.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="lbl">Dni</div>
+        <div class="days" id="days" style="margin:12px 0 22px"></div>
+        <div class="field" style="max-width:180px"><label class="lbl" for="time">Čas odoslania</label><input type="time" id="time"></div>
+      </div>
+      <div class="card">
+        <div class="lbl">Kanály</div>
+        <div class="checks" style="margin-top:14px">
+          <label><input type="checkbox" id="chSlack"><span><b>Slack</b> · #first-mate-demo<br><span class="note">celý brífing do kanála</span></span></label>
+          <label><input type="checkbox" id="chEmail"><span><b>E-mail</b> · <span id="chEmailAddr"></span><br><span class="note">celý brífing na adresu z prvej záložky</span></span></label>
+          <label><input type="checkbox" id="chTeam"><span><b>Osobné brífingy tímu</b><br><span class="note">podľa záložky Tím</span></span></label>
+        </div>
+      </div>
+    </div>
+    <div class="auto">
+      <div class="lbl blue">Automatické odosielanie</div>
+      <div style="margin-top:6px" id="autoText"></div>
+    </div>
+    <div class="bar"><span class="saved" id="schSaved"></span></div>
+
+    <div class="kicker" style="margin-top:36px"><b>Prepojenia</b></div>
+    <table class="ctable" style="margin-top:12px">
+      <thead><tr><th>Služba</th><th>Na čo slúži</th><th>Stav</th><th>Posledné úspešné volanie</th><th></th></tr></thead>
+      <tbody id="connBody"></tbody>
+    </table>
+  </section>
+
+  <!-- 05 ARCHITEKTÚRA -->
+  <section class="view" id="v-architektura">
+    <div class="kicker"><b>05</b>&nbsp;&nbsp;Architektúra</div>
+    <h2>Ako First Mate funguje <small>/ zdroje → jadro → kanály</small></h2>
+    <p class="lead">Dáta zostávajú v systémoch, ktoré kancelária už používa. First Mate ich číta, čísla počíta kód, AI ich vysvetlí a výsledok doručí do kanála. Akcie späť do CRM robí až po potvrdení človekom.</p>
+    <figure>
+      <svg viewBox="0 0 1000 560" role="img" aria-label="First Mate číta dáta zo zdrojov (dnes CSV export z CRM), v jadre kód spočíta signály a AI ich vysvetlí a navrhne kroky, výsledok doručí do Slacku a e-mailu; z rozhovoru v Claude vznikne akcia, ktorá sa po potvrdení zapíše späť do CRM." xmlns="http://www.w3.org/2000/svg" font-family="Geist, Arial, Helvetica, sans-serif">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0B0B0C"/></marker><marker id="arm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#55524A"/></marker></defs>
+<text x="20" y="78" font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing="2">ZDROJE DÁT</text>
+<text x="340" y="78" font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing="2">JADRO</text>
+<text x="750" y="78" font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing="2">KANÁLY</text>
+<rect x="400" y="8" width="200" height="48" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="414" y="32" font-size="14" font-weight="700" fill="#0B0B0C">Nastavenia</text>
+<text x="414" y="51" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">tím · signály · rozvrh</text>
+<text x="588" y="32" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">PANEL</text>
+<line x1="500" y1="56" x2="500" y2="84" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="510" y="74" font-size="11" text-anchor="start" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">riadi</text>
+<rect x="340" y="84" width="320" height="352" fill="#EAE6DB" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="356" y="108" font-size="11" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="2">FIRST MATE</text>
+<rect x="356" y="122" width="288" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="370" y="146" font-size="14" font-weight="700" fill="#0B0B0C">01  Zber dát</text>
+<text x="370" y="165" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">každé ráno alebo na kliknutie</text>
+<rect x="356" y="194" width="288" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="370" y="218" font-size="14" font-weight="700" fill="#0B0B0C">02  Výpočet signálov</text>
+<text x="370" y="237" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">kód · rovnaké dáta, rovnaké čísla</text>
+<rect x="356" y="266" width="288" height="58" fill="#1B2CC1" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="370" y="290" font-size="14" font-weight="700" fill="#FFFFFF">03  Interpretácia</text>
+<text x="370" y="309" font-size="11.5" fill="#D8DCF6" font-family="Geist Mono, Menlo, monospace">AI · prečo na čísle záleží</text>
+<rect x="356" y="338" width="288" height="58" fill="#1B2CC1" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="370" y="362" font-size="14" font-weight="700" fill="#FFFFFF">04  Návrh krokov</text>
+<text x="370" y="381" font-size="11.5" fill="#D8DCF6" font-family="Geist Mono, Menlo, monospace">AI · kto, čo, pri ktorej ponuke</text>
+<line x1="500" y1="180" x2="500" y2="194" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<line x1="500" y1="252" x2="500" y2="266" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<line x1="500" y1="324" x2="500" y2="338" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="20" y="96" width="230" height="56" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="34" y="120" font-size="14" font-weight="700" fill="#0B0B0C">CRM · CSV</text>
+<text x="34" y="139" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">dopyty · obhliadky · ponuky</text>
+<text x="238" y="120" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<line x1="250" y1="124" x2="338" y2="124" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="294" y="116" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">číta</text>
+<rect x="20" y="166" width="230" height="56" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="34" y="190" font-size="14" font-weight="700" fill="#55524A">Web a analytika</text>
+<text x="34" y="209" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">PostHog · Google Analytics</text>
+<line x1="250" y1="194" x2="338" y2="194" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="20" y="236" width="230" height="56" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="34" y="260" font-size="14" font-weight="700" fill="#55524A">Realitné portály</text>
+<text x="34" y="279" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">nehnutelnosti.sk a ďalšie</text>
+<line x1="250" y1="264" x2="338" y2="264" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="20" y="306" width="230" height="56" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="34" y="330" font-size="14" font-weight="700" fill="#55524A">Sociálne siete</text>
+<text x="34" y="349" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">Facebook · Instagram</text>
+<line x1="250" y1="334" x2="338" y2="334" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="20" y="376" width="230" height="56" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="34" y="400" font-size="14" font-weight="700" fill="#55524A">E-mail a kalendár</text>
+<text x="34" y="419" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">Gmail · Outlook</text>
+<line x1="250" y1="404" x2="338" y2="404" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="750" y="122" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="764" y="146" font-size="14" font-weight="700" fill="#0B0B0C">Slack</text>
+<text x="764" y="165" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">#first-mate-demo</text>
+<text x="968" y="146" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<line x1="662" y1="151" x2="748" y2="151" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="705" y="143" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">doručí</text>
+<rect x="750" y="194" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="764" y="218" font-size="14" font-weight="700" fill="#0B0B0C">E-mail</text>
+<text x="764" y="237" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">manažér + osobné brífingy</text>
+<text x="968" y="218" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<line x1="662" y1="223" x2="748" y2="223" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="750" y="266" width="230" height="58" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="764" y="290" font-size="14" font-weight="700" fill="#55524A">WhatsApp</text>
+<text x="764" y="309" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">správa do mobilu</text>
+<line x1="662" y1="295" x2="748" y2="295" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="750" y="338" width="230" height="58" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="764" y="362" font-size="14" font-weight="700" fill="#55524A">Microsoft Teams</text>
+<text x="764" y="381" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">kanál tímu</text>
+<line x1="662" y1="367" x2="748" y2="367" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="750" y="486" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="764" y="510" font-size="14" font-weight="700" fill="#0B0B0C">Rozhovor v Claude</text>
+<text x="764" y="529" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">/first-mate · otázky k dátam</text>
+<text x="968" y="510" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<rect x="340" y="486" width="320" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="354" y="510" font-size="14" font-weight="700" fill="#0B0B0C">Akcia s potvrdením</text>
+<text x="354" y="529" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">zápis do CRM · úlohy · koncept e-mailu</text>
+<text x="648" y="510" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<line x1="865" y1="396" x2="865" y2="484" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="857" y="446" font-size="11" text-anchor="end" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">otázka vo vlákne</text>
+<line x1="750" y1="515" x2="662" y2="515" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="706" y="507" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">pokyn</text>
+<path d="M340,515 L8,515 L8,124 L18,124" fill="none" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="176" y="507" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">zapisuje späť do CRM</text>
+</svg>
+      <figcaption>
+        Plné čiary fungujú v tejto ukážke, prerušované sú ďalšie zdroje a kanály, ktoré sa dajú pripojiť. Výpočet signálov je pravidlový kód, takže rovnaké dáta dajú vždy rovnaké čísla; AI píše iba vysvetlenie a návrh krokov.
+        <div class="legend">
+          <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" stroke="#0B0B0C" stroke-width="1.5"/></svg>funguje dnes</span>
+          <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" stroke="#55524A" stroke-width="1.5" stroke-dasharray="5 4"/></svg>dá sa pripojiť</span>
+          <span><svg width="14" height="14"><rect x="1" y="1" width="12" height="12" fill="#1B2CC1"/></svg>robí AI</span>
+        </div>
+      </figcaption>
+    </figure>
+    <div class="cols3">
+      <div><div class="lbl">Zdroje dát</div><h4>Kde dáta už sú</h4><ul><li>CRM: Attio, Pipedrive, HubSpot; iné cez export alebo API</li><li>Web a analytika: PostHog, Google Analytics</li><li>Realitné portály a sociálne siete</li><li>E-mail a kalendár maklérov</li></ul></div>
+      <div><div class="lbl">Jadro</div><h4>Pravidlá + AI</h4><ul><li>Signály počíta kód podľa nastavení kancelárie</li><li>AI (Claude) vysvetlí, prečo na čísle záleží</li><li>Navrhne konkrétne kroky s menom a nehnuteľnosťou</li><li>Rozhodnutia sa dajú zapisovať a vyhodnocovať</li></ul></div>
+      <div><div class="lbl">Kanály a akcie</div><h4>Tam, kde tím pracuje</h4><ul><li>Slack, e-mail; neskôr WhatsApp alebo Teams</li><li>Rozhovor nad dátami v Claude (/first-mate)</li><li>Zápis do CRM, úlohy, koncepty e-mailov</li><li>Vždy s potvrdením človeka</li></ul></div>
+    </div>
+
+    <div class="kicker" style="margin-top:56px"><b>Rozvoj</b>&nbsp;&nbsp;Katalóg akcií a učenie</div>
+    <h2>Ako sa First Mate zlepšuje <small>/ akcia → výsledok → ponaučenie</small></h2>
+    <p class="lead">Návrhy vyberá z akcií, ktoré kancelária naozaj vie urobiť. Výsledok každej akcie vyhodnotí a z opakovaných úspechov vzniká vlastný playbook kancelárie.</p>
+    <figure>
+      <svg viewBox="0 0 1000 220" role="img" aria-label="Cyklus zlepšovania: signál, výber dvoch až troch akcií z katalógu, potvrdenie človekom, vykonanie, vyhodnotenie po 14 dňoch a ponaučenie, ktoré po potvrdení manažérom vstúpi do playbooku a ovplyvní ďalší výber akcií." xmlns="http://www.w3.org/2000/svg" font-family="Geist, Arial, Helvetica, sans-serif">
+<defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0B0B0C"/></marker><marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1B2CC1"/></marker></defs>
+<g font-family="Geist Mono, Menlo, monospace" font-size="11" fill="#1B2CC1" letter-spacing="1"><text x="30" y="34">01</text><text x="194" y="34">02</text><text x="358" y="34">03</text><text x="522" y="34">04</text><text x="686" y="34">05</text><text x="850" y="34">06</text></g>
+<rect x="20" y="44" width="140" height="70" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<rect x="184" y="44" width="140" height="70" fill="#D8DCF6" stroke="#1B2CC1" stroke-width="1.5" stroke-dasharray="6 5"/>
+<rect x="348" y="44" width="140" height="70" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<rect x="512" y="44" width="140" height="70" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<rect x="676" y="44" width="140" height="70" fill="#D8DCF6" stroke="#1B2CC1" stroke-width="1.5" stroke-dasharray="6 5"/>
+<rect x="840" y="44" width="140" height="70" fill="#D8DCF6" stroke="#1B2CC1" stroke-width="1.5" stroke-dasharray="6 5"/>
+<g font-size="14" font-weight="700" fill="#0B0B0C"><text x="32" y="72">Signál</text><text x="196" y="72">Katalóg akcií</text><text x="360" y="72">Potvrdenie</text><text x="524" y="72">Vykonanie</text><text x="688" y="72">Vyhodnotenie</text><text x="852" y="72">Ponaučenie</text></g>
+<g font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace"><text x="32" y="92">čo sa deje</text><text x="196" y="92">vyberie 2 až 3</text><text x="196" y="106">vhodné akcie</text><text x="360" y="92">maklér alebo</text><text x="360" y="106">manažér</text><text x="524" y="92">CRM · e-mail</text><text x="524" y="106">kampaň · post</text><text x="688" y="92">kód po 14 dňoch</text><text x="688" y="106">zabralo? áno/nie</text><text x="852" y="92">AI navrhne,</text><text x="852" y="106">manažér potvrdí</text></g>
+<g stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar2)"><line x1="160" y1="79" x2="182" y2="79"/><line x1="324" y1="79" x2="346" y2="79"/><line x1="488" y1="79" x2="510" y2="79"/><line x1="652" y1="79" x2="674" y2="79"/><line x1="816" y1="79" x2="838" y2="79"/></g>
+<path d="M910 114 V176 H254 V116" fill="none" stroke="#1B2CC1" stroke-width="1.5" marker-end="url(#arb)"/>
+<rect x="384" y="162" width="296" height="28" fill="#FFFFFF"/>
+<text x="532" y="181" font-size="12.5" font-weight="600" fill="#1B2CC1" text-anchor="middle">playbook kancelárie: čo zabralo, kde a kedy</text>
+<line x1="20" y1="206" x2="44" y2="206" stroke="#1B2CC1" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="52" y="210" font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace">prerušované = rozvoj, zatiaľ nie je v ukážke</text>
+      </svg>
+    </figure>
+    <div class="cols3" style="grid-template-columns:repeat(2,1fr)">
+      <div><div class="lbl">Katalóg akcií</div><h4>Len to, čo kancelária naozaj vie</h4><ul><li>Každá akcia: kedy sa hodí, nástroj, cena, čas</li><li>Šablóna: text, rozpočet, cieľová skupina</li><li>Schvaľuje podľa rizika: úloha maklér, kampaň manažér</li><li>Štart s 8 až 12 akciami: cena, e-mail kupujúcim, post, kampaň, open house, nové fotky, report predávajúcemu</li></ul></div>
+      <div><div class="lbl">Učenie</div><h4>Zápis automaticky, ponaučenie potvrdí človek</h4><ul><li>Pri akcii sa zapíše situácia: lokalita, cena, zobrazenia, sezóna</li><li>Výsledok vyhodnotí kód, nie dojem</li><li>Ponaučenie s počtom prípadov: hypotéza alebo overené</li><li>Ručne tiež: „toto si zapamätaj“; každé ponaučenie má dátum preverenia</li></ul></div>
+    </div>
+  </section>
+  </main>
+
+  <footer>
+    <div class="lbl">First Mate · Books &amp; Mirror · CSV · Slack · Gmail</div>
+    <div class="note" style="margin:0">Ukážková realitná kancelária. Všetky osoby, kontakty a nehnuteľnosti sú fiktívne.</div>
+  </footer>
+</div>
+
+<div class="ds-ov hidden" id="dsOv" role="dialog" aria-modal="true" aria-labelledby="dsTitle">
+  <div class="ds">
+    <button class="close" id="dsClose" type="button" aria-label="Zavrieť">×</button>
+    <div class="kicker"><b>Dáta ukážky</b> · CSV export z Attio (books-mirror), 19. 11. 2026</div>
+    <h2 id="dsTitle">Realitka v dátach <small>/ fiktívna kancelária</small></h2>
+    <p class="sub">Menšia realitná kancelária v Bratislave a okolí. Dáta sú vymyslené, ale postavené ako skutočné: ponuky, kontakty, dopyty z portálov a obhliadky so spätnou väzbou.</p>
+
+    <div class="tiles">
+      <div class="tile"><div class="v">40</div><div class="k">Nehnuteľností</div></div>
+      <div class="tile"><div class="v">6</div><div class="k">Maklérov</div></div>
+      <div class="tile"><div class="v">237</div><div class="k">Kontaktov</div></div>
+      <div class="tile"><div class="v">447</div><div class="k">Dopytov</div></div>
+      <div class="tile"><div class="v">171</div><div class="k">Obhliadok</div></div>
+      <div class="tile"><div class="v">8</div><div class="k">Lokalít</div></div>
+    </div>
+
+    <div class="dsgrid">
+      <div class="dsblk">
+        <h4>Nehnuteľnosti podľa stavu</h4>
+        <p class="meta">33 bytov a 7 domov. Aktívne ponuky spolu za 6,85 mil. €.</p>
+        <div class="stack" aria-hidden="true"><i class="c1" style="width:62.5%"></i><i class="c2" style="width:7.5%"></i><i class="c3" style="width:27.5%"></i><i class="c4" style="width:2.5%"></i></div>
+        <div class="keys"><span><i class="sw c1"></i>Aktívna ponuka <b>25</b></span><span><i class="sw c2"></i>Rezervácia <b>3</b></span><span><i class="sw c3"></i>Predané <b>11</b></span><span><i class="sw c4"></i>Stiahnutá <b>1</b></span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Kontakty</h4>
+        <p class="meta">Kupujúci s hľadanou lokalitou, počtom izieb a rozpočtom. 124 kupujúcich má súhlas GDPR so zasielaním ponúk.</p>
+        <div class="stack" aria-hidden="true"><i class="c1" style="width:52.3%"></i><i class="c3" style="width:30.8%"></i><i class="c2" style="width:16.9%"></i></div>
+        <div class="keys"><span><i class="sw c1"></i>Kupujúci so súhlasom <b>124</b></span><span><i class="sw c3"></i>Kupujúci bez súhlasu <b>73</b></span><span><i class="sw c2"></i>Predávajúci <b>40</b></span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Dopyty podľa stavu</h4>
+        <p class="meta">Z webu kancelárie a portálov nehnutelnosti.sk, topreality.sk a reality.sk, s časom prvej reakcie makléra.</p>
+        <div class="stack" aria-hidden="true"><i class="c3" style="width:42.5%"></i><i class="c1" style="width:38%"></i><i class="c4" style="width:17%"></i><i class="c2" style="width:2.5%"></i></div>
+        <div class="keys"><span><i class="sw c3"></i>Kontaktovaný <b>190</b></span><span><i class="sw c1"></i>Obhliadka dohodnutá <b>170</b></span><span><i class="sw c4"></i>Nemá záujem <b>76</b></span><span><i class="sw c2"></i>Nový, bez reakcie <b>11</b></span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Obhliadky podľa výsledku</h4>
+        <p class="meta">Každá obhliadka má krátku spätnú väzbu makléra, s ktorou AI pracuje ako s textom.</p>
+        <div class="stack" aria-hidden="true"><i class="c4" style="width:40.9%"></i><i class="c3" style="width:33.9%"></i><i class="c1" style="width:17%"></i><i class="c2" style="width:8.2%"></i></div>
+        <div class="keys"><span><i class="sw c4"></i>Nemá záujem <b>70</b></span><span><i class="sw c3"></i>Zvažuje <b>58</b></span><span><i class="sw c1"></i>Záujem <b>29</b></span><span><i class="sw c2"></i>Rezervácia <b>14</b></span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Nehnuteľnosti podľa lokality</h4>
+        <div class="hb"><span>BA – Rača</span><span class="tr"><i style="width:100%"></i></span><span class="n">9</span></div>
+        <div class="hb"><span>Ivanka pri Dunaji</span><span class="tr"><i style="width:77.8%"></i></span><span class="n">7</span></div>
+        <div class="hb"><span>Senec</span><span class="tr"><i style="width:66.7%"></i></span><span class="n">6</span></div>
+        <div class="hb"><span>BA – Ružinov</span><span class="tr"><i style="width:55.6%"></i></span><span class="n">5</span></div>
+        <div class="hb"><span>Pezinok</span><span class="tr"><i style="width:55.6%"></i></span><span class="n">5</span></div>
+        <div class="hb"><span>Trnava</span><span class="tr"><i style="width:33.3%"></i></span><span class="n">3</span></div>
+        <div class="hb"><span>BA – Nové Mesto</span><span class="tr"><i style="width:33.3%"></i></span><span class="n">3</span></div>
+        <div class="hb"><span>BA – Petržalka</span><span class="tr"><i style="width:22.2%"></i></span><span class="n">2</span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Makléri</h4>
+        <p class="meta">Každá nehnuteľnosť, dopyt, obhliadka a kontakt má priradeného makléra. Makléri sú v dátach údaj, nie používatelia.</p>
+        <div class="mk"><span>Katarína Bartošová</span><span>Tomáš Kováč</span><span>Lucia Hudáková</span><span>Peter Molnár</span><span>Simona Lukáčová</span><span>Juraj Šimko</span></div>
+        <h4 style="margin-top:18px">Čo je v ktorom súbore</h4>
+        <p class="meta" style="margin:0">nehnutelnosti.csv (N001 až N040), dopyty.csv a obhliadky.csv naviazané na nehnuteľnosť a kontakt. Kontakty, firmy a úlohy sú v exporte navyše (kontakty.csv, firmy.csv, ulohy.csv). Popis stĺpcov je v slovnik_dat.md.</p>
+      </div>
+    </div>
+
+    <div class="foot">CSV export 19. 11. 2026, stav dát k 3. 11. 2026. Pri zapnutom posune sú dátumy posunuté k dnešku.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var ov=document.getElementById('dsOv'),op=document.getElementById('dsOpen'),cl=document.getElementById('dsClose');
+  if(!ov||!op)return;
+  function show(){ov.classList.remove('hidden');cl.focus();}
+  function hide(){ov.classList.add('hidden');op.focus();}
+  op.addEventListener('click',show);
+  cl.addEventListener('click',hide);
+  ov.addEventListener('click',function(e){if(e.target===ov)hide();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!ov.classList.contains('hidden'))hide();});
+})();
+</script>
+
+<script>
+// ===== First Mate · CSV loader (spoločný pre panel developera a realitky) =====
+// Formát: UTF-8 s BOM, oddeľovač ";", úvodzovky podľa RFC 4180, desatinná čiarka,
+// dátumy RRRR-MM-DD alebo RRRR-MM-DDTHH:MM (miestny čas Europe/Bratislava),
+// áno/nie ako "ano"/"nie", viac hodnôt v jednom poli oddelených "|".
+const FMCSV = (() => {
+  const D = 864e5, TZ = "Europe/Bratislava";
+
+  function parse(text) {
+    if (text == null) return { header: [], rows: [] };
+    text = String(text);
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    const firstLine = text.slice(0, (text.indexOf("\n") + 1 || text.length + 1) - 1);
+    const delim = firstLine.includes(";") ? ";" : (firstLine.includes("\t") ? "\t" : ",");
+    const out = []; let row = [], f = "", q = false, i = 0;
+    while (i < text.length) {
+      const c = text[i];
+      if (q) {
+        if (c === '"') { if (text[i + 1] === '"') { f += '"'; i += 2; continue; } q = false; i++; continue; }
+        f += c; i++; continue;
+      }
+      if (c === '"' && f === "") { q = true; i++; continue; }
+      if (c === delim) { row.push(f); f = ""; i++; continue; }
+      if (c === "\r") { i++; continue; }
+      if (c === "\n") { row.push(f); out.push(row); row = []; f = ""; i++; continue; }
+      f += c; i++;
+    }
+    if (f !== "" || row.length) { row.push(f); out.push(row); }
+    const rows = out.filter(r => r.some(v => v.trim() !== ""));
+    const header = (rows.shift() || []).map(h => h.trim());
+    return { header, delim, rows: rows.map(r => { const o = {}; header.forEach((h, k) => o[h] = r[k] == null ? "" : r[k]); return o; }) };
+  }
+
+  const toNum = s => { if (s == null) return null; s = String(s).replace(/[\s\u00a0]/g, ""); if (s === "") return null; const n = Number(s.replace(",", ".")); return isNaN(n) ? null : n; };
+  const toBool = s => { s = String(s || "").trim().toLowerCase(); return s === "ano" || s === "áno" || s === "true" || s === "1" ? true : (s === "nie" || s === "false" || s === "0" ? false : null); };
+
+  // miestny čas Bratislava -> epoch ms
+  function tzOffset(ms) {
+    const p = new Intl.DateTimeFormat("en-US", { timeZone: TZ, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }).formatToParts(new Date(ms));
+    const g = t => +(p.find(x => x.type === t) || {}).value;
+    return Date.UTC(g("year"), g("month") - 1, g("day"), g("hour") % 24, g("minute"), g("second")) - Math.floor(ms / 1000) * 1000;
+  }
+  function localToMs(s) {
+    const m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
+    if (!m) return null;
+    const guess = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] || 0));
+    // pri zmene času môže miestny čas existovať dvakrát (alebo vôbec): berieme skorší výskyt, ako Python fold=0
+    const cands = [...new Set([tzOffset(guess - 432e5), tzOffset(guess + 432e5)])].map(o => guess - o).filter(ms => ms + tzOffset(ms) === guess);
+    return cands.length ? Math.min(...cands) : guess - tzOffset(guess - 432e5);
+  }
+  const isDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s);
+  const isDateTime = s => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(s);
+  const addDays = (ds, n) => new Date(Date.parse(ds + "T12:00:00Z") + n * D).toISOString().slice(0, 10);
+  function shiftValue(s, n) {
+    if (!n || !s) return s;
+    if (isDate(s)) return addDays(s, n);
+    if (isDateTime(s)) return addDays(s.slice(0, 10), n) + s.slice(10);
+    return s;
+  }
+  const localDate = ms => new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(ms));
+  const daysBetween = (a, b) => Math.round((Date.parse(b + "T12:00:00Z") - Date.parse(a + "T12:00:00Z")) / D);
+
+  // manifest.md: hľadá riadky "export_at: RRRR-MM-DDTHH:MM" a "referencny_datum: RRRR-MM-DD"
+  function readManifest(text) {
+    text = String(text || "").replace(/^\uFEFF/, "");
+    const g = k => { const m = text.match(new RegExp("^\\s*[-*]?\\s*`?" + k + "`?\\s*[:=]\\s*`?([0-9T:\\-]+)`?", "mi")); return m ? m[1] : null; };
+    const exportAt = g("export_at");
+    const ref = g("referencny_datum") || (exportAt ? exportAt.slice(0, 10) : null);
+    return { exportAt, ref };
+  }
+
+  // Prevod riadku podľa schémy: {stlpec: "text"|"num"|"bool"|"date"|"datetime"|"multi"}
+  function typed(row, schema, shiftDays) {
+    const o = {};
+    for (const k in row) {
+      const t = schema[k] || "text"; let v = row[k];
+      if (v === "" || v == null) { o[k] = null; continue; }
+      if (t === "num") o[k] = toNum(v);
+      else if (t === "bool") o[k] = toBool(v);
+      else if (t === "date") o[k] = shiftValue(v.trim(), shiftDays);
+      else if (t === "datetime") { const s = shiftValue(v.trim(), shiftDays); const ms = isDateTime(s) ? localToMs(s) : (isDate(s) ? localToMs(s + "T00:00") : null); o[k] = ms == null ? s : new Date(ms).toISOString(); }
+      else if (t === "multi") o[k] = v.split("|").map(x => x.trim()).filter(Boolean);
+      else o[k] = v;
+    }
+    return o;
+  }
+
+  // Kontrola súboru podľa slovníka: povinné stĺpce, typy hodnôt
+  function validate(name, parsed, spec) {
+    const errs = [];
+    if (!parsed.header.length) { errs.push(`${name}: súbor je prázdny.`); return errs; }
+    if (parsed.delim !== ";") errs.push(`${name}: oddeľovač by mal byť bodkočiarka (;), súbor používa „${parsed.delim === "\t" ? "tabulátor" : parsed.delim}“. Načítam ho aj tak.`);
+    const miss = spec.required.filter(c => !parsed.header.includes(c));
+    if (miss.length) errs.push(`${name}: chýbajú stĺpce ${miss.map(c => "„" + c + "“").join(", ")}.`);
+    let bad = 0, ex = "";
+    parsed.rows.forEach((r, i) => {
+      for (const c of spec.required) {
+        const t = spec.schema[c], v = (r[c] || "").trim(); if (!v) continue;
+        const ok = t === "num" ? toNum(v) != null : t === "date" ? isDate(v) : t === "datetime" ? (isDateTime(v) || isDate(v)) : t === "bool" ? toBool(v) != null : true;
+        if (!ok) { bad++; if (!ex) ex = `riadok ${i + 2}, stĺpec „${c}“: „${v.slice(0, 40)}“ (čaká sa ${({ num: "číslo s desatinnou čiarkou", date: "dátum RRRR-MM-DD", datetime: "dátum a čas RRRR-MM-DDTHH:MM", bool: "ano alebo nie" })[t]})`; }
+      }
+    });
+    if (bad) errs.push(`${name}: ${bad} ${bad === 1 ? "hodnota má" : "hodnôt má"} nesprávny formát, napr. ${ex}.`);
+    return errs;
+  }
+
+  return { parse, typed, validate, readManifest, shiftValue, localDate, daysBetween, toNum, toBool, localToMs };
+})();
+if (typeof module !== "undefined") module.exports = FMCSV;
+
+</script>
+<script>
+// Parser výstupu Attio konektora (už sa nepoužíva na načítanie, ponechaný pre spätnú kompatibilitu) (TOON / YAML-podobný text) -> JS objekty
+function parseToon(text) {
+  if (text == null) return null;
+  if (typeof text !== "string") return text;
+  const t = text.trim();
+  if (t.startsWith("{") || t.startsWith("[")) {
+    try { return JSON.parse(t); } catch (e) { /* pokračuj */ }
+  }
+  const lines = text.replace(/\r/g, "").split("\n").filter(l => l.trim() !== "");
+  const ind = l => l.length - l.replace(/^ +/, "").length;
+  function scalar(s) {
+    s = s.trim();
+    if (s === "") return null;
+    if (s.startsWith('"') && s.endsWith('"') && s.length >= 2) {
+      try { return JSON.parse(s); } catch (e) { return s.slice(1, -1); }
+    }
+    if (s === "true") return true;
+    if (s === "false") return false;
+    if (s === "null") return null;
+    if (/^-?\d+(\.\d+)?$/.test(s)) return Number(s);
+    return s;
+  }
+  function csv(row) {
+    const out = []; let cur = ""; let q = false;
+    for (let i = 0; i < row.length; i++) {
+      const c = row[i];
+      if (q) {
+        if (c === '"' && row[i + 1] === '"') { cur += '"'; i++; }
+        else if (c === '"') q = false;
+        else cur += c;
+      } else if (c === '"') q = true;
+      else if (c === ",") { out.push(cur); cur = ""; }
+      else cur += c;
+    }
+    out.push(cur);
+    return out.map(v => scalar(/^".*"$/.test(v) ? v : (v.includes('"') ? v : v)));
+  }
+  function splitKey(content) {
+    let key, rest;
+    if (content.startsWith('"')) {
+      const end = content.indexOf('"', 1);
+      key = content.slice(1, end);
+      rest = content.slice(end + 1);
+    } else {
+      const m = content.match(/^([^:\[{]+)/);
+      key = m ? m[1] : "";
+      rest = content.slice(key.length);
+    }
+    const m2 = rest.match(/^(\[(\d+)\])?(\{([^}]*)\})?:(.*)$/);
+    if (!m2) return null;
+    return { key: key.trim(), isArr: !!m2[1], fields: m2[4] ? m2[4].split(",") : null, rest: m2[5] };
+  }
+  function block(i, indent) {
+    if (i >= lines.length) return [null, i];
+    const first = lines[i].slice(indent);
+    if (first.startsWith("- ") || first === "-") return arr(i, indent);
+    return obj(i, indent);
+  }
+  function arr(i, indent) {
+    const out = [];
+    while (i < lines.length && ind(lines[i]) === indent && lines[i].slice(indent).startsWith("-")) {
+      const after = lines[i].slice(indent + 1).replace(/^ /, "");
+      const sk = splitKey(after);
+      if (sk) {
+        lines[i] = " ".repeat(indent + 2) + after;
+        const [v, n] = obj(i, indent + 2);
+        out.push(v); i = n;
+      } else {
+        out.push(scalar(after)); i++;
+      }
+    }
+    return [out, i];
+  }
+  function obj(i, indent) {
+    const o = {};
+    while (i < lines.length && ind(lines[i]) === indent && !lines[i].slice(indent).startsWith("- ")) {
+      const sk = splitKey(lines[i].slice(indent));
+      if (!sk) { i++; continue; }
+      const restTrim = sk.rest.trim();
+      if (sk.fields) {
+        const rows = []; i++;
+        while (i < lines.length && ind(lines[i]) > indent) {
+          const vals = csv(lines[i].trim());
+          const r = {}; sk.fields.forEach((f, k) => r[f] = vals[k]);
+          rows.push(r); i++;
+        }
+        o[sk.key] = rows;
+      } else if (restTrim !== "") {
+        o[sk.key] = sk.isArr ? csv(restTrim) : scalar(restTrim);
+        i++;
+      } else {
+        i++;
+        if (i < lines.length && ind(lines[i]) > indent) {
+          const [v, n] = block(i, ind(lines[i]));
+          o[sk.key] = v; i = n;
+        } else {
+          o[sk.key] = sk.isArr ? [] : null;
+        }
+      }
+    }
+    return [o, i];
+  }
+  return block(0, ind(lines[0] || ""))[0];
+}
+if (typeof module !== "undefined") module.exports = { parseToon };
+
+// ===== First Mate – jadro: normalizácia dát z CSV, výpočet signálov, šablóny =====
+const FM = (() => {
+  const DOPYTY = "596fe6c5-b616-4cec-bbe0-77b029f99b71";
+  const OBHLIADKY = "d037b930-16c2-4304-9f51-70b89bbd1070";
+  const SLACK_CHANNEL = "C0CDGG5MY0Y";
+  const SLACK_NAME = "#first-mate-demo";
+  const MAKLERI = ["Katarína Bartošová", "Tomáš Kováč", "Lucia Hudáková", "Peter Molnár", "Simona Lukáčová", "Juraj Šimko"];
+  const H = 3600e3, D = 24 * H;
+  const TZ = "Europe/Bratislava";
+
+  const DEFAULTS = {
+    email: "branislav.crep@gmail.com",
+    team: [
+      { id: "m0", meno: "Branislav Črep", rola: "manazer", makler: "", email: "branislav.crep@gmail.com", rozsah: "cely", aktivny: true },
+      ...MAKLERI.map((m, i) => ({ id: "m" + (i + 1), meno: m, rola: "makler", makler: m, email: "", rozsah: "svoje", aktivny: false }))
+    ],
+    signals: {
+      period: 7,
+      s1: { on: true, hours: 48 },
+      s2: { on: true, fastHours: 4 },
+      s3: { on: true, minViews: 200, days: 14 },
+      s4: { on: true, days: 14 }
+    },
+    schedule: { days: [1, 2, 3, 4, 5], time: "07:30", slack: true, email: false, team: false },
+    automation: { active: false }
+  };
+
+  // ---------- pomocné ----------
+  const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const val = v => (v && typeof v === "object" && !Array.isArray(v) && "value" in v) ? v.value : v;
+  function ts(s) {
+    s = val(s);
+    if (s == null || s === "") return null;
+    if (typeof s === "number") return s;
+    const str = String(s);
+    if (/Z$|[+-]\d\d:\d\d$/.test(str) && !isNaN(Date.parse(str))) return Date.parse(str);
+    const m = str.match(/(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})(:\d{2})?/);
+    if (m) return Date.parse(m[1] + "T" + m[2] + (m[3] || ":00") + "Z");
+    const d = str.match(/\d{4}-\d{2}-\d{2}/);
+    return d ? Date.parse(d[0] + "T00:00:00Z") : null;
+  }
+  function dateStr(s) { s = val(s); if (!s) return null; const d = String(s).match(/\d{4}-\d{2}-\d{2}/); return d ? d[0] : null; }
+  function localParts(ms) {
+    const p = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date(ms));
+    const g = t => (p.find(x => x.type === t) || {}).value;
+    return { date: `${g("year")}-${g("month")}-${g("day")}`, wd: g("weekday"), hm: `${g("hour")}:${g("minute")}` };
+  }
+  function addDays(dstr, n) { const t = Date.parse(dstr + "T12:00:00Z") + n * D; return new Date(t).toISOString().slice(0, 10); }
+  const WD = { Sun: "ne", Mon: "po", Tue: "ut", Wed: "st", Thu: "št", Fri: "pi", Sat: "so" };
+  const WDL = { Sun: "nedeľa", Mon: "pondelok", Tue: "utorok", Wed: "streda", Thu: "štvrtok", Fri: "piatok", Sat: "sobota" };
+  const dm = dstr => { const [y, m, d] = dstr.split("-"); return `${+d}. ${+m}.`; };
+  const dmy = dstr => { const [y, m, d] = dstr.split("-"); return `${+d}. ${+m}. ${y}`; };
+  const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace(".", ",");
+  const fmtInt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
+  function pl(n, a, b, c) { return n === 1 ? a : (n >= 2 && n <= 4 ? b : c); }
+  const short = name => { if (!name) return ""; const p = name.split(" "); return p.length > 1 ? p[0][0] + ". " + p.slice(1).join(" ") : name; };
+  const lok = l => (l || "").replace(/^Bratislava – /, "");
+  function joinSk(arr) { if (arr.length <= 1) return arr.join(""); return arr.slice(0, -1).join(", ") + " a " + arr[arr.length - 1]; }
+  const endS = x => /\.$/.test(x) ? x : x + ".";
+  const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+
+  // ---------- načítanie dát ----------
+  // ---------- načítanie dát: CSV súbory (pôvodne konektor Attio) ----------
+  function refId(v) { v = val(v); if (!v) return null; if (Array.isArray(v)) v = v[0]; if (typeof v === "string") return v; return v.record_id || v.target_record_id || null; }
+  function normalize(raw) {
+    const A = e => e.attributes || e.values || e;
+    const dop = e => { const a = A(e); return { id: e.entry_id || (e.id && e.id.entry_id), kod: val(a.kod_dopytu), prijaty: ts(a.prijaty), reakcia: ts(a.prva_reakcia), hodiny: typeof val(a.reakcia_hodiny) === "number" ? val(a.reakcia_hodiny) : null, stav: val(a.stav_dopytu), makler: val(a.makler), dealId: refId(a.nehnutelnost) }; };
+    const map = new Map();
+    raw.recent.map(dop).forEach(d => map.set(d.id, d));
+    raw.unanswered.map(dop).forEach(d => map.set(d.id, d));
+    const dopyty = [...map.values()].filter(d => d.prijaty);
+    const obhliadky = raw.viewings.map(e => { const a = A(e); return { id: e.entry_id, datum: ts(a.datum_obhliadky), makler: val(a.makler), dealId: refId(a.nehnutelnost), vysledok: val(a.vysledok) }; }).filter(o => o.datum);
+    const deals = raw.deals.map(r => { const a = A(r); const num = x => { x = val(x); return typeof x === "number" ? x : (x == null ? null : Number(String(x).replace(/[^\d.]/g, "")) || null); };
+      return { id: r.record_id || (r.id && r.id.record_id), kod: val(a.kod), nazov: val(a.name), lokalita: val(a.lokalita), makler: val(a.makler), stage: val(a.stage), views7: num(a.zobrazenia_za_7_dni) || 0, viewsTotal: num(a.zobrazenia_spolu) || 0, cenaM2: num(a.cena_za_m2_eur), priemerM2: num(a.priemer_lokality_za_m2_eur), exkl: val(a.exkluzivita) === true || val(a.exkluzivita) === "true", exklDo: dateStr(a.exkluzivita_do), nasadenie: dateStr(a.datum_nasadenia), zmenaCeny: dateStr(a.posledna_zmena_ceny) }; });
+    return { dopyty, obhliadky, deals, counts: { unanswered: raw.unanswered.length, recent: raw.recent.length, viewings: raw.viewings.length, deals: raw.deals.length } };
+  }
+
+  // ---------- výpočet signálov (deterministicky, v kóde) ----------
+  function compute(data, s, now) {
+    const P = s.period * D;
+    const lp = localParts(now);
+    const today = lp.date;
+    const dealById = new Map(data.deals.map(d => [d.id, d]));
+    const active = d => d.stage !== "Predané" && d.stage !== "Stiahnutá";
+    const byMakler = arr => { const m = {}; arr.forEach(x => { const k = x.makler || "neurčený"; m[k] = (m[k] || 0) + 1; }); return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([makler, n]) => ({ makler, n })); };
+    const days14 = 14 * D;
+    const dop14 = id => data.dopyty.filter(d => d.dealId === id && d.prijaty >= now - days14 && d.prijaty <= now).length;
+    const obh14 = id => data.obhliadky.filter(o => o.dealId === id && o.datum >= now - days14 && o.datum <= now).length;
+    const out = { now, today, dayLabel: `${WD[lp.wd] || ""} ${dm(today)}`, dayLong: `${WDL[lp.wd] || ""} ${dmy(today)}`, settings: s };
+
+    // S1
+    {
+      const lim = s.s1.hours * H;
+      const cur = data.dopyty.filter(d => d.stav === "nový – bez reakcie" && d.prijaty < now - lim);
+      const prev = data.dopyty.filter(d => d.prijaty < now - P - lim && (d.reakcia == null || d.reakcia > now - P));
+      out.s1 = { on: s.s1.on, hours: s.s1.hours, count: cur.length, prev: prev.length, byMakler: byMakler(cur),
+        items: cur.sort((a, b) => a.prijaty - b.prijaty).map(d => ({ kod: d.kod, makler: d.makler, nehnutelnost: (dealById.get(d.dealId) || {}).kod || "", lokalita: lok((dealById.get(d.dealId) || {}).lokalita), hodinBezReakcie: Math.round((now - d.prijaty) / H) })) };
+      out.s1.level = cur.length > 0 ? "red" : "green";
+    }
+    // S2
+    {
+      const cur = data.dopyty.filter(d => d.prijaty >= now - P && d.prijaty < now && d.hodiny != null);
+      const prev = data.dopyty.filter(d => d.prijaty >= now - 2 * P && d.prijaty < now - P && d.hodiny != null);
+      const per = {}; cur.forEach(d => { (per[d.makler] = per[d.makler] || []).push(d.hodiny); });
+      const perM = Object.entries(per).map(([makler, a]) => ({ makler, hodiny: mean(a), n: a.length })).sort((a, b) => b.hodiny - a.hodiny);
+      const m = mean(cur.map(d => d.hodiny)), pm = mean(prev.map(d => d.hodiny));
+      out.s2 = { on: s.s2.on, fastHours: s.s2.fastHours, mean: m, prev: pm, perMakler: perM, fast: perM.filter(x => x.hodiny <= s.s2.fastHours).length, slowest: perM[0] || null };
+      out.s2.level = m == null ? "green" : (m <= s.s2.fastHours ? "green" : (pm != null && m > pm * 1.25 ? "red" : "yellow"));
+    }
+    // S3
+    {
+      const since = now - s.s3.days * D;
+      const withViewing = new Set(data.obhliadky.filter(o => o.datum >= since && o.datum <= now).map(o => o.dealId));
+      const c = data.deals.filter(d => d.stage === "Aktívna ponuka" && d.views7 >= s.s3.minViews && !withViewing.has(d.id)).sort((a, b) => b.views7 - a.views7)
+        .map(d => ({ kod: d.kod, nazov: d.nazov, lokalita: lok(d.lokalita), makler: d.makler, views7: d.views7, cenaM2: d.cenaM2, priemerM2: d.priemerM2, nadPriemerPct: (d.cenaM2 && d.priemerM2) ? Math.round((d.cenaM2 / d.priemerM2 - 1) * 100) : null, dopyty14: dop14(d.id) }));
+      out.s3 = { on: s.s3.on, minViews: s.s3.minViews, days: s.s3.days, count: c.length, items: c, top: c[0] || null };
+      out.s3.level = c.length > 0 ? "yellow" : "green";
+    }
+    // S4
+    {
+      const to = addDays(today, s.s4.days);
+      const cur = data.deals.filter(d => active(d) && d.exkl && d.exklDo && d.exklDo >= today && d.exklDo <= to).sort((a, b) => a.exklDo < b.exklDo ? -1 : 1)
+        .map(d => { const o = obh14(d.id), q = dop14(d.id); return { kod: d.kod, lokalita: lok(d.lokalita), makler: d.makler, exklDo: d.exklDo, koniec: dm(d.exklDo), obhliadky14: o, dopyty14: q, rizikova: o === 0 && q === 0, dniDoKonca: Math.round((Date.parse(d.exklDo + "T12:00:00Z") - Date.parse(today + "T12:00:00Z")) / D) }; });
+      const pFrom = addDays(today, -s.period), pTo = addDays(to, -s.period);
+      const prev = data.deals.filter(d => active(d) && d.exkl && d.exklDo && d.exklDo >= pFrom && d.exklDo <= pTo).length;
+      out.s4 = { on: s.s4.on, days: s.s4.days, count: cur.length, prev, items: cur };
+      out.s4.level = cur.length > 0 ? "yellow" : "green";
+    }
+    // Horúce ponuky: veľa dopytov, žiadna obhliadka (pre návrh krokov)
+    out.hot = data.deals.filter(d => d.stage === "Aktívna ponuka").map(d => ({ kod: d.kod, lokalita: lok(d.lokalita), makler: d.makler, dopyty14: dop14(d.id), obhliadky14: obh14(d.id) }))
+      .filter(x => x.dopyty14 >= 3 && x.obhliadky14 === 0).sort((a, b) => b.dopyty14 - a.dopyty14).slice(0, 3);
+    out.dataInfo = data.counts;
+    return out;
+  }
+
+  // ---------- texty: záložné (bez AI) ----------
+  function fallbackTexts(b) {
+    const t = {};
+    if (b.s1.count > 0) {
+      t.nadpis = "Dopyty čakajú"; t.podnadpis = `${b.s1.count} bez reakcie nad ${b.s1.hours} h`;
+    } else if (b.s4.items.some(x => x.rizikova)) {
+      t.nadpis = "Pozor na exkluzivity"; t.podnadpis = `${b.s4.count} končí do ${b.s4.days} dní`;
+    } else { t.nadpis = "Pokojné ráno"; t.podnadpis = "bez naliehavých signálov"; }
+    t.s1 = `Na všetky dopyty niekto zareagoval do ${b.s1.hours} h.`;
+    if (b.s1.count > 0) t.s1 = `${b.s1.byMakler[0].n} z nich má ${b.s1.byMakler[0].makler}` + (b.s1.byMakler.length > 1 ? ", " + joinSk(b.s1.byMakler.slice(1).map(x => `${x.n} ${x.makler}`)) : "") + ". Pri každom ďalšom dni rastie riziko, že kupujúci odíde ku konkurencii.";
+    t.s2 = b.s2.mean == null ? "Za posledné obdobie nie sú dáta o reakciách." : `${b.s2.fast} ${pl(b.s2.fast, "maklér reaguje", "makléri reagujú", "maklérov reaguje")} do ${b.s2.fastHours} h.` + (b.s2.slowest && b.s2.slowest.hodiny > b.s2.fastHours ? ` Najdlhšie reaguje ${b.s2.slowest.makler} s ${fmt1(b.s2.slowest.hodiny)} h.` : "");
+    t.s3 = b.s3.top ? `Najvýraznejšia je ${b.s3.top.kod} ${b.s3.top.lokalita} (${short(b.s3.top.makler)}): ${fmtInt(b.s3.top.views7)} zobrazení za týždeň a 0 obhliadok.` + (b.s3.top.nadPriemerPct != null && b.s3.top.nadPriemerPct > 0 ? ` Cena ${fmtInt(b.s3.top.cenaM2)} €/m² je o ${b.s3.top.nadPriemerPct} % nad priemerom lokality.` : "") : "Žiadna ponuka s veľkým záujmom nezostala bez obhliadky.";
+    const r = b.s4.items.find(x => x.rizikova);
+    const others = b.s4.items.filter(x => x !== r);
+    t.s4 = b.s4.count === 0 ? `Žiadna exkluzivita nekončí v najbližších ${b.s4.days} dňoch.` : (r ? `${r.kod} ${r.lokalita} (${short(r.makler)}) končí ${r.koniec} a za 14 dní nemala obhliadku ani dopyt.` : "") + (others.length ? " " + endS(`${r ? "Ďalej" : "Končia"} ${joinSk(others.map(x => `${x.kod} ${x.lokalita} (${short(x.makler)}) ${x.koniec}`))}`) : "");
+    t.s4 = t.s4.trim();
+    const k = [];
+    if (b.s1.count > 0) k.push(`Prerozdeliť ${b.s1.byMakler[0].n} ${pl(b.s1.byMakler[0].n, "nevybavený dopyt", "nevybavené dopyty", "nevybavených dopytov")} (maklér ${short(b.s1.byMakler[0].makler)}) a ozvať sa klientom do 12:00.` + (b.hot[0] ? ` Prednosť má ${b.hot[0].kod} ${b.hot[0].lokalita}: ${b.hot[0].dopyty14} ${pl(b.hot[0].dopyty14, "dopyt", "dopyty", "dopytov")} za 2 týždne, 0 obhliadok.` : ""));
+    if (b.s3.top) k.push(`${short(b.s3.top.makler)}: prebrať s majiteľom ${b.s3.top.kod} cenu, podklad sú zobrazenia a priemer lokality.`);
+    if (r) k.push(`${short(r.makler)}: ešte tento týždeň dohodnúť s predávajúcim ${r.kod} stretnutie o predĺžení exkluzivity.`);
+    if (k.length < 3 && b.hot[0] && b.s1.count === 0) k.push(`${short(b.hot[0].makler)}: dohodnúť obhliadky pre ${b.hot[0].kod}, má ${b.hot[0].dopyty14} dopyty za 2 týždne a žiadnu obhliadku.`);
+    t.kroky = k.slice(0, 3);
+    t.zhrnutie = [b.s1.on && b.s1.count > 0 ? `Na ${b.s1.count} ${pl(b.s1.count, "dopyt", "dopyty", "dopytov")} nikto nereagoval viac ako ${b.s1.hours} hodín, pred týždňom ${b.s1.prev === 0 ? "nebol takýto ani jeden" : "ich bolo " + b.s1.prev}.` : "",
+      b.s2.on && b.s2.mean != null ? `Priemerný čas prvej reakcie je ${fmt1(b.s2.mean)} h${b.s2.prev != null ? ` (predtým ${fmt1(b.s2.prev)} h)` : ""}.` : "",
+      b.s4.on && b.s4.count > 0 ? `Blíži sa koniec ${b.s4.count} ${pl(b.s4.count, "exkluzivity", "exkluzivít", "exkluzivít")}.` : ""].filter(Boolean).join(" ");
+    const top = b.s1.byMakler[0];
+    t.zistenie = top ? `${top.n} z ${b.s1.count} nevybavených dopytov má ${top.makler}` + ((b.s2.perMakler.find(x => x.makler === top.makler) || {}).hodiny ? `, ktorý reaguje v priemere za ${fmt1(b.s2.perMakler.find(x => x.makler === top.makler).hodiny)} h.` : ".") : (b.s3.top ? `${b.s3.top.kod} má ${fmtInt(b.s3.top.views7)} zobrazení za týždeň a žiadnu obhliadku.` : "Žiadny signál dnes nevyžaduje okamžitú akciu.");
+    return t;
+  }
+
+  // ---------- AI interpretácia ----------
+  function facts(b) {
+    const f = { dnes: b.dayLong, obdobie_dni: b.settings.period };
+    if (b.s1.on) f.s1_dopyty_bez_reakcie = { hranica_hodin: b.s1.hours, pocet: b.s1.count, pred_tyzdnom: b.s1.prev, podla_maklera: b.s1.byMakler, dopyty: b.s1.items.slice(0, 12) };
+    if (b.s2.on) f.s2_cas_prvej_reakcie = { priemer_hodin: b.s2.mean && +b.s2.mean.toFixed(1), predtym_hodin: b.s2.prev && +b.s2.prev.toFixed(1), rychla_reakcia_do_hodin: b.s2.fastHours, pocet_maklerov_do_hranice: b.s2.fast, podla_maklera: b.s2.perMakler.map(x => ({ makler: x.makler, hodin: +x.hodiny.toFixed(1), dopytov: x.n })) };
+    if (b.s3.on) f.s3_zaujem_bez_obhliadky = { min_zobrazeni_za_7_dni: b.s3.minViews, bez_obhliadky_dni: b.s3.days, pocet: b.s3.count, ponuky: b.s3.items.slice(0, 5) };
+    if (b.s4.on) f.s4_konciace_exkluzivity = { do_dni: b.s4.days, pocet: b.s4.count, pred_tyzdnom: b.s4.prev, ponuky: b.s4.items };
+    f.ponuky_vela_dopytov_bez_obhliadky_14_dni = b.hot;
+    return f;
+  }
+  function aiPrompt(b) {
+    const keys = ["s1", "s2", "s3", "s4"].filter(k => b[k].on);
+    return `Si First Mate, AI analytik realitnej kancelárie. Z faktov nižšie napíš texty ranného brífingu pre manažéra kancelárie.
+
+Pravidlá:
+- Po slovensky, krátke vecné vety, tón kolegu, nie robota.
+- Používaj IBA čísla, mená a kódy z faktov. Nič nevymýšľaj, nič nezaokrúhľuj inak než vo faktoch.
+- Desatinná čiarka (8,8 h). Mená maklérov celé alebo v tvare „T. Kováč“.
+- Nepoužívaj dlhé pomlčky ani pomlčky ako interpunkciu (znaky — a –) okrem názvov lokalít.
+- Kroky musia byť konkrétne: kto, čo, pri ktorej nehnuteľnosti, dokedy.
+
+Vráť IBA JSON objekt s kľúčmi:
+- "nadpis": 2 až 3 slová, hlavná téma dňa
+- "podnadpis": krátky údaj k nadpisu, napr. „9 bez reakcie nad 48 h“
+- "zhrnutie": 2 až 3 vety o tom, ako je na tom kancelária
+- "zistenie": 1 až 2 vety, najdôležitejšie zistenie dňa a prečo na ňom záleží
+${keys.map(k => `- "${k}": 1 až 2 vety, čo signál ${k} znamená (koho sa týka, prečo je dôležitý); nezačínaj opakovaním čísla z nadpisu signálu`).join("\n")}
+- "kroky": pole presne 3 krokov na dnes (každý jedna veta)
+
+Fakty (JSON):
+${JSON.stringify(facts(b))}`;
+  }
+  function mergeTexts(ai, fb, b) {
+    const t = { ...fb };
+    if (ai && typeof ai === "object") {
+      for (const k of ["nadpis", "podnadpis", "zhrnutie", "zistenie", "s1", "s2", "s3", "s4"]) if (typeof ai[k] === "string" && ai[k].trim()) t[k] = ai[k].trim();
+      if (Array.isArray(ai.kroky) && ai.kroky.filter(x => typeof x === "string" && x.trim()).length >= 2) t.kroky = ai.kroky.filter(x => typeof x === "string" && x.trim()).slice(0, 3).map(x => x.trim());
+      t.ai = true;
+    }
+    const clean = x => x.replace(/\s—\s/g, ", ").replace(/(?<!Bratislava)\s–\s/g, ", ").replace(/—/g, ",");
+    for (const k of Object.keys(t)) if (typeof t[k] === "string") t[k] = clean(t[k]);
+    t.kroky = t.kroky.map(clean);
+    return t;
+  }
+  function personalPrompt(b, members) {
+    const per = members.map(m => personalFacts(b, m.makler));
+    return `Si First Mate, AI analytik realitnej kancelárie. Pre každého makléra napíš krátky osobný ranný brífing z jeho faktov.
+Pravidlá: po slovensky, oslovuj ho priamo (vykanie), krátko a vecne, IBA čísla a kódy z faktov, bez pomlčiek — a –. Ak nemá žiadny problém, pochváľ ho jednou vetou.
+Vráť IBA JSON objekt: kľúč = meno makléra, hodnota = {"veta": 1 až 2 vety zhrnutia, "kroky": pole 1 až 3 konkrétnych krokov na dnes}.
+Fakty (JSON):
+${JSON.stringify(per)}`;
+  }
+  function personalFacts(b, makler) {
+    return {
+      makler,
+      dopyty_bez_reakcie_nad_hodin: b.s1.hours,
+      dopyty_bez_reakcie: b.s1.items.filter(x => x.makler === makler),
+      priemer_reakcie_hodin: (b.s2.perMakler.find(x => x.makler === makler) || {}).hodiny ?? null,
+      priemer_timu_hodin: b.s2.mean,
+      ponuky_zaujem_bez_obhliadky: b.s3.items.filter(x => x.makler === makler),
+      konciace_exkluzivity: b.s4.items.filter(x => x.makler === makler),
+      ponuky_vela_dopytov_bez_obhliadky: b.hot.filter(x => x.makler === makler)
+    };
+  }
+  function personalFallback(b, makler) {
+    const f = personalFacts(b, makler);
+    const k = [];
+    if (f.dopyty_bez_reakcie.length) k.push(`Ozvať sa dnes do 12:00 na ${f.dopyty_bez_reakcie.length} ${pl(f.dopyty_bez_reakcie.length, "dopyt", "dopyty", "dopytov")} bez reakcie (${f.dopyty_bez_reakcie.map(x => x.kod).join(", ")}).`);
+    f.ponuky_zaujem_bez_obhliadky.slice(0, 1).forEach(x => k.push(`Prebrať s majiteľom ${x.kod} cenu: ${fmtInt(x.views7)} zobrazení za týždeň a 0 obhliadok.`));
+    f.konciace_exkluzivity.slice(0, 1).forEach(x => k.push(`Dohodnúť s predávajúcim ${x.kod} predĺženie exkluzivity, končí ${x.koniec}`));
+    const pr = f.priemer_reakcie_hodin;
+    const veta = f.dopyty_bez_reakcie.length ? `Máte ${f.dopyty_bez_reakcie.length} ${pl(f.dopyty_bez_reakcie.length, "dopyt", "dopyty", "dopytov")} bez reakcie dlhšie ako ${b.s1.hours} h.` + (pr != null ? ` Váš priemerný čas reakcie je ${fmt1(pr)} h.` : "") : (pr != null ? `Na dopyty reagujete v priemere za ${fmt1(pr)} h, bez nevybavených dopytov. Výborne.` : "Dnes nemáte žiadne naliehavé signály.");
+    return { veta, kroky: k.length ? k.slice(0, 3) : ["Pokračovať v bežnej agende."] };
+  }
+
+  // ---------- šablóny ----------
+  const C = { ink: "#0B0B0C", muted: "#55524A", blue: "#1B2CC1", sand: "#EAE6DB", paper: "#F9F9F5", tint: "#D8DCF6", foot: "#D6D3C9", footMono: "#A9B1F5" };
+  const F = { sans: "Arial,Helvetica,sans-serif", mono: "Menlo,Consolas,monospace" };
+  const lbl = (txt, color) => `<div style="font-family:${F.mono};font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${color || C.muted};margin-bottom:4px;">${txt}</div>`;
+  const secLabel = (n, txt) => `<div style="font-family:${F.mono};font-size:12px;letter-spacing:2px;text-transform:uppercase;color:${C.muted};margin:0 0 14px 0;"><span style="color:${C.blue};">${n}</span>&nbsp;&nbsp;${txt}</div>`;
+  const secHead = (bold, mono) => `<div style="font-family:${F.sans};font-size:24px;line-height:30px;font-weight:bold;color:${C.ink};margin:0 0 14px 0;">${esc(bold)} <span style="font-family:${F.mono};font-weight:normal;font-size:16px;color:${C.muted};">/ ${esc(mono)}</span></div>`;
+  const para = (txt, extra) => `<p style="font-family:${F.sans};font-size:15px;line-height:23px;color:${C.ink};margin:0 0 12px 0;${extra || ""}">${txt}</p>`;
+  const th = (t, right) => `<th align="${right ? "right" : "left"}" style="font-family:${F.mono};font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${C.muted};font-weight:normal;padding:0 0 8px 0;border-bottom:2px solid ${C.ink};text-align:${right ? "right" : "left"};">${t}</th>`;
+  const td = (t, o = {}) => `<td align="${o.right ? "right" : "left"}" style="font-family:${F.sans};font-size:15px;color:${o.blue ? C.blue : C.ink};${o.blue ? "font-weight:600;" : ""}${o.bold ? "font-weight:bold;" : ""}padding:10px 0;text-align:${o.right ? "right" : "left"};">${t}</td>`;
+  const sec = (inner, last) => `<tr><td class="px" style="padding:36px 32px ${last ? "36px" : "0"} 32px;">${inner}</td></tr>`;
+  const levelLabel = l => l === "red" ? lbl("Konať dnes", C.blue) : (l === "yellow" ? lbl("Sledovať") : lbl("V poriadku"));
+  const nb = s => String(s).replace(/ (h|%|€)/g, "\u00a0$1");
+
+  function bigNumbers(cells) {
+    const rows = [];
+    for (let i = 0; i < cells.length; i += 2) rows.push(cells.slice(i, i + 2));
+    return `<table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid ${C.ink};border-collapse:separate;margin:8px 0 18px 0;">` +
+      rows.map((r, ri) => `<tr>${r.map(c => `<td width="50%" style="padding:${ri === 0 ? "18px" : "9px"} 16px ${ri === rows.length - 1 ? "18px" : "9px"} 16px;vertical-align:top;"><div style="font-family:${F.sans};font-size:26px;font-weight:bold;color:${c.blue ? C.blue : C.ink};">${esc(c.v)}</div><div style="font-family:${F.mono};font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${C.muted};margin-top:6px;">${esc(nb(c.l))}</div></td>`).join("")}${r.length === 1 ? "<td width=\"50%\"></td>" : ""}</tr>`).join("") + `</table>`;
+  }
+  function stepsTable(kroky) {
+    return `<table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" style="border-top:2px solid ${C.ink};">` + kroky.map((k, i) =>
+      `<tr><td width="56" valign="top" style="font-family:${F.mono};font-size:24px;color:${C.blue};padding:14px 12px 0 0;vertical-align:top;">0${i + 1}</td><td valign="top" style="font-family:${F.sans};font-size:15px;line-height:23px;color:${C.ink};padding:16px 0 0 0;vertical-align:top;">${esc(k)}</td></tr>`).join("") + `</table>`;
+  }
+  function shell(title, preheader, inner, footer) {
+    return `<!DOCTYPE html><html lang="sk"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${esc(title)}</title><style>@media (max-width:520px){.px{padding-left:18px!important;padding-right:18px!important}}</style></head><body style="margin:0;padding:0;background:${C.paper};">` + card(preheader, inner, footer) + `</body></html>`;
+  }
+  function card(preheader, inner, footer) {
+    return `<div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:${C.paper};">${esc(preheader)}</div><table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" style="background:${C.paper};"><tr><td align="center" style="padding:24px 8px;"><table role="presentation" border="0" width="640" cellspacing="0" cellpadding="0" style="width:100%;max-width:640px;background:#FFFFFF;">${inner}<tr><td class="px" style="background:${C.ink};padding:24px 32px;"><div style="font-family:${F.sans};font-size:13px;line-height:20px;color:${C.foot};">${esc(footer)}</div><div style="font-family:${F.mono};font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${C.footMono};margin-top:12px;">First Mate &middot; Books &amp; Mirror &middot; CRM</div></td></tr></table></td></tr></table>`;
+  }
+  function header(kicker, title, sub) {
+    return `<tr><td class="px" style="padding:32px 32px 0 32px;"><div style="font-family:${F.sans};font-size:18px;font-weight:bold;color:${C.ink};">First Mate</div><div style="font-family:${F.mono};font-size:12px;letter-spacing:2px;text-transform:uppercase;color:${C.blue};margin:22px 0 10px 0;">${kicker}</div><div style="font-family:${F.sans};font-size:38px;line-height:44px;font-weight:bold;color:${C.ink};">${esc(title)}<span style="color:${C.blue};">.</span></div><div style="font-family:${F.mono};font-size:12px;color:${C.muted};margin-top:10px;">${sub}</div></td></tr>`;
+  }
+  const FOOT = "Čísla sú vypočítané z dát CRM v čase odoslania, interpretáciu napísala AI. Ide o ukážkovú realitnú kanceláriu, všetky osoby a nehnuteľnosti sú fiktívne.";
+
+  function briefInner(b, t) {
+    const s = b.settings; let n = 0; const N = () => "0" + (++n);
+    let h = header(`Ranný brífing &middot; ${esc(b.dayLabel)}&nbsp;${b.today.slice(0, 4)}`, "Dobré ráno", `CRM &middot; posledných ${s.period} dní oproti predchádzajúcim ${s.period} dňom`);
+    const cells = [];
+    if (b.s1.on) cells.push({ v: String(b.s1.count), l: `Dopyty bez reakcie nad ${b.s1.hours} h · pred týždňom ${b.s1.prev}`, blue: b.s1.level === "red" });
+    if (b.s2.on) cells.push({ v: b.s2.mean == null ? "–" : nb(fmt1(b.s2.mean) + " h"), l: `Priemerná prvá reakcia` + (b.s2.prev != null ? ` · predtým ${fmt1(b.s2.prev)} h` : ""), blue: b.s2.level === "red" });
+    if (b.s3.on) cells.push({ v: String(b.s3.count), l: `Ponuky ${b.s3.minViews}+ zobrazení bez obhliadky` });
+    if (b.s4.on) cells.push({ v: String(b.s4.count), l: `Exkluzivity končiace do ${b.s4.days} dní · pred týždňom ${b.s4.prev}` });
+    h += sec(secLabel(N(), "Ako je na tom kancelária") + secHead(t.nadpis, t.podnadpis) + para(esc(nb(t.zhrnutie))) + (cells.length ? bigNumbers(cells) : "") +
+      `<table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0"><tr><td style="background:${C.sand};border-left:4px solid ${C.blue};padding:16px 18px;">${lbl("Najdôležitejšie zistenie", C.blue).replace("margin-bottom:4px", "margin-bottom:6px")}<div style="font-family:${F.sans};font-size:15px;line-height:23px;color:${C.ink};">${esc(nb(t.zistenie))}</div></td></tr></table>`);
+    const items = [];
+    if (b.s1.on) items.push([b.s1.level, `Dopyty bez reakcie viac ako ${b.s1.hours}\u00a0h: ${b.s1.count}`, `(pred týždňom ${b.s1.prev}). `, t.s1]);
+    if (b.s2.on) items.push([b.s2.level, `Priemerný čas prvej reakcie: ${b.s2.mean == null ? "bez dát" : fmt1(b.s2.mean) + "\u00a0h"}`, b.s2.prev != null ? `(predtým ${fmt1(b.s2.prev)}\u00a0h). ` : "", t.s2]);
+    if (b.s3.on) items.push([b.s3.level, `Ponuky s ${b.s3.minViews}+ zobrazeniami a bez obhliadky za ${b.s3.days} dní: ${b.s3.count}.`, " ", t.s3]);
+    if (b.s4.on) items.push([b.s4.level, `Exkluzivity končiace do ${b.s4.days} dní: ${b.s4.count}`, `(pred týždňom ${b.s4.prev}). `, t.s4]);
+    if (items.length) h += sec(secLabel(N(), "Signály") + `<table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" style="border-top:2px solid ${C.ink};">` + items.map(([lv, head, mid, txt]) =>
+      `<tr><td style="padding:14px 0 0 0;">${levelLabel(lv)}<div style="font-family:${F.sans};font-size:15px;line-height:23px;color:${C.ink};"><b>${esc(head)}</b> ${esc(mid)}${esc(nb(txt))}</div></td></tr>`).join("") + `</table>`);
+    if (b.s1.on && b.s1.count > 0) h += sec(secLabel(N(), "Dopyty bez reakcie podľa makléra") + `<table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr>${th("Maklér")}${th(`Bez reakcie nad ${b.s1.hours}&nbsp;h`, true)}</tr>` +
+      b.s1.byMakler.map((x, i) => `<tr>${td(esc(x.makler))}${td(x.n, { right: true, blue: i === 0 })}</tr>`).join("") + `<tr>${td("Spolu", { bold: true })}${td(b.s1.count, { right: true, bold: true })}</tr></table>`);
+    if (b.s4.on && b.s4.count > 0) h += sec(secLabel(N(), `Exkluzivity končiace do ${b.s4.days} dní`) + `<table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr>${th("Nehnuteľnosť")}${th("Maklér")}${th("Koniec", true)}</tr>` +
+      b.s4.items.map(x => `<tr>${td(esc(x.kod + " " + x.lokalita))}${td(esc(short(x.makler)))}${td(esc(x.koniec).replace(" ", "&nbsp;"), { right: true, blue: x.rizikova })}</tr>`).join("") + `</table>` +
+      (b.s4.items.some(x => x.rizikova) ? `<p style="font-family:${F.sans};font-size:13px;line-height:20px;color:${C.muted};margin:12px 0 0 0;">Modrou: za posledných 14 dní bez obhliadky aj bez dopytu.</p>` : ""));
+    h += sec(secLabel(N(), "Čo urobiť dnes") + secHead(t.kroky.length === 1 ? "Jeden krok" : (t.kroky.length === 2 ? "Dva kroky" : "Tri kroky"), b.dayLabel) + stepsTable(t.kroky.map(nb)) +
+      para(`Chcete vedieť viac alebo niečo rovno vykonať? Otvorte Claude a napíšte <span style="font-family:${F.mono};font-size:14px;color:${C.blue};white-space:nowrap;">/first-mate</span>.`, "margin:24px 0 0 0;"), true);
+    return h;
+  }
+  function emailHtml(b, t) { return shell(`First Mate · ranný brífing · ${b.dayLabel}`, t.zistenie, briefInner(b, t), FOOT); }
+  function emailPreview(b, t) { return card(t.zistenie, briefInner(b, t), FOOT); }
+  function emailSubject(b, t) { return `First Mate · ranný brífing · ${b.dayLabel}: ${t.podnadpis}`; }
+  function emailText(b, t) {
+    const L = [`FIRST MATE · RANNÝ BRÍFING · ${b.dayLabel}`, "", `${t.nadpis} / ${t.podnadpis}`, t.zhrnutie, "", `Najdôležitejšie zistenie: ${t.zistenie}`, "", "SIGNÁLY"];
+    if (b.s1.on) L.push(`- Dopyty bez reakcie viac ako ${b.s1.hours} h: ${b.s1.count} (pred týždňom ${b.s1.prev}). ${t.s1}`);
+    if (b.s2.on) L.push(`- Priemerný čas prvej reakcie: ${b.s2.mean == null ? "bez dát" : fmt1(b.s2.mean) + " h"}${b.s2.prev != null ? ` (predtým ${fmt1(b.s2.prev)} h)` : ""}. ${t.s2}`);
+    if (b.s3.on) L.push(`- Ponuky s ${b.s3.minViews}+ zobrazeniami a bez obhliadky za ${b.s3.days} dní: ${b.s3.count}. ${t.s3}`);
+    if (b.s4.on) L.push(`- Exkluzivity končiace do ${b.s4.days} dní: ${b.s4.count} (pred týždňom ${b.s4.prev}). ${t.s4}`);
+    L.push("", "ČO UROBIŤ DNES", ...t.kroky.map((k, i) => `${i + 1}. ${k}`), "", "Otázky a pokyny: otvorte Claude a napíšte /first-mate.", "", FOOT);
+    return L.join("\n");
+  }
+  function slackText(b, t) {
+    const em = l => l === "red" ? ":red_circle:" : (l === "yellow" ? ":large_yellow_circle:" : ":large_green_circle:");
+    const L = [`:sunny: **First Mate · ranný brífing · ${b.dayLabel}**`, `_Posledných ${b.settings.period} dní oproti predchádzajúcim ${b.settings.period} dňom_`, ""];
+    let i = 0;
+    if (b.s1.on) L.push(`**${++i}. Dopyty bez reakcie viac ako ${b.s1.hours} h: ${b.s1.count}** (pred týždňom ${b.s1.prev}) ${em(b.s1.level)}`, `→ ${t.s1}`, "");
+    if (b.s2.on) L.push(`**${++i}. Priemerný čas prvej reakcie: ${b.s2.mean == null ? "bez dát" : fmt1(b.s2.mean) + " h"}**${b.s2.prev != null ? ` (predtým ${fmt1(b.s2.prev)} h)` : ""} ${em(b.s2.level)}`, `→ ${t.s2}`, "");
+    if (b.s3.on) L.push(`**${++i}. Ponuky s ${b.s3.minViews}+ zobrazeniami a bez obhliadky za ${b.s3.days} dní: ${b.s3.count}** ${em(b.s3.level)}`, `→ ${t.s3}`, "");
+    if (b.s4.on) L.push(`**${++i}. Exkluzivity končiace do ${b.s4.days} dní: ${b.s4.count}** (pred týždňom ${b.s4.prev}) ${em(b.s4.level)}`, `→ ${t.s4}`, "");
+    L.push("**Čo urobiť dnes**", ...t.kroky.map((k, j) => `${j + 1}. ${k}`), "_Napíšte do vlákna, čo treba urobiť, a pokračujte v Claude príkazom /first-mate._");
+    return L.join("\n");
+  }
+  function personalEmail(b, member, p) {
+    const f = personalFacts(b, member.makler);
+    const pr = f.priemer_reakcie_hodin;
+    const cells = [
+      { v: String(f.dopyty_bez_reakcie.length), l: `Vaše dopyty bez reakcie nad ${b.s1.hours} h`, blue: f.dopyty_bez_reakcie.length > 0 },
+      { v: pr == null ? "–" : nb(fmt1(pr) + " h"), l: `Váš priemer reakcie · tím ${b.s2.mean == null ? "–" : fmt1(b.s2.mean) + " h"}` },
+      { v: String(f.ponuky_zaujem_bez_obhliadky.length), l: `Vaše ponuky bez obhliadky` },
+      { v: String(f.konciace_exkluzivity.length), l: `Vaše končiace exkluzivity` }
+    ];
+    let inner = header(`Osobný brífing &middot; ${esc(b.dayLabel)}&nbsp;${b.today.slice(0, 4)}`, `Dobré ráno, ${member.meno.split(" ")[0]}`, `CRM &middot; ${esc(member.makler)} &middot; posledných ${b.settings.period} dní`);
+    inner += sec(secLabel("01", "Vaše čísla") + para(esc(nb(p.veta))) + bigNumbers(cells));
+    if (f.dopyty_bez_reakcie.length) inner += sec(secLabel("02", "Dopyty, ktoré čakajú") + `<table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tr>${th("Dopyt")}${th("Nehnuteľnosť")}${th("Čaká", true)}</tr>` +
+      f.dopyty_bez_reakcie.map(x => `<tr>${td(esc(x.kod))}${td(esc(x.nehnutelnost + " " + x.lokalita))}${td(x.hodinBezReakcie + "&nbsp;h", { right: true, blue: true })}</tr>`).join("") + `</table>`);
+    inner += sec(secLabel(f.dopyty_bez_reakcie.length ? "03" : "02", "Čo urobiť dnes") + stepsTable(p.kroky.map(nb)), true);
+    return { subject: `First Mate · Váš brífing · ${b.dayLabel}`, html: shell(`First Mate · osobný brífing`, p.veta, inner, FOOT), text: [`FIRST MATE · OSOBNÝ BRÍFING · ${b.dayLabel}`, "", p.veta, "", "ČO UROBIŤ DNES", ...p.kroky.map((k, i) => `${i + 1}. ${k}`), "", FOOT].join("\n"), previewInner: card(p.veta, inner, FOOT) };
+  }
+
+  function validEmail(e) {
+    e = String(e || "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)) return "Neplatná e-mailová adresa.";
+    if (/@(.+\.)?(example\.(com|org|net)|test|invalid|localhost)$/i.test(e) || /\.(test|invalid|example|localhost)$/i.test(e)) return "Na fiktívne adresy z ukážkových dát (example.com) First Mate neposiela.";
+    return null;
+  }
+
+  return { WD, WDL, dm, DOPYTY, OBHLIADKY, SLACK_CHANNEL, SLACK_NAME, MAKLERI, DEFAULTS, normalize, compute, fallbackTexts, aiPrompt, mergeTexts, personalPrompt, personalFallback, personalFacts, emailHtml, emailPreview, emailSubject, emailText, slackText, personalEmail, validEmail, esc, fmt1, localParts, short };
+})();
+if (typeof module !== "undefined") module.exports = FM;
+
+</script>
+<script>
+(function () {
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const esc = FM.esc;
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const hm = ms => FM.localParts(ms).hm;
+  const SERVERS = ["Slack", "Gmail"];
+
+  let S = clone(FM.DEFAULTS);
+  let db = null, mcp = null, sample = null;
+  const st = { data: null, dataAt: 0, brief: null, texts: null, briefAt: 0, briefSig: "", running: false, log: [], conn: {}, lastOk: {}, pv: "email", capsReady: false };
+
+  // ---------- routing ----------
+  const VIEWS = ["brifing", "tim", "signaly", "rozvrh", "architektura"];
+  function route() {
+    const h = (location.hash || "").slice(1);
+    const v = VIEWS.includes(h) ? h : "brifing";
+    $$(".view").forEach(e => e.classList.toggle("on", e.id === "v-" + v));
+    $$("#nav a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
+  }
+  window.addEventListener("hashchange", route);
+
+  // ---------- nastavenia (db) ----------
+  function mergeSettings(d) {
+    const D = FM.DEFAULTS, g = d.signals || {};
+    return {
+      ...clone(D), ...d,
+      signals: { period: g.period || D.signals.period, s1: { ...D.signals.s1, ...(g.s1 || {}) }, s2: { ...D.signals.s2, ...(g.s2 || {}) }, s3: { ...D.signals.s3, ...(g.s3 || {}) }, s4: { ...D.signals.s4, ...(g.s4 || {}) } },
+      schedule: { ...D.schedule, ...(d.schedule || {}) },
+      automation: { ...D.automation, ...(d.automation || {}) },
+      team: Array.isArray(d.team) && d.team.length ? d.team : clone(D.team),
+      email: d.email || D.email
+    };
+  }
+  const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: "timeout" }), ms))]);
+  async function loadSettings() {
+    try {
+      const snap = await withTimeout(db.doc("fm/settings").get(), 10000);
+      if (snap.exists) S = mergeSettings(snap.data() || {});
+      const lg = await withTimeout(db.doc("fm/log").get(), 10000);
+      if (lg.exists) st.log = (lg.data().items || []).slice(0, 20);
+      markSaved("Nastavenia načítané");
+    } catch (e) { markSaved("Nastavenia sa nepodarilo načítať"); }
+  }
+  let saveTimer = null, saving = false, again = false;
+  function save() { markSaved("Ukladám…"); clearTimeout(saveTimer); saveTimer = setTimeout(doSave, 700); }
+  async function doSave() {
+    if (!db) { markSaved("Neuložené: úložisko nie je dostupné"); return; }
+    if (saving) { again = true; return; }
+    saving = true;
+    try { await db.doc("fm/settings").set(clone(S)); markSaved("Uložené " + hm(Date.now())); }
+    catch (e) { markSaved("Neuložené" + (e && e.code ? " (" + e.code + ")" : "")); }
+    saving = false;
+    if (again) { again = false; doSave(); }
+  }
+  function markSaved(t) { ["#teamSaved", "#sigSaved", "#schSaved"].forEach(id => { const e = $(id); if (e) e.textContent = t; }); }
+  async function addLog(kanal, sprava) {
+    st.log.unshift({ at: Date.now(), kanal, sprava });
+    st.log = st.log.slice(0, 20);
+    renderLog();
+    if (db) { try { await db.doc("fm/log").set({ items: st.log }); } catch (e) { } }
+  }
+
+  const CSV = {"dir": "data/", "files": {"nehnutelnosti": "nehnutelnosti.csv", "dopyty": "dopyty.csv", "obhliadky": "obhliadky.csv"}, "labels": {"nehnutelnosti": "Nehnuteľnosti", "dopyty": "Dopyty", "obhliadky": "Obhliadky"}, "spec": {"nehnutelnosti.csv": {"schema": {"id": "text", "kod": "text", "name": "text", "stage": "text", "typ": "text", "lokalita": "text", "izby": "num", "plocha_m2": "num", "stav_nehnutelnosti": "text", "value": "num", "povodna_cena_eur": "num", "cena_za_m2_eur": "num", "priemer_lokality_za_m2_eur": "num", "provizia": "num", "makler": "text", "exkluzivita": "bool", "exkluzivita_do": "date", "datum_nasadenia": "date", "posledna_zmena_ceny": "date", "zobrazenia_spolu": "num", "zobrazenia_za_7_dni": "num", "associated_people": "multi", "owner": "text", "created_at": "text", "attio_id": "text"}, "required": ["id", "kod", "name", "lokalita", "makler", "stage", "zobrazenia_za_7_dni", "zobrazenia_spolu", "cena_za_m2_eur", "priemer_lokality_za_m2_eur", "exkluzivita", "exkluzivita_do", "datum_nasadenia", "posledna_zmena_ceny"]}, "dopyty.csv": {"schema": {"id": "text", "kod_dopytu": "text", "kontakt": "text", "nehnutelnost": "text", "prijaty": "datetime", "zdroj_dopytu": "text", "makler": "text", "prva_reakcia": "datetime", "reakcia_hodiny": "num", "stav_dopytu": "text", "created_at": "text", "attio_id": "text"}, "required": ["id", "kod_dopytu", "nehnutelnost", "prijaty", "prva_reakcia", "reakcia_hodiny", "stav_dopytu", "makler"]}, "obhliadky.csv": {"schema": {"id": "text", "kod_obhliadky": "text", "kontakt": "text", "nehnutelnost": "text", "datum_obhliadky": "datetime", "makler": "text", "vysledok": "text", "spatna_vazba": "text", "created_at": "text", "attio_id": "text"}, "required": ["id", "kod_obhliadky", "nehnutelnost", "datum_obhliadky", "makler", "vysledok"]}}};
+  // rovnaký výber ako pôvodné dotazy do Attio: dopyty bez reakcie, dopyty a obhliadky za 30 dní, všetky nehnuteľnosti
+  CSV.toData = raw => {
+    const since = Date.now() - 30 * 864e5, t = v => v ? Date.parse(v) : NaN;
+    const ent = r => ({ entry_id: r.attributes.id, attributes: r.attributes });
+    const dop = raw.dopyty.map(ent), obh = raw.obhliadky.map(ent);
+    const d = FM.normalize({
+      unanswered: dop.filter(e => e.attributes.stav_dopytu === "nový – bez reakcie"),
+      recent: dop.filter(e => t(e.attributes.prijaty) >= since).sort((a, b) => t(b.attributes.prijaty) - t(a.attributes.prijaty)),
+      viewings: obh.filter(e => t(e.attributes.datum_obhliadky) >= since).sort((a, b) => t(b.attributes.datum_obhliadky) - t(a.attributes.datum_obhliadky)),
+      deals: raw.nehnutelnosti.map(r => ({ record_id: r.attributes.id, attributes: r.attributes }))
+    });
+    return d;
+  };
+  // ---------- dáta z CSV (spoločné pre oba panely) ----------
+  // st.src = { kind: "demo"|"vlastne", texts: {súbor: text}, manifest: {exportAt, ref}, names: [...] }
+  st.src = null; st.shift = true;
+  function fmtDmy(ds) { if (!ds) return ""; const [y, m, d] = ds.slice(0, 10).split("-"); return `${+d}. ${+m}. ${y}`; }
+  function shiftDays() {
+    if (!st.shift || !st.src || !st.src.manifest || !st.src.manifest.ref) return 0;
+    return FMCSV.daysBetween(st.src.manifest.ref, FMCSV.localDate(Date.now()));
+  }
+  async function fetchText(path) {
+    const r = await fetch(path, { cache: "no-store" });
+    if (!r.ok) throw { code: "csv_missing", message: `Súbor ${path} sa nepodarilo načítať (${r.status}).` };
+    return await r.text();
+  }
+  async function loadDemoCsv(onStep) {
+    const texts = {};
+    let manifest = { exportAt: null, ref: null };
+    try { manifest = FMCSV.readManifest(await fetchText(CSV.dir + "manifest.md")); } catch (e) { }
+    for (const [key, file] of Object.entries(CSV.files)) { onStep && onStep(CSV.labels[key]); texts[file] = await fetchText(CSV.dir + file); }
+    st.src = { kind: "demo", texts, manifest };
+  }
+  function buildData() {
+    const n = shiftDays(), raw = {}, errs = [];
+    for (const [key, file] of Object.entries(CSV.files)) {
+      const p = FMCSV.parse(st.src.texts[file]);
+      const spec = CSV.spec[file];
+      FMCSV.validate(file, p, spec).forEach(e => errs.push(e));
+      raw[key] = p.rows.map(r => ({ attributes: FMCSV.typed(r, spec.schema, n) }));
+    }
+    const data = CSV.toData(raw);
+    data.warn = errs;
+    return data;
+  }
+  function dataLabel() {
+    if (!st.src) return "Dáta: CSV · nenačítané";
+    if (st.src.kind === "vlastne") return `Dáta: vlastné CSV · ${st.src.names.length} ${st.src.names.length === 1 ? "súbor" : (st.src.names.length < 5 ? "súbory" : "súborov")}`;
+    const ex = st.src.manifest && st.src.manifest.exportAt;
+    return `Dáta: CSV · export ${ex ? fmtDmy(ex) : "?"}`;
+  }
+  function shiftLabel() {
+    const n = shiftDays();
+    if (!st.src || !st.src.manifest || !st.src.manifest.ref) return "Pôvodné dátumy (súbor nemá manifest s dátumom exportu).";
+    if (!st.shift) return `Pôvodné dátumy, stav k ${fmtDmy(st.src.manifest.ref)}.`;
+    return n === 0 ? `Dátumy sú aktuálne, stav k ${fmtDmy(st.src.manifest.ref)}.` : `Všetky dátumy posunuté o ${n > 0 ? "+" : ""}${n} ${Math.abs(n) === 1 ? "deň" : (Math.abs(n) < 5 && Math.abs(n) > 1 ? "dni" : "dní")}, stav k ${fmtDmy(st.src.manifest.ref)} vyzerá ako dnešok.`;
+  }
+  function renderDataBar() {
+    const bar = $("#dataBar"); if (!bar) return;
+    const canShift = !!(st.src && st.src.manifest && st.src.manifest.ref);
+    bar.querySelector("#dbLabel").textContent = dataLabel();
+    bar.querySelectorAll("[data-shift]").forEach(b => { b.classList.toggle("on", (b.dataset.shift === "1") === (st.shift && canShift)); b.disabled = !canShift; });
+    bar.querySelector("#dbShift").textContent = shiftLabel();
+    bar.querySelector("#dbReset").classList.toggle("hidden", !st.src || st.src.kind !== "vlastne");
+  }
+  function dbMsg(html, warn) { const m = $("#dbMsg"); if (m) m.innerHTML = html ? `<div class="msg ${warn ? "warn" : ""}">${html}</div>` : ""; }
+  async function readUpload(fileList) {
+    const files = [...fileList];
+    const want = Object.values(CSV.files);
+    const texts = {}, names = [], errs = [];
+    let manifest = { exportAt: null, ref: null };
+    for (const f of files) {
+      const name = f.name.toLowerCase();
+      let t = await f.text();
+      if (/\.md$|\.txt$/.test(name) && /manifest/.test(name)) { manifest = FMCSV.readManifest(t); continue; }
+      const target = want.find(w => w === name) || want.find(w => name.endsWith(w));
+      if (!target) { errs.push(`Súbor „${esc(f.name)}“ nepoznám. Panel čaká ${want.map(w => "„" + w + "“").join(", ")}.`); continue; }
+      if (t.includes(String.fromCharCode(0xFFFD))) errs.push(`${esc(f.name)}: niektoré znaky sa nedajú prečítať. Uložte súbor v kódovaní UTF-8 (v Exceli „CSV UTF-8“).`);
+      texts[target] = t; names.push(target);
+    }
+    const miss = want.filter(w => !texts[w]);
+    if (miss.length) errs.unshift(`${miss.length === 1 ? "Chýba súbor" : "Chýbajú súbory"} ${miss.map(w => "„" + w + "“").join(", ")}. Vyberte naraz všetky ${want.length} súbory${want.length > 1 ? "" : ""}.`);
+    for (const w of want) if (texts[w]) {
+      const p = FMCSV.parse(texts[w]);
+      FMCSV.validate(w, p, CSV.spec[w]).forEach(e => { if (!/oddeľovač/.test(e)) errs.push(esc(e)); });
+      if (!p.rows.length) errs.push(`${w}: súbor nemá žiadne záznamy.`);
+    }
+    return { texts, names, manifest, errs };
+  }
+  function bindDataBar() {
+    const bar = $("#dataBar"); if (!bar) return;
+    bar.addEventListener("click", async e => {
+      const b = e.target.closest("[data-shift]");
+      if (b && !b.disabled) { st.shift = b.dataset.shift === "1"; await reloadFromSrc(); }
+    });
+    $("#dbUpload").addEventListener("click", () => $("#dbFile").click());
+    $("#dbFile").addEventListener("change", async e => {
+      const fl = e.target.files; if (!fl || !fl.length) return;
+      const u = await readUpload(fl); e.target.value = "";
+      if (u.errs.length) { dbMsg("<b>Súbory som nenačítal.</b><br>" + u.errs.join("<br>"), true); return; }
+      const prev = st.src; st.src = { kind: "vlastne", texts: u.texts, names: u.names, manifest: u.manifest };
+      st.shift = !!u.manifest.ref && st.shift;
+      try { await reloadFromSrc(); dbMsg(`Načítané vlastné dáta: ${u.names.join(", ")}. Sú len v pamäti tohto okna, nikam sa neukladajú; po obnovení stránky sa vráti ukážka.`); }
+      catch (err) { st.src = prev; dbMsg("Súbory sa nepodarilo spracovať: " + esc(err.message || err), true); await reloadFromSrc(); }
+    });
+    $("#dbReset").addEventListener("click", async () => { st.src = null; st.shift = true; dbMsg(""); await loadData(null); updateSignalNow(); });
+  }
+  async function reloadFromSrc() {
+    st.data = buildData(); st.dataAt = Date.now(); st.brief = null; st.texts = null; st.briefAt = 0;
+    renderDataBar(); afterData();
+  }
+  function afterData() { updateSignalNow(); const pv = $("#pvInfo"); if (pv && !st.brief) pv.textContent = "Dáta sa zmenili. Kliknite na „Prepočítať bez odoslania“."; }
+
+  // ---------- MCP ----------
+  async function call(server, tool, input, opt) {
+    const write = opt && opt.write;
+    if (!mcp) throw { code: "not_granted", server, message: "Prepojenia nie sú v tomto zobrazení dostupné." };
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const r = await mcp.callTool(server, tool, input, { cache: false });
+        st.lastOk[server] = Date.now(); st.conn[server] = "connected"; renderConn();
+        let p = r ? r.payload : null;
+        if (p == null && r && Array.isArray(r.content)) { const tb = r.content.find(c => c.type === "text"); p = tb && tb.text; }
+        if (typeof p === "string") { const parsed = parseToon(p); return parsed && typeof parsed === "object" ? parsed : p; }
+        return p;
+      } catch (e) {
+        const msg = String((e && e.message) || "");
+        const rate = /rate limit/i.test(msg);
+        if (!write && (rate || (e && e.retryable)) && attempt < 2) {
+          let wait = (e && e.retryAfterMs) || (1500 + Math.random() * 1000);
+          const m = msg.match(/after (\d{4}-\d{2}-\d{2}T[\d:.]+Z)/);
+          if (m) wait = Math.max(600, Date.parse(m[1]) - Date.now() + 400);
+          await sleep(Math.min(wait, 20000));
+          continue;
+        }
+        if (e && (e.code === "needs_reauth" || e.code === "server_not_connected")) { st.conn[server] = e.code === "needs_reauth" ? "bad" : "missing"; renderConn(); }
+        if (e && typeof e === "object" && !e.server) e.server = server;
+        throw e;
+      }
+    }
+  }
+  function errText(e, server, write) {
+    if (!e) return "Neznáma chyba.";
+    server = e.server || server || "Služba";
+    const msg = String(e.message || "");
+    switch (e.code) {
+      case "needs_reauth": return `${server}: prihlásenie vypršalo. Znova pripojte ${server} v claude.ai → Nastavenia → Konektory.`;
+      case "server_not_connected": case "server_not_found": return `${server} nie je pripojený. Pridajte ho v claude.ai → Nastavenia → Konektory.`;
+      case "selection_required": return `Vyberte, ktorý konektor ${server} sa má použiť. Claude.ai sa na to spýta.`;
+      case "not_in_manifest": case "approval_required": case "consent_required": return `Panel zatiaľ nemá povolenie použiť ${server}. Kliknite znova a v okne claude.ai ho povoľte.`;
+      case "blocked_by_policy": return `Použitie ${server} blokujú pravidlá organizácie.`;
+      case "server_unavailable": case "upstream_error": case "cancelled": return `${server} práve neodpovedá.` + (write ? " Pred ďalším pokusom skontrolujte, či správa už neodišla." : " Skúste to o chvíľu.");
+      case "csv_missing": return msg;
+      case "tool_error": return `${server} vrátil chybu: ${msg.slice(0, 200)}`;
+      case "not_granted": case "capability_disabled": case "capability_removed": return "Prepojenia na konektory nie sú v tomto zobrazení dostupné. Otvorte panel v claude.ai.";
+      default: return msg || "Neznáma chyba.";
+    }
+  }
+  async function refreshConn() {
+    if (!mcp) { SERVERS.forEach(s => st.conn[s] = "na"); renderConn(); return; }
+    try {
+      const r = await mcp.listTools();
+      SERVERS.forEach(name => {
+        const f = (r.servers || []).find(x => x.server === name);
+        st.conn[name] = !f ? "missing" : (f.authStatus === "needs_reauth" ? "bad" : (f.authStatus === "connected" ? "connected" : "unknown"));
+      });
+    } catch (e) { SERVERS.forEach(s => st.conn[s] = st.conn[s] || "unknown"); }
+    renderConn();
+  }
+  const CONN_LBL = { connected: "Pripojené", unknown: "Pripravené", missing: "Nepripojené", bad: "Znova prihlásiť", na: "Nedostupné", ai: "Pripravené" };
+  function renderConn() {
+    const items = SERVERS.map(s => [s, st.conn[s] || "unknown"]).concat([["Claude AI", sample ? "connected" : (st.capsReady ? "na" : "unknown")]]);
+    renderDataBar();
+    $("#conn").innerHTML = items.map(([n, s]) => `<span class="chip"><i class="dot ${s === "connected" ? "ok" : (s === "bad" || s === "missing" ? "bad" : "")}"></i>${esc(n)} · ${CONN_LBL[s] || s}</span>`).join("");
+    renderConnTable();
+  }
+
+  // ---------- AI ----------
+  // ---------- AI s diagnostikou ----------
+  // aiTry vráti { v, why }: v = objekt z JSON odpovede, why = prečo sa odpoveď nedala použiť
+  async function aiTry(prompt) {
+    if (!sample) return { v: null, why: "AI nie je v tomto zobrazení dostupná" };
+    const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 90000);
+    let v;
+    try {
+      v = typeof sample.json === "function" ? await sample.json(prompt, { signal: ctrl.signal }) : (await sample(prompt, { signal: ctrl.signal })).text;
+    } catch (e) {
+      if (ctrl.signal.aborted) return { v: null, why: "AI neodpovedala do 90 s" };
+      const c = e && (e.code || e.name), m = String((e && e.message) || "").replace(/\s+/g, " ").slice(0, 120);
+      return { v: null, why: "chyba volania AI" + (c ? " (" + c + ")" : "") + (m && m !== c ? ": " + m : "") };
+    } finally { clearTimeout(to); }
+    if (v && typeof v === "object" && typeof v.text === "string" && !v.nadpis) v = v.text;
+    if (typeof v === "string") {
+      const m = v.match(/\{[\s\S]*\}/);
+      if (!m) return { v: null, why: v.includes("{") ? "odpoveď AI bola useknutá (JSON nie je uzavretý)" : "odpoveď AI neobsahovala JSON" };
+      try { v = JSON.parse(m[0]); } catch (e) { return { v: null, why: "odpoveď AI nebola platný JSON (pravdepodobne useknutá)" }; }
+    }
+    if (!v || typeof v !== "object") return { v: null, why: "odpoveď AI bola prázdna" };
+    return { v, why: null };
+  }
+  async function aiJson(prompt) { return (await aiTry(prompt)).v; }
+  // Brífing: odpoveď musí mať nadpis alebo kroky; pri neúspechu ešte jeden pokus
+  async function aiBrief(prompt, R) {
+    const once = async () => { const r = await aiTry(prompt); return (r.v && !(typeof r.v.nadpis === "string" || Array.isArray(r.v.kroky))) ? { v: null, why: "odpoveď AI nemala očakávané polia (nadpis, kroky)" } : r; };
+    const r1 = await once();
+    if (r1.v || !sample) { if (!r1.v) console.warn("First Mate · AI text sa nepoužil:", r1.why); return r1; }
+    R && R.set(2, "active", `Prvý pokus zlyhal (${r1.why}), skúšam znova…`);
+    await sleep(1500);
+    const r2 = await once();
+    if (r2.v) return { ...r2, retried: true, first: r1.why };
+    console.warn("First Mate · AI text sa nepoužil. 1. pokus:", r1.why, "· 2. pokus:", r2.why);
+    return { v: null, why: r2.why, first: r1.why };
+  }
+
+  // ---------- priebeh ----------
+  function makeRun(box, list, titleEl, title, steps) {
+    box.classList.remove("hidden");
+    if (titleEl) titleEl.textContent = title;
+    const t0 = Date.now();
+    const timeEl = box.querySelector(".saved");
+    list.innerHTML = steps.map((s, i) => `<li data-i="${i}"><span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t">${esc(s)}<span class="d"></span></span><span class="s">čaká</span></li>`).join("");
+    const msgEl = box.querySelector("[id$=Msg]");
+    if (msgEl) msgEl.innerHTML = "";
+    let active = -1;
+    const LBL = { wait: "čaká", active: "beží", done: "hotovo", err: "chyba", skip: "použité", warn: "náhradný text" };
+    const R = {
+      set(i, status, detail) {
+        const li = list.children[i]; if (!li) return;
+        li.className = status === "skip" || status === "warn" ? "done" : status;
+        li.querySelector(".s").textContent = LBL[status] || status;
+        if (detail != null) li.querySelector(".d").textContent = detail;
+        if (status === "active") active = i;
+        if (timeEl) timeEl.textContent = ((Date.now() - t0) / 1000).toFixed(1).replace(".", ",") + " s";
+      },
+      fail(text) { if (active >= 0) R.set(active, "err", text); R.msg(text, true); },
+      msg(html, warn) { if (msgEl) msgEl.innerHTML = html ? `<div class="msg ${warn ? "warn" : ""}">${html}</div>` : ""; },
+      get active() { return active; }
+    };
+    return R;
+  }
+  const BRIEF_STEPS = ["Načítať dáta", "Vypočítať signály v kóde", "AI napíše interpretáciu a kroky"];
+  function summaryLine(b) {
+    const p = [];
+    if (b.s1.on) p.push(`${b.s1.count} bez reakcie`);
+    if (b.s2.on) p.push(b.s2.mean == null ? "reakcia bez dát" : `reakcia ${FM.fmt1(b.s2.mean)} h`);
+    if (b.s3.on) p.push(`${b.s3.count} bez obhliadky`);
+    if (b.s4.on) p.push(`${b.s4.count} exkluzivity`);
+    return p.join(" · ");
+  }
+  async function loadData(R, i) {
+    R && R.set(i, "active", "Načítavam CSV…");
+    if (!st.src) await loadDemoCsv(step => R && R.set(i, "active", step + "…"));
+    st.data = buildData();
+    st.dataAt = Date.now();
+    renderDataBar();
+    const c = st.data.counts;
+    R && R.set(i, "done", `${c.recent} dopytov za 30 dní, ${c.unanswered} bez reakcie, ${c.viewings} obhliadok, ${c.deals} nehnuteľností`);
+  }
+  async function ensureBrief(force, R) {
+    const sig = JSON.stringify(S.signals);
+    const age = Date.now() - st.briefAt;
+    if (!force && st.brief && age < 15 * 60e3 && st.briefSig === sig && (st.texts.ai || !sample)) {
+      const min = Math.max(1, Math.round(age / 60e3));
+      R.set(0, "skip", `Dáta načítané o ${hm(st.dataAt)} (pred ${min} min)`);
+      R.set(1, "skip", summaryLine(st.brief));
+      R.set(2, "skip", st.texts.ai ? `Text od AI: „${st.texts.nadpis}“` : "Pravidlový text");
+      return;
+    }
+    if (force || !st.data || Date.now() - st.dataAt > 15 * 60e3) await loadData(R, 0);
+    else R.set(0, "skip", `Dáta načítané o ${hm(st.dataAt)}`);
+    R.set(1, "active");
+    const b = FM.compute(st.data, S.signals, Date.now());
+    R.set(1, "done", summaryLine(b));
+    R.set(2, "active", sample ? "Claude píše vysvetlenie a návrh krokov…" : "AI nie je dostupná");
+    let r = { v: null, why: "neznáma chyba" };
+    try { r = await aiBrief(FM.aiPrompt(b), R); } catch (e) { r = { v: null, why: "chyba v paneli: " + String((e && e.message) || e).slice(0, 120) }; }
+    const ai = r.v;
+    const t = FM.mergeTexts(ai, FM.fallbackTexts(b), b);
+    st.aiWhy = ai ? null : r.why;
+    R.set(2, ai ? "done" : "warn", ai ? `„${t.nadpis}“ · ${t.kroky.length} ${t.kroky.length === 1 ? "krok" : "kroky"}` + (r.retried ? ` · na 2. pokus (1. pokus: ${r.first})` : "")
+      : `AI text sa nepoužil: ${r.why}` + (r.first && r.first !== r.why ? ` (1. pokus: ${r.first})` : (r.first ? " (oba pokusy)" : "")) + ". Použitý pravidlový text.");
+    st.brief = b; st.texts = t; st.briefAt = Date.now(); st.briefSig = sig;
+    renderPreview(); updateSignalNow();
+  }
+  function lock(on) { st.running = on; ["#btnSlack", "#btnEmail", "#btnTeam", "#btnRecalc", "#btnLoad"].forEach(id => { const e = $(id); if (e) { e.disabled = on; e.classList.toggle("is-locked", on); } }); }
+  function findUrl(res) { const m = JSON.stringify(res || "").match(/https:\/\/[^\s"'\\]*slack\.com[^\s"'\\]*/); return m ? m[0] : null; }
+
+  async function sendSlack() {
+    if (st.running) return; lock(true);
+    const R = makeRun($("#run"), $("#steps"), $("#runTitle"), "Brífing → Slack", [...BRIEF_STEPS, "Odoslať do Slacku"]);
+    try {
+      await ensureBrief(false, R);
+      R.set(3, "active", FM.SLACK_NAME);
+      const res = await call("Slack", "slack_send_message", { channel_id: FM.SLACK_CHANNEL, message: FM.slackText(st.brief, st.texts) }, { write: true });
+      R.set(3, "done", `Odoslané do ${FM.SLACK_NAME} o ${hm(Date.now())}`);
+      const url = findUrl(res);
+      const tm = JSON.stringify(res || "").match(/team(?:_id)?\\?"?\s*[:=]\s*\\?"?(T[A-Z0-9]{6,})/);
+      const appUrl = tm ? `https://slack.com/app_redirect?team=${tm[1]}&channel=${FM.SLACK_CHANNEL}` : `https://firstmate-booksmirror.slack.com/app_redirect?channel=${FM.SLACK_CHANNEL}`;
+      R.msg(`Brífing je v Slacku · <a href="${esc(appUrl)}" target="_blank" rel="noopener">otvoriť v aplikácii Slack</a>${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener">na webe</a>` : ""}.`);
+      addLog("Slack · " + FM.SLACK_NAME, st.texts.podnadpis);
+    } catch (e) { R.fail(errText(e, R.active === 3 ? "Slack" : "Dáta", R.active === 3)); }
+    finally { lock(false); }
+  }
+  async function sendEmail() {
+    if (st.running) return;
+    const inp = $("#emailTo"); const to = inp.value.trim(); const bad = FM.validEmail(to);
+    const errBox = $("#emailErr");
+    if (bad) { inp.classList.add("err"); errBox.textContent = bad; errBox.classList.remove("hidden"); return; }
+    inp.classList.remove("err"); errBox.classList.add("hidden");
+    if (S.email !== to) { S.email = to; save(); renderSchedule(); }
+    lock(true);
+    const R = makeRun($("#run"), $("#steps"), $("#runTitle"), "Brífing → e-mail", [...BRIEF_STEPS, "Odoslať e-mail"]);
+    try {
+      await ensureBrief(false, R);
+      R.set(3, "active", to);
+      const b = st.brief, t = st.texts;
+      await call("Gmail", "send_message", { to: [to], subject: FM.emailSubject(b, t), body: FM.emailText(b, t), htmlBody: FM.emailHtml(b, t) }, { write: true });
+      R.set(3, "done", `Odoslané na ${to} o ${hm(Date.now())}`);
+      R.msg(`E-mail odišiel na <b>${esc(to)}</b>. Predmet: ${esc(FM.emailSubject(b, t))}`);
+      addLog("E-mail · " + to, t.podnadpis);
+    } catch (e) { R.fail(errText(e, R.active === 3 ? "Gmail" : "Dáta", R.active === 3)); }
+    finally { lock(false); }
+  }
+  async function recalc() {
+    if (st.running) return; lock(true);
+    const R = makeRun($("#run"), $("#steps"), $("#runTitle"), "Prepočet bez odoslania", BRIEF_STEPS);
+    try { await ensureBrief(true, R); R.msg("Hotovo. Náhľad nižšie ukazuje, čo by odišlo."); }
+    catch (e) { R.fail(errText(e, "Dáta")); }
+    finally { lock(false); }
+  }
+
+  // ---------- tím ----------
+  function recipients() {
+    return S.team.filter(m => m.aktivny && String(m.email || "").trim()).map(m => {
+      const scope = m.rozsah === "svoje" && m.makler ? "svoje" : "cely";
+      return { ...m, scope, err: FM.validEmail(m.email) };
+    });
+  }
+  async function sendTeam() {
+    if (st.running) return;
+    const rc = recipients();
+    const ok = rc.filter(r => !r.err);
+    if (!ok.length) { $("#teamInfo").textContent = rc.length ? "Žiadna platná adresa. Opravte e-maily označené modrou." : "Nikto nemá zadaný e-mail a zapnuté posielanie."; return; }
+    lock(true);
+    const R = makeRun($("#teamRun"), $("#teamSteps"), null, "", [...BRIEF_STEPS, ...ok.map(r => `${r.meno} · ${r.scope === "cely" ? "celý brífing" : "osobný brífing"}`)]);
+    try {
+      await ensureBrief(false, R);
+      const b = st.brief, t = st.texts;
+      const mk = ok.filter(r => r.scope === "svoje");
+      let personal = {};
+      if (mk.length) {
+        R.set(2, "active", "AI píše osobné brífingy maklérov…");
+        try { personal = (await aiJson(FM.personalPrompt(b, mk))) || {}; } catch (e) { personal = {}; }
+        R.set(2, "done", `Celý brífing + ${mk.length} ${mk.length === 1 ? "osobný" : "osobné"}`);
+      }
+      let sent = 0;
+      for (let i = 0; i < ok.length; i++) {
+        const r = ok[i], idx = BRIEF_STEPS.length + i;
+        R.set(idx, "active", r.email);
+        try {
+          if (r.scope === "cely") {
+            await call("Gmail", "send_message", { to: [r.email], subject: FM.emailSubject(b, t), body: FM.emailText(b, t), htmlBody: FM.emailHtml(b, t) }, { write: true });
+          } else {
+            const p0 = personal[r.makler];
+            const fb = FM.personalFallback(b, r.makler);
+            const p = (p0 && typeof p0.veta === "string" && Array.isArray(p0.kroky) && p0.kroky.length) ? { veta: p0.veta, kroky: p0.kroky.slice(0, 3).map(String) } : fb;
+            const pe = FM.personalEmail(b, r, p);
+            await call("Gmail", "send_message", { to: [r.email], subject: pe.subject, body: pe.text, htmlBody: pe.html }, { write: true });
+          }
+          sent++; R.set(idx, "done", `${r.email} · ${hm(Date.now())}`);
+        } catch (e) { R.set(idx, "err", errText(e, "Gmail", true)); }
+      }
+      R.msg(`Odoslané ${sent} z ${ok.length} e-mailov.` + (rc.length > ok.length ? ` ${rc.length - ok.length} adries som preskočil (neplatné alebo fiktívne).` : ""), sent < ok.length);
+      if (sent) addLog(`Tím · ${sent} ${sent === 1 ? "e-mail" : (sent < 5 ? "e-maily" : "e-mailov")}`, t.podnadpis);
+    } catch (e) { R.fail(errText(e, "Dáta")); }
+    finally { lock(false); }
+  }
+  function renderTeam() {
+    const opt = (v, cur, label) => `<option value="${esc(v)}"${v === cur ? " selected" : ""}>${esc(label || v)}</option>`;
+    $("#team").innerHTML = `<div class="trow head"><span class="lbl">Meno</span><span class="lbl">Rola</span><span class="lbl">Maklér v dátach</span><span class="lbl">E-mail</span><span class="lbl">Dostáva</span><span class="lbl">Posielať</span><span></span></div>` +
+      S.team.map((m, i) => `<div class="trow" data-i="${i}">
+        <input type="text" data-k="meno" value="${esc(m.meno)}" placeholder="Meno" aria-label="Meno">
+        <select data-k="rola" aria-label="Rola">${opt("manazer", m.rola, "Manažér")}${opt("makler", m.rola, "Maklér")}</select>
+        <select data-k="makler" aria-label="Maklér v dátach">${opt("", m.makler, "—")}${FM.MAKLERI.map(x => opt(x, m.makler)).join("")}</select>
+        <input type="email" data-k="email" value="${esc(m.email)}" placeholder="e-mail" aria-label="E-mail" class="${m.email && FM.validEmail(m.email) ? "err" : ""}" title="${esc(m.email ? (FM.validEmail(m.email) || "") : "")}">
+        <select data-k="rozsah" aria-label="Dostáva">${opt("cely", m.rozsah, "Celý brífing")}${opt("svoje", m.rozsah, "Len svoje")}</select>
+        <label class="toggle" title="Posielať"><input type="checkbox" data-k="aktivny"${m.aktivny ? " checked" : ""}><span class="box"></span></label>
+        <button class="x" data-del="${i}" aria-label="Odstrániť">×</button></div>`).join("");
+    teamInfo();
+  }
+  function teamInfo() {
+    const rc = recipients(), ok = rc.filter(r => !r.err);
+    const c = ok.filter(r => r.scope === "cely").length, p = ok.length - c;
+    $("#teamInfo").textContent = ok.length ? `Odíde ${ok.length} ${ok.length === 1 ? "e-mail" : (ok.length < 5 ? "e-maily" : "e-mailov")}: ${c} ${c === 1 ? "celý brífing" : "celé brífingy"}, ${p} ${p === 1 ? "osobný" : "osobné"}.` + (rc.length > ok.length ? ` ${rc.length - ok.length} adresu preskočím.` : "") : "Zapnite posielanie aspoň jednému členovi s e-mailom.";
+  }
+  function bindTeam() {
+    $("#team").addEventListener("input", e => {
+      const row = e.target.closest(".trow"); const k = e.target.dataset.k; if (!row || !k) return;
+      const m = S.team[+row.dataset.i]; if (!m) return;
+      m[k] = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+      if (k === "email") { const bad = m.email && FM.validEmail(m.email); e.target.classList.toggle("err", !!bad); e.target.title = bad || ""; }
+      if (k === "rola" && m.rola === "manazer") { m.rozsah = "cely"; renderTeam(); }
+      if (k === "makler" && m.makler && m.rola === "makler" && !m.meno) { m.meno = m.makler; renderTeam(); }
+      teamInfo(); save();
+    });
+    $("#team").addEventListener("change", e => { if (e.target.tagName === "SELECT" || e.target.type === "checkbox") e.target.dispatchEvent(new Event("input", { bubbles: true })); });
+    $("#team").addEventListener("click", e => { const d = e.target.dataset.del; if (d == null) return; S.team.splice(+d, 1); renderTeam(); save(); });
+    $("#addMember").addEventListener("click", () => { S.team.push({ id: "m" + Date.now(), meno: "", rola: "makler", makler: "", email: "", rozsah: "svoje", aktivny: true }); renderTeam(); save(); });
+    $("#btnTeam").addEventListener("click", sendTeam);
+  }
+
+  // ---------- signály ----------
+  const SIG = [
+    { k: "s1", t: "Dopyty bez reakcie", d: "Dopyt, na ktorý nikto nereagoval dlhšie ako hranica. Každá hodina zvyšuje riziko, že kupujúci odíde ku konkurencii.", p: [["hours", "Hranica (hodiny)", 1, 240]] },
+    { k: "s2", t: "Čas prvej reakcie", d: "Priemerný čas od dopytu po prvú reakciu makléra. Ukáže, kto tím brzdí a kto je vzorom.", p: [["fastHours", "Rýchla reakcia do (h)", 1, 72]] },
+    { k: "s3", t: "Záujem bez obhliadky", d: "Ponuka, ktorú si ľudia pozerajú, ale nikto nejde na obhliadku. Najčastejšie je problém v cene alebo v inzeráte.", p: [["minViews", "Min. zobrazení za 7 dní", 10, 5000], ["days", "Bez obhliadky (dni)", 1, 60]] },
+    { k: "s4", t: "Končiace exkluzivity", d: "Exkluzívne zmluvy, ktoré čoskoro končia. Upozorní včas, aby maklér stihol dohodnúť predĺženie.", p: [["days", "Končí do (dni)", 1, 90]] }
+  ];
+  function renderSignals() {
+    $("#period").value = String(S.signals.period);
+    $("#sig").innerHTML = SIG.map((g, i) => `<div class="sg ${S.signals[g.k].on ? "" : "off"}" data-k="${g.k}">
+      <div class="sg-top"><span class="lbl"><span class="blue">S${i + 1}</span> · signál</span><label class="toggle"><span>${S.signals[g.k].on ? "zapnutý" : "vypnutý"}</span><input type="checkbox" data-on="${g.k}"${S.signals[g.k].on ? " checked" : ""}><span class="box"></span></label></div>
+      <div class="sg-body"><h3>${esc(g.t)}</h3><p>${esc(g.d)}</p>
+      <div class="params">${g.p.map(([f, l, mn, mx]) => `<label><span class="lbl">${esc(l)}</span><input type="number" min="${mn}" max="${mx}" data-s="${g.k}" data-f="${f}" value="${S.signals[g.k][f]}"></label>`).join("")}</div>
+      <div class="now"><span class="lbl">Dnes</span><span class="v" id="now-${g.k}">–</span><span class="note" id="nowd-${g.k}" style="margin:0"></span></div></div></div>`).join("");
+    updateSignalNow();
+  }
+  function updateSignalNow() {
+    if (!$("#now-s1")) return;
+    if (!st.data) { SIG.forEach(g => { $("#now-" + g.k).textContent = "–"; $("#nowd-" + g.k).textContent = "načítajte dáta"; }); return; }
+    const b = FM.compute(st.data, S.signals, Date.now());
+    const set = (k, v, d, hl) => { const e = $("#now-" + k); e.textContent = v; e.classList.toggle("hl", !!hl); $("#nowd-" + k).textContent = d; };
+    set("s1", String(b.s1.count), `obdobie predtým ${b.s1.prev}` + (b.s1.byMakler[0] ? ` · najviac ${FM.short(b.s1.byMakler[0].makler)} (${b.s1.byMakler[0].n})` : ""), b.s1.count > 0);
+    set("s2", b.s2.mean == null ? "–" : FM.fmt1(b.s2.mean) + " h", (b.s2.prev != null ? `predtým ${FM.fmt1(b.s2.prev)} h` : "") + ` · ${b.s2.fast} makl. do ${b.s2.fastHours} h`);
+    set("s3", String(b.s3.count), b.s3.top ? `najviac ${b.s3.top.kod} ${b.s3.top.lokalita} · ${b.s3.top.views7} zobrazení` : "žiadna ponuka", false);
+    set("s4", String(b.s4.count), b.s4.items.length ? b.s4.items.map(x => `${x.kod} ${x.koniec}`).join(", ") : "žiadna", false);
+    $("#sigSaved").title = `${dataLabel()} · načítané ${hm(st.dataAt)}`;
+  }
+  function bindSignals() {
+    $("#sig").addEventListener("input", e => {
+      const k = e.target.dataset.s, f = e.target.dataset.f, on = e.target.dataset.on;
+      if (on) { S.signals[on].on = e.target.checked; renderSignals(); save(); return; }
+      if (!k || !f) return;
+      const v = parseInt(e.target.value, 10); if (!(v > 0)) return;
+      S.signals[k][f] = v; updateSignalNow(); save();
+    });
+    $("#sig").addEventListener("change", e => { if (e.target.type === "checkbox") e.target.dispatchEvent(new Event("input", { bubbles: true })); });
+    $("#period").addEventListener("change", e => { S.signals.period = +e.target.value; updateSignalNow(); save(); });
+    $("#btnLoad").addEventListener("click", async () => {
+      if (st.running) return; lock(true); const btn = $("#btnLoad"); btn.textContent = "Načítavam…";
+      try { await loadData(null); updateSignalNow(); btn.textContent = `Načítané ${hm(st.dataAt)} · obnoviť`; }
+      catch (e) { btn.textContent = "Načítať dáta"; $("#sigSaved").textContent = errText(e, "Dáta"); }
+      finally { lock(false); }
+    });
+  }
+
+  // ---------- rozvrh a prepojenia ----------
+  const DAYS = [[1, "Po"], [2, "Ut"], [3, "St"], [4, "Št"], [5, "Pi"], [6, "So"], [0, "Ne"]];
+  const WDN = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  function nextRun() {
+    const now = Date.now(); const time = S.schedule.time || "07:30";
+    for (let i = 0; i < 8; i++) {
+      const lp = FM.localParts(now + i * 864e5);
+      if (!S.schedule.days.includes(WDN[lp.wd])) continue;
+      if (i === 0 && lp.hm >= time) continue;
+      return `${FM.WDL[lp.wd]} ${FM.dm(lp.date)} o ${time}`;
+    }
+    return null;
+  }
+  function renderSchedule() {
+    $("#days").innerHTML = DAYS.map(([n, l]) => `<button type="button" data-d="${n}" class="${S.schedule.days.includes(n) ? "on" : ""}">${l}</button>`).join("");
+    $("#time").value = S.schedule.time;
+    $("#chSlack").checked = !!S.schedule.slack; $("#chEmail").checked = !!S.schedule.email; $("#chTeam").checked = !!S.schedule.team;
+    $("#chEmailAddr").textContent = S.email;
+    const nx = nextRun();
+    const ch = [S.schedule.slack && "Slack", S.schedule.email && "e-mail", S.schedule.team && "osobné brífingy tímu"].filter(Boolean);
+    $("#autoText").innerHTML = (S.automation.active
+      ? `<b>Zapnuté.</b> Naplánovaná úloha v Claude si pred každým odoslaním prečíta toto nastavenie.`
+      : `<b>Zatiaľ nezapnuté.</b> Nastavenie sa ukladá. Ranné odosielanie podľa neho spustí naplánovaná úloha v Claude, keď sa zapne.`) +
+      `<div class="note">${nx && ch.length ? `Najbližší termín podľa nastavenia: <b>${esc(nx)}</b> · ${esc(ch.join(", "))}` : "Vyberte aspoň jeden deň a kanál."}</div>`;
+  }
+  function bindSchedule() {
+    $("#days").addEventListener("click", e => { const d = e.target.dataset.d; if (d == null) return; const n = +d; const a = S.schedule.days; const i = a.indexOf(n); i >= 0 ? a.splice(i, 1) : a.push(n); renderSchedule(); save(); });
+    $("#time").addEventListener("change", e => { if (/^\d\d:\d\d$/.test(e.target.value)) { S.schedule.time = e.target.value; renderSchedule(); save(); } });
+    [["#chSlack", "slack"], ["#chEmail", "email"], ["#chTeam", "team"]].forEach(([id, k]) => $(id).addEventListener("change", e => { S.schedule[k] = e.target.checked; renderSchedule(); save(); }));
+  }
+  const CONN_ROWS = [
+    { s: "Slack", use: "Doručenie do #first-mate-demo", check: () => call("Slack", "slack_read_channel", { channel_id: FM.SLACK_CHANNEL, limit: 1 }) },
+    { s: "Gmail", use: "Doručenie e-mailov", check: null },
+    { s: "Claude AI", use: "Interpretácia a návrh krokov", check: null }
+  ];
+  function renderConnTable() {
+    const body = $("#connBody"); if (!body) return;
+    body.innerHTML = CONN_ROWS.map((r, i) => {
+      const s = r.s === "Claude AI" ? (sample ? "connected" : (st.capsReady ? "na" : "unknown")) : (st.conn[r.s] || "unknown");
+      return `<tr><td><b>${esc(r.s)}</b></td><td class="note" style="margin:0">${esc(r.use)}</td><td><span class="chip"><i class="dot ${s === "connected" ? "ok" : (s === "bad" || s === "missing" ? "bad" : "")}"></i>${CONN_LBL[s] || s}</span></td><td class="mono" style="font-size:13px">${st.lastOk[r.s] ? hm(st.lastOk[r.s]) : "–"}</td><td style="text-align:right">${r.check ? `<button class="btn small ghost" data-chk="${i}">Overiť</button>` : ""}<div class="note" id="chk-${i}" style="margin:6px 0 0"></div></td></tr>`;
+    }).join("");
+  }
+  function bindConn() {
+    $("#connBody").addEventListener("click", async e => {
+      const i = e.target.dataset.chk; if (i == null) return;
+      const r = CONN_ROWS[+i]; e.target.disabled = true;
+      try { await r.check(); renderConnTable(); const n = $("#chk-" + i); if (n) n.textContent = "Funguje · " + hm(Date.now()); }
+      catch (err) { renderConnTable(); const n = $("#chk-" + i); if (n) n.textContent = errText(err, r.s); }
+    });
+  }
+
+  // ---------- náhľad a história ----------
+  const EMO = { ":sunny:": "☀️", ":red_circle:": "🔴", ":large_yellow_circle:": "🟡", ":large_green_circle:": "🟢" };
+  function slackHtml(txt) {
+    return esc(txt).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/(^|\n)_(.+?)_(?=\n|$)/g, "$1<i>$2</i>").replace(/:[a-z_]+:/g, m => EMO[m] || m);
+  }
+  function renderPreview() {
+    const pv = $("#pv");
+    if (!st.brief) return;
+    $("#pvInfo").textContent = `${dataLabel()} · ${hm(st.dataAt)} · ${st.texts.ai ? "text napísala AI" : "pravidlový text (" + (st.aiWhy || "AI neodpovedala") + ")"} · ${st.brief.dayLabel}`;
+    if (st.pv === "email") pv.innerHTML = FM.emailPreview(st.brief, st.texts);
+    else pv.innerHTML = `<div class="slackpv"><div class="who"><div class="av">FM</div><div><span class="nm">First Mate</span><span class="app">APP</span> <span class="note">${hm(st.briefAt)}</span></div></div>${slackHtml(FM.slackText(st.brief, st.texts))}</div>`;
+  }
+  function renderLog() {
+    const b = $("#logBody");
+    if (!st.log.length) { b.innerHTML = `<tr><td colspan="3" class="note">Zatiaľ nič neodišlo.</td></tr>`; return; }
+    b.innerHTML = st.log.map(l => { const lp = FM.localParts(l.at); return `<tr><td class="mono" style="font-size:13px">${FM.dm(lp.date)} ${lp.hm}</td><td>${esc(l.kanal)}</td><td>${esc(l.sprava)}</td></tr>`; }).join("");
+  }
+
+  // ---------- štart ----------
+  function renderAll() {
+    const lp = FM.localParts(Date.now());
+    $("#today").textContent = `${FM.WDL[lp.wd]} ${FM.dm(lp.date)} ${lp.date.slice(0, 4)}`;
+    $("#emailTo").value = S.email;
+    renderTeam(); renderSignals(); renderSchedule(); renderConn(); renderLog();
+  }
+  function bind() {
+    $("#btnSlack").addEventListener("click", sendSlack);
+    $("#btnEmail").addEventListener("click", sendEmail);
+    $("#emailTo").addEventListener("input", e => { e.target.classList.remove("err"); $("#emailErr").classList.add("hidden"); });
+    $("#btnRecalc").addEventListener("click", recalc);
+    $$(".tabs2 button").forEach(b => b.addEventListener("click", () => { st.pv = b.dataset.pv; $$(".tabs2 button").forEach(x => x.classList.toggle("on", x === b)); renderPreview(); }));
+    bindTeam(); bindSignals(); bindSchedule(); bindConn();
+  }
+  async function boot() {
+    route(); bind(); bindDataBar(); renderAll();
+    try { lock(true); await loadData(null); updateSignalNow(); $("#btnLoad").textContent = `Načítané ${hm(st.dataAt)} · obnoviť`; }
+    catch (e) { $("#sigSaved").textContent = errText(e, "Dáta"); }
+    finally { lock(false); }
+    const C = window.claude;
+    if (!C || typeof C.use !== "function") { st.capsReady = true; SERVERS.forEach(s => st.conn[s] = "na"); renderConn(); return; }
+    const [d, m, s] = await Promise.all([C.use("db"), C.use("mcp"), C.use("sample")].map(p => Promise.resolve(p).catch(() => null)));
+    db = d; mcp = m; sample = s; st.capsReady = true;
+    if (db) await loadSettings();
+    renderAll();
+    await refreshConn();
+    if (st.data) updateSignalNow();
+  }
+  boot();
+})();
+
+</script>
+</body>
+</html>

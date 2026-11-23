@@ -1,0 +1,15 @@
+﻿id;tranza_id;typ;popis;ciel;splnene;zodpovedny;created_at
+PC01;T-PL-4;predpredaj_pct;Predané byty (zmluvy o budúcej) aspoň 60 %;60;;Riaditeľ predaja;2026-11-19T18:30
+PC02;T-PL-4;krytie_x;Krytie úveru zmluvami po čerpaní aspoň 1,45×;1,45;;Riaditeľ predaja;2026-11-19T18:30
+PC03;T-PL-4;manualne;Potvrdenie technického dozoru o dokončení hrubej stavby;;ano;Stavbyvedúci;2026-11-19T18:30
+PC04;T-PL-4;manualne;Aktualizovaný rozpočet potvrdený technickým dozorom;;nie;Finančný riaditeľ;2026-11-19T18:30
+PC05;T-PL-5;predpredaj_pct;Predané byty (zmluvy o budúcej) aspoň 80 %;80;;Riaditeľ predaja;2026-11-19T18:30
+PC06;T-PL-5;krytie_x;Krytie úveru zmluvami po čerpaní aspoň 1,45×;1,45;;Riaditeľ predaja;2026-11-19T18:30
+PC07;T-PL-5;manualne;Potvrdenie technického dozoru o 70 % dokončenia technických zariadení;;nie;Stavbyvedúci;2026-11-19T18:30
+PC08;T-NZ-2;predpredaj_pct;Predané byty (zmluvy o budúcej) aspoň 30 %;30;;Riaditeľ predaja;2026-11-19T18:30
+PC09;T-NZ-2;krytie_x;Krytie úveru zmluvami po čerpaní aspoň 1,0×;1;;Riaditeľ predaja;2026-11-19T18:30
+PC10;T-NZ-2;vlastny_kapital_eur;Vložený vlastný kapitál aspoň 800 000 €;800000;;Finančný riaditeľ;2026-11-19T18:30
+PC11;T-NZ-2;manualne;Potvrdenie technického dozoru o dokončení základov;;nie;Stavbyvedúci;2026-11-19T18:30
+PC12;T-NZ-3;predpredaj_pct;Predané byty (zmluvy o budúcej) aspoň 45 %;45;;Riaditeľ predaja;2026-11-19T18:30
+PC13;T-NZ-3;krytie_x;Krytie úveru zmluvami po čerpaní aspoň 1,1×;1,1;;Riaditeľ predaja;2026-11-19T18:30
+PC14;T-NZ-4;predpredaj_pct;Predané byty (zmluvy o budúcej) aspoň 60 %;60;;Riaditeľ predaja;2026-11-19T18:30

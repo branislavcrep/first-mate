@@ -1,0 +1,411 @@
+{
+  "verzia": "2026-11-19 (financie)",
+  "poznamka_pre_autora": "Tipy pre panel „First Mate · môj panel“. Pole „overenie“ sa klientovi nezobrazuje: je to záznam, čo dáta na otázku odpovedajú (CSV z exportu 19. 11. 2026 + simulované finančné súbory, dátumy posunuté k 19. 11. 2026). Nový tip: pridajte objekt s novým id; id existujúcich tipov nemeňte, viaže sa na ne stav „Vyskúšané“.",
+  "urovne": [
+    {
+      "id": "prve-kroky",
+      "nazov": "Prvé kroky"
+    },
+    {
+      "id": "kazdodenna",
+      "nazov": "Každodenná práca"
+    },
+    {
+      "id": "pokrocile",
+      "nazov": "Pokročilé"
+    },
+    {
+      "id": "hromadne",
+      "nazov": "Hromadné akcie"
+    }
+  ],
+  "temy": [
+    {
+      "id": "vseobecne",
+      "nazov": "Všeobecné"
+    },
+    {
+      "id": "banka",
+      "nazov": "Podmienka banky"
+    },
+    {
+      "id": "zalohy",
+      "nazov": "Zálohy"
+    },
+    {
+      "id": "rezervacie",
+      "nazov": "Rezervácie"
+    },
+    {
+      "id": "dopyty",
+      "nazov": "Dopyty a predajcovia"
+    },
+    {
+      "id": "obhliadky",
+      "nazov": "Obhliadky"
+    },
+    {
+      "id": "klientske",
+      "nazov": "Klientske zmeny"
+    },
+    {
+      "id": "cennik",
+      "nazov": "Ležiaky a cenník"
+    },
+    {
+      "id": "priestory",
+      "nazov": "Obchodné priestory"
+    },
+    {
+      "id": "uver",
+      "nazov": "Úver a tranže"
+    },
+    {
+      "id": "rozpocet",
+      "nazov": "Rozpočet a rezerva"
+    },
+    {
+      "id": "vynosnost",
+      "nazov": "Výnosnosť a stres test"
+    }
+  ],
+  "miesta": {
+    "cowork": "Claude · Cowork, príkaz /first-mate",
+    "brifing": "Claude · Cowork, príkaz /first-mate-brifing",
+    "reset": "Claude · Cowork, príkaz /first-mate-reset",
+    "slack": "Vlákno brífingu v Slacku, potom v Claude /first-mate pozri Slack",
+    "panel": "First Mate · môj panel, záložka Brífing"
+  },
+  "tipy": [
+    {
+      "id": "t01",
+      "uroven": "prve-kroky",
+      "tema": "vseobecne",
+      "nazov": "Ranný brífing na požiadanie",
+      "otazka": "/first-mate-brifing Pripravte ranný brífing a ukážte mi ho pred odoslaním.",
+      "kde": "brifing",
+      "co_urobi": "Prečíta dáta, vypočíta osem signálov, napíše brífing, uloží ho do priečinka brifingy a po vašom súhlase ho pošle do Slacku.",
+      "meni_data": false,
+      "overenie": "S1–S8 = 1/3/4/4/3/5/4/1, hlavná téma Podmienka banky, NZ chýbajú 3 zmluvy."
+    },
+    {
+      "id": "t02",
+      "uroven": "prve-kroky",
+      "tema": "vseobecne",
+      "nazov": "Čo je dnes najdôležitejšie",
+      "otazka": "/first-mate Čo je dnes najdôležitejšie a prečo? Stačia tri body.",
+      "kde": "cowork",
+      "co_urobi": "Zoradí signály podľa dopadu na peniaze a termíny a ku každému povie, kto má čo urobiť.",
+      "meni_data": false,
+      "overenie": "Banka NZ (59 dní, chýbajú 3), zálohy 209 500 € po splatnosti, vypršaná rezervácia PL-B-402."
+    },
+    {
+      "id": "t03",
+      "uroven": "prve-kroky",
+      "tema": "banka",
+      "nazov": "Vysvetlenie čísla z brífingu",
+      "otazka": "Prečo brífing píše, že Novým Záhradám Senec chýbajú 3 zmluvy pre banku? Ako ste to vypočítali?",
+      "kde": "cowork",
+      "co_urobi": "Ukáže výpočet krok po kroku: počet bytov, koľko je predaných, koľko percent chce banka a dokedy.",
+      "meni_data": false,
+      "overenie": "20 bytov, predané 3 (ZoBZ), banka 30 % = 6 bytov do 17. 1. 2027, chýbajú 3."
+    },
+    {
+      "id": "t04",
+      "uroven": "prve-kroky",
+      "tema": "vseobecne",
+      "nazov": "Ako sa predáva projekt",
+      "otazka": "Ako je na tom Rezidencia Pod Lesom oproti plánu predaja? Koľko bytov je predaných, rezervovaných a voľných?",
+      "kde": "cowork",
+      "co_urobi": "Spočíta predané, rezervované a voľné byty a porovná ich s plánom k dnešku.",
+      "meni_data": false,
+      "overenie": "PL 22 z 32 (68,8 %) pri pláne 70 %, rezervované 3, voľné 7 (z toho 1 vzorový byt)."
+    },
+    {
+      "id": "t06",
+      "uroven": "prve-kroky",
+      "tema": "vseobecne",
+      "nazov": "Otázka priamo vo vlákne Slacku",
+      "otazka": "Kto z predajcov má najviac otvorených dopytov?",
+      "kde": "slack",
+      "co_urobi": "Napíšte otázku do vlákna ranného brífingu. V Claude potom zadajte „/first-mate pozri Slack“: First Mate otázku nájde, odpovie a navrhne odpoveď do vlákna.",
+      "meni_data": false,
+      "overenie": "Michal Hrnčiar 14 otvorených dopytov, Zuzana Polakovičová 11, Martina Vargová 2."
+    },
+    {
+      "id": "t31",
+      "uroven": "prve-kroky",
+      "tema": "vynosnost",
+      "nazov": "Finančný brífing e-mailom",
+      "otazka": "Brífing → karta „Finančný brífing“ → Komu: vaša adresa → Poslať finančný brífing → potvrďte v okne",
+      "kde": "panel",
+      "co_urobi": "Panel spočíta finančné signály (úver, tranže, rozpočet, výnosnosť), Claude napíše finančný brífing a po vašom potvrdení v okne ho pošle e-mailom. Do Slacku nejde.",
+      "meni_data": false,
+      "overenie": "Vyžaduje nahraté aj finančné súbory (5). Brífing: T-PL-4 a T-NZ-2 s nesplnenými podmienkami, IRR VK NZ 15,0 % pod cieľom 18 %."
+    },
+    {
+      "id": "t07",
+      "uroven": "kazdodenna",
+      "tema": "zalohy",
+      "nazov": "Zálohy po splatnosti",
+      "otazka": "Ktoré zálohy sú po splatnosti, kto má jednotky na starosti a o akú sumu ide spolu?",
+      "kde": "cowork",
+      "co_urobi": "Vypíše jednotky s neuhradenou zálohou po splatnosti, predajcu, sumu a počet dní po splatnosti.",
+      "meni_data": false,
+      "overenie": "PL-A-204 (87 600 €, M. Hrnčiar), PL-B-102 (74 700 €) a PL-B-303 (47 200 €, M. Vargová), spolu 209 500 €, 8 dní po splatnosti."
+    },
+    {
+      "id": "t08",
+      "uroven": "kazdodenna",
+      "tema": "rezervacie",
+      "nazov": "Končiace rezervácie",
+      "otazka": "Ktoré rezervácie končia do 5 dní alebo už vypršali a čo s nimi navrhujete?",
+      "kde": "cowork",
+      "co_urobi": "Ukáže rezervácie s dátumom konca, záujemcu a jeho ďalší krok a pri každej navrhne predĺžiť, podpísať zmluvu o budúcej alebo uvoľniť.",
+      "meni_data": false,
+      "overenie": "PL-B-402 vypršala 17. 11., PL-A-303 do 21. 11., PL-B-204 do 22. 11., NZ-302 do 23. 11."
+    },
+    {
+      "id": "t09",
+      "uroven": "kazdodenna",
+      "tema": "dopyty",
+      "nazov": "Dopyty bez reakcie",
+      "otazka": "Na ktoré dopyty nikto nezareagoval viac ako 24 hodín? Kto ich má a odkiaľ prišli?",
+      "kde": "cowork",
+      "co_urobi": "Vypíše čakajúce dopyty s menom záujemcu, jednotkou, predajcom, zdrojom a počtom hodín bez reakcie.",
+      "meni_data": false,
+      "overenie": "4 dopyty: DD001, DD002, DD003 (M. Hrnčiar), DD004 (Z. Polakovičová); najdlhšie DD001, 78 h."
+    },
+    {
+      "id": "t10",
+      "uroven": "kazdodenna",
+      "tema": "obhliadky",
+      "nazov": "Obhliadky bez ďalšieho kroku",
+      "otazka": "Ktorí záujemcovia po obhliadke nemajú dohodnutý ďalší krok a čo im predajca môže ponúknuť?",
+      "kde": "cowork",
+      "co_urobi": "Nájde obhliadky bez naplánovaného ďalšieho kroku, ukáže spätnú väzbu a ku každej navrhne konkrétny krok.",
+      "meni_data": false,
+      "overenie": "DD022 Andrej Baláž (NZ-101, 12 dní), DD033 Oľga Kubíková (PL-A-303), DD030 Ladislav Uhrin (PL-A-401), všetkých má M. Hrnčiar."
+    },
+    {
+      "id": "t11",
+      "uroven": "kazdodenna",
+      "tema": "klientske",
+      "nazov": "Klientske zmeny pred uzávierkou",
+      "otazka": "Ktorí kupujúci v Rezidencii Pod Lesom sa ešte nevyjadrili ku klientskym zmenám a koľko dní zostáva do uzávierky?",
+      "kde": "cowork",
+      "co_urobi": "Vypíše jednotky bez rozhodnutia o klientskych zmenách, predajcu a dátum uzávierky.",
+      "meni_data": false,
+      "overenie": "5 jednotiek (PL-A-104, PL-A-302, PL-B-104, PL-B-302, PL-B-404), všetky M. Vargová, uzávierka 7. 12., 18 dní."
+    },
+    {
+      "id": "t13",
+      "uroven": "kazdodenna",
+      "tema": "zalohy",
+      "nazov": "Koncept e-mailu kupujúcemu",
+      "otazka": "Napíšte koncept zdvorilej upomienky kupujúcemu jednotky PL-A-204 kvôli zálohe po splatnosti.",
+      "kde": "cowork",
+      "co_urobi": "Napíše koncept s jednotkou, sumou a dátumom splatnosti. Nič neodosiela, text si skopírujete do vlastného e-mailu.",
+      "meni_data": false,
+      "overenie": "PL-A-204, záloha 87 600 €, splatná 11. 11. Meno kupujúceho dáta nemajú, koncept ostane s oslovením „Vážený klient“."
+    },
+    {
+      "id": "t14",
+      "uroven": "kazdodenna",
+      "tema": "zalohy",
+      "nazov": "Zápis uhradenej zálohy",
+      "otazka": "Kupujúci PL-B-303 dnes zaplatil zálohu. Zapíšte to.",
+      "kde": "cowork",
+      "co_urobi": "Ukáže zmenu (záloha uhradená: Nie → Áno) a zapíše ju až po vašom potvrdení. Zmena sa objaví v zmeny.md a v ďalšom brífingu.",
+      "meni_data": true,
+      "overenie": "PL-B-303 zaloha_uhradena Nie → Áno; S2 klesne z 3 na 2 (162 300 €)."
+    },
+    {
+      "id": "t15",
+      "uroven": "kazdodenna",
+      "tema": "rezervacie",
+      "nazov": "Predĺženie rezervácie",
+      "otazka": "Predĺžte rezerváciu PL-B-402 o 7 dní, záujemca potvrdil podpis zmluvy o budúcej.",
+      "kde": "cowork",
+      "co_urobi": "Navrhne nový dátum konca rezervácie, po potvrdení ho zapíše a zaznamená dôvod.",
+      "meni_data": true,
+      "overenie": "PL-B-402 rezervacia_do 17. 11. → 26. 11. (od dnes + 7); S3 klesne zo 4 na 3. Otestované."
+    },
+    {
+      "id": "t16",
+      "uroven": "kazdodenna",
+      "tema": "vseobecne",
+      "nazov": "Odpoveď do vlákna",
+      "otazka": "/first-mate pozri Slack a navrhnite odpoveď do vlákna brífingu.",
+      "kde": "slack",
+      "co_urobi": "Prečíta vlákno brífingu, odpovie na poslednú nevybavenú otázku, ukáže text odpovede a pošle ho do vlákna až po vašom súhlase.",
+      "meni_data": false,
+      "overenie": "Vyžaduje brífing v #first-mate-developer a otázku vo vlákne (napr. tip t06)."
+    },
+    {
+      "id": "t32",
+      "uroven": "kazdodenna",
+      "tema": "uver",
+      "nazov": "Tranže a podmienky čerpania",
+      "otazka": "Ktoré tranže úveru čerpáme v najbližších 60 dňoch a ktoré podmienky ešte nie sú splnené? Kto ich má na starosti?",
+      "kde": "cowork",
+      "co_urobi": "Vypíše plánované tranže s dátumom a sumou, pri každej podmienky banky, čo chýba (zmluvy, eurá, potvrdenia) a kto zodpovedá.",
+      "meni_data": false,
+      "overenie": "T-PL-4 (1,2 mil. €, o 23 dní): krytie po čerpaní 1,39× z 1,45× (chýba 319 500 €, 2 zmluvy), chýba rozpočet potvrdený technickým dozorom. T-NZ-2 (600 000 €, o 43 dní): 15 % predaných z 30 %, krytie 0,78× z 1,0×, potvrdenie dozoru o základoch."
+    },
+    {
+      "id": "t34",
+      "uroven": "kazdodenna",
+      "tema": "rozpocet",
+      "nazov": "Rozpočet a rezerva",
+      "otazka": "Ako sme na tom s rozpočtom a rezervou v Rezidencii Pod Lesom? Ktoré položky rezervu minuli a koľko nákladov ešte zostáva?",
+      "kde": "cowork",
+      "co_urobi": "Ukáže položky nad rozpočtom, minutú rezervu oproti dokončeniu stavby a náklady do dokončenia (bez DPH).",
+      "meni_data": false,
+      "overenie": "PL: rezerva 300 000 € minutá na 106,7 % pri 53,9 % dokončenia stavby; TZB +14,5 %, fasáda a strecha +10 %; do dokončenia 2,72 mil. € bez DPH."
+    },
+    {
+      "id": "t37",
+      "uroven": "kazdodenna",
+      "tema": "uver",
+      "nazov": "Zápis splnenej podmienky",
+      "otazka": "Technický dozor potvrdil aktualizovaný rozpočet Rezidencie Pod Lesom (podmienka pre 4. tranžu). Zapíšte to.",
+      "kde": "cowork",
+      "co_urobi": "Ukáže zmenu (podmienka PC04: nesplnená → splnená), zapíše ju po vašom potvrdení a povie, čo ešte pri tranži chýba.",
+      "meni_data": true,
+      "overenie": "PC04 splnene nie → ano; T-PL-4 z 2 na 1 nesplnenú podmienku (zostáva krytie 1,39× z 1,45×). Otestované."
+    },
+    {
+      "id": "t17",
+      "uroven": "pokrocile",
+      "tema": "banka",
+      "nazov": "Kto prinesie zmluvy pre banku",
+      "otazka": "Ktorí záujemcovia môžu Novým Záhradám Senec najrýchlejšie priniesť zmluvy o budúcej pre banku?",
+      "kde": "cowork",
+      "co_urobi": "Zoradí rezervácie a záujemcov po obhliadke podľa toho, ako blízko sú k podpisu, a navrhne, s kým hovoriť ako prvým.",
+      "meni_data": false,
+      "overenie": "NZ-302 (D. Vavrová, rezervácia do 23. 11.), po obhliadke zvažujú DD013, DD019, DD024, dohodnuté obhliadky DD026, DD012, DD021, DD023 (20. až 25. 11.)."
+    },
+    {
+      "id": "t18",
+      "uroven": "pokrocile",
+      "tema": "banka",
+      "nazov": "Stihne NZ podmienku banky",
+      "otazka": "Koľko zmlúv týždenne musia Nové Záhrady Senec podpísať, aby splnili podmienku banky? Stíhajú to pri tempe za posledných 30 dní?",
+      "kde": "cowork",
+      "co_urobi": "Porovná potrebné tempo do termínu banky so skutočným tempom predaja a povie, aká veľká je rezerva.",
+      "meni_data": false,
+      "overenie": "3 zmluvy za 59 dní (8,4 týždňa) = 0,36 týždenne; za 30 dní pribudli 2 (≈ 0,47 týždenne), tempo tesne stačí."
+    },
+    {
+      "id": "t19",
+      "uroven": "pokrocile",
+      "tema": "vseobecne",
+      "nazov": "Porovnanie v čase",
+      "otazka": "Koľko bytov sme predali za posledných 30 dní v porovnaní s predchádzajúcimi 30 dňami? A po mesiacoch od začiatku predaja?",
+      "kde": "cowork",
+      "co_urobi": "Spočíta predaje podľa dátumu zmeny stavu a ukáže trend po mesiacoch.",
+      "meni_data": false,
+      "overenie": "Posledných 30 dní 2 (NZ-203, NZ-305), predchádzajúcich 30 dní 2 (PL-B-401, NZ-103); najsilnejší mesiac 7 predajov."
+    },
+    {
+      "id": "t20",
+      "uroven": "pokrocile",
+      "tema": "cennik",
+      "nazov": "Prečo stoja ležiaky",
+      "otazka": "Prečo sa nepredávajú 2-izbové byty na sever v Rezidencii Pod Lesom? Čo hovoria záujemcovia?",
+      "kde": "cowork",
+      "co_urobi": "Spojí zobrazenia inzerátov, dopyty a spätnú väzbu z obhliadok a pomenuje spoločný dôvod.",
+      "meni_data": false,
+      "overenie": "PL-A-201, PL-B-201, PL-B-101, PL-A-101: 163 až 224 zobrazení, 0 dopytov za 30 dní; spätná väzba „Výhľad na parkovisko“."
+    },
+    {
+      "id": "t21",
+      "uroven": "pokrocile",
+      "tema": "cennik",
+      "nazov": "Čo ak zľava",
+      "otazka": "Čo ak dáme na ležiaky zľavu 5 %? Aký bude dopad na tržbu a na cenu za m² oproti konkurencii?",
+      "kde": "cowork",
+      "co_urobi": "Prepočíta nové ceny, rozdiel v tržbe a cenu za m² oproti priemeru konkurencie. Nič nezapisuje.",
+      "meni_data": false,
+      "overenie": "881 200 € → 837 100 € (−44 100 €); ceny za m² už dnes pod konkurenciou 4 250 €/m²."
+    },
+    {
+      "id": "t23",
+      "uroven": "pokrocile",
+      "tema": "priestory",
+      "nazov": "Obchodný priestor: kúpa alebo nájom",
+      "otazka": "Oplatí sa PL-OP2 predávať, alebo radšej prenajať? Čo chcú záujemcovia?",
+      "kde": "cowork",
+      "co_urobi": "Spočíta dopyty podľa typu záujmu, zhrnie spätnú väzbu a odporučí ďalší postup.",
+      "meni_data": false,
+      "overenie": "PL-OP2 v ponuke 364 dní, 6 dopytov, všetky Nájom (kaviareň, ambulancia na 5 rokov)."
+    },
+    {
+      "id": "t33",
+      "uroven": "pokrocile",
+      "tema": "uver",
+      "nazov": "Stihneme čerpať včas",
+      "otazka": "Stihnú Nové Záhrady Senec splniť podmienky 2. tranže v termíne? Ak nie, kedy pri dnešnom tempe a koľko vlastného kapitálu nás bude stáť oneskorenie?",
+      "kde": "cowork",
+      "co_urobi": "Porovná chýbajúce zmluvy s tempom predaja, odhadne dátum splnenia a prepočíta, koľko vlastných zdrojov treba navyše, ak sa čerpanie posunie.",
+      "meni_data": false,
+      "overenie": "T-NZ-2: chýbajú 3 zmluvy, tempo 1 mesačne (treba 2,12), splnenie okolo 19. 2. 2027, o 49 dní neskôr, +33 800 € vlastného kapitálu."
+    },
+    {
+      "id": "t35",
+      "uroven": "pokrocile",
+      "tema": "vynosnost",
+      "nazov": "Výnosnosť projektov",
+      "otazka": "Aké je IRR vlastného kapitálu v oboch projektoch oproti biznis plánu a cieľu 18 %? Čo ho najviac ovplyvňuje?",
+      "kde": "cowork",
+      "co_urobi": "Porovná IRR projektu a vlastného kapitálu (plán, aktuálny odhad, cieľ) a rozloží rozdiel na predaj a náklady.",
+      "meni_data": false,
+      "overenie": "PL IRR VK 23,9 % (plán 22,4 %), NZ 15,0 % (plán 21,4 %, cieľ 18 %); pri NZ predaj znižuje IRR projektu o 4,6 p. b."
+    },
+    {
+      "id": "t36",
+      "uroven": "pokrocile",
+      "tema": "vynosnost",
+      "nazov": "Stres test",
+      "otazka": "Ukážte stres test pre Nové Záhrady Senec. Ktorý scenár je najhorší a čo by sme mali urobiť, aby sme sa mu vyhli?",
+      "kde": "cowork",
+      "co_urobi": "Ukáže IRR a zisk pri nižších cenách, vyšších nákladoch, neskoršej kolaudácii a vyššom úroku a navrhne, na čo sa zamerať.",
+      "meni_data": false,
+      "overenie": "NZ pod cieľom vo všetkých 5 scenároch; najhorší „všetko naraz“ IRR VK 0,9 %, zisk 19 632 €; samostatne najviac bolí pokles cien o 5 % (IRR VK 8,9 %)."
+    },
+    {
+      "id": "t26",
+      "uroven": "hromadne",
+      "tema": "dopyty",
+      "nazov": "Prerozdelenie dopytov",
+      "otazka": "Navrhnite prerozdelenie dopytov bez reakcie medzi predajcov podľa ich vyťaženosti a po mojom potvrdení ho zapíšte.",
+      "kde": "cowork",
+      "co_urobi": "Navrhne, ktorý dopyt komu presunúť a prečo, a po potvrdení zmení predajcu pri každom dopyte. Každá zmena sa zapíše do zmeny.md.",
+      "meni_data": true,
+      "overenie": "4 dopyty bez reakcie, M. Hrnčiar 14 otvorených a 31,2 h; napr. DD002 → Z. Polakovičová, DD001 a DD003 → M. Vargová."
+    },
+    {
+      "id": "t27",
+      "uroven": "hromadne",
+      "tema": "obhliadky",
+      "nazov": "Ďalší krok po všetkých obhliadkach",
+      "otazka": "Pri všetkých obhliadkach bez ďalšieho kroku navrhnite konkrétny krok a po mojom potvrdení nastavte follow-up na Naplánovaný.",
+      "kde": "cowork",
+      "co_urobi": "Navrhne krok pre každého záujemcu a po potvrdení zmení follow-up pri všetkých naraz.",
+      "meni_data": true,
+      "overenie": "DD022, DD033, DD030: follow_up Chýba → Naplánovaný; S5 klesne z 3 na 0."
+    },
+    {
+      "id": "t30",
+      "uroven": "hromadne",
+      "tema": "vseobecne",
+      "nazov": "Návrat na pôvodné dáta",
+      "otazka": "/first-mate-reset",
+      "kde": "reset",
+      "co_urobi": "Ukáže, čo sa obnoví, a po potvrdení vráti dáta do pôvodného stavu. Staré brífingy a záznam zmien presunie do archívu.",
+      "meni_data": true,
+      "overenie": "data/ = data-zaloha/ bajt po bajte, brífingy a zmeny.md v archiv/. Otestované."
+    }
+  ]
+}

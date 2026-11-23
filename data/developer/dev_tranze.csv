@@ -1,0 +1,10 @@
+﻿id;uver_id;projekt_id;poradie;suma_eur;planovane_cerpanie;stav;datum_cerpania;ucel;created_at
+T-PL-1;U-PL;PL;1;1400000;2025-12-15;Načerpaná;2025-12-15;Hrubá stavba, 1. časť;2026-11-19T18:30
+T-PL-2;U-PL;PL;2;1500000;2026-04-15;Načerpaná;2026-04-17;Hrubá stavba, 2. časť;2026-11-19T18:30
+T-PL-3;U-PL;PL;3;1500000;2026-08-14;Načerpaná;2026-08-20;Hrubá stavba dokončenie, TZB;2026-11-19T18:30
+T-PL-4;U-PL;PL;4;1200000;2026-11-25;Plánovaná;;TZB, fasáda a strecha;2026-11-19T18:30
+T-PL-5;U-PL;PL;5;600000;2027-03-15;Plánovaná;;Dokončovacie práce, vonkajšie úpravy;2026-11-19T18:30
+T-NZ-1;U-NZ;NZ;1;350000;2026-10-15;Načerpaná;2026-10-16;Základy;2026-11-19T18:30
+T-NZ-2;U-NZ;NZ;2;600000;2026-12-15;Plánovaná;;Hrubá stavba, 1. časť;2026-11-19T18:30
+T-NZ-3;U-NZ;NZ;3;600000;2027-05-14;Plánovaná;;Hrubá stavba, TZB;2026-11-19T18:30
+T-NZ-4;U-NZ;NZ;4;550000;2027-10-15;Plánovaná;;Fasáda, dokončovacie práce;2026-11-19T18:30

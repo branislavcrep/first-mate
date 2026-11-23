@@ -1,0 +1,206 @@
+﻿id;projekt_id;rozpocet_id;polozka;typ;mesiac;plan_eur;skutocnost_eur;created_at
+CF0001;PL;R-PL-01;Pozemok;Náklad;2025-02-01;1350000;1350000;2026-11-19T18:30
+CF0002;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-01-01;45000;42000;2026-11-19T18:30
+CF0003;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-02-01;45000;42000;2026-11-19T18:30
+CF0004;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-03-01;45000;42000;2026-11-19T18:30
+CF0005;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-04-01;45000;42000;2026-11-19T18:30
+CF0006;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-05-01;45000;42000;2026-11-19T18:30
+CF0007;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-06-01;45000;42000;2026-11-19T18:30
+CF0008;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-07-01;45000;42000;2026-11-19T18:30
+CF0009;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-08-01;45000;42000;2026-11-19T18:30
+CF0010;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-09-01;45000;42000;2026-11-19T18:30
+CF0011;PL;R-PL-02;Projekcia a inžiniering;Náklad;2025-10-01;45000;42000;2026-11-19T18:30
+CF0012;PL;R-PL-03;Hrubá stavba;Náklad;2025-11-01;209091;210000;2026-11-19T18:30
+CF0013;PL;R-PL-03;Hrubá stavba;Náklad;2025-12-01;209091;210000;2026-11-19T18:30
+CF0014;PL;R-PL-03;Hrubá stavba;Náklad;2026-01-01;209091;210000;2026-11-19T18:30
+CF0015;PL;R-PL-03;Hrubá stavba;Náklad;2026-02-01;209091;210000;2026-11-19T18:30
+CF0016;PL;R-PL-03;Hrubá stavba;Náklad;2026-03-01;209091;210000;2026-11-19T18:30
+CF0017;PL;R-PL-03;Hrubá stavba;Náklad;2026-04-01;209091;210000;2026-11-19T18:30
+CF0018;PL;R-PL-03;Hrubá stavba;Náklad;2026-05-01;209091;210000;2026-11-19T18:30
+CF0019;PL;R-PL-03;Hrubá stavba;Náklad;2026-06-01;209091;210000;2026-11-19T18:30
+CF0020;PL;R-PL-03;Hrubá stavba;Náklad;2026-07-01;209091;210000;2026-11-19T18:30
+CF0021;PL;R-PL-03;Hrubá stavba;Náklad;2026-08-01;209091;210000;2026-11-19T18:30
+CF0022;PL;R-PL-03;Hrubá stavba;Náklad;2026-09-01;209091;210000;2026-11-19T18:30
+CF0023;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2026-06-01;100000;72000;2026-11-19T18:30
+CF0024;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2026-07-01;100000;72000;2026-11-19T18:30
+CF0025;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2026-08-01;100000;72000;2026-11-19T18:30
+CF0026;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2026-09-01;100000;72000;2026-11-19T18:30
+CF0027;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2026-10-01;100000;72000;2026-11-19T18:30
+CF0028;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2026-11-01;100000;;2026-11-19T18:30
+CF0029;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2026-12-01;100000;;2026-11-19T18:30
+CF0030;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2027-01-01;100000;;2026-11-19T18:30
+CF0031;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2027-02-01;100000;;2026-11-19T18:30
+CF0032;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2027-03-01;100000;;2026-11-19T18:30
+CF0033;PL;R-PL-04;Technické zariadenia budov (TZB);Náklad;2027-04-01;100000;;2026-11-19T18:30
+CF0034;PL;R-PL-05;Fasáda a strecha;Náklad;2026-08-01;75000;40000;2026-11-19T18:30
+CF0035;PL;R-PL-05;Fasáda a strecha;Náklad;2026-09-01;75000;40000;2026-11-19T18:30
+CF0036;PL;R-PL-05;Fasáda a strecha;Náklad;2026-10-01;75000;40000;2026-11-19T18:30
+CF0037;PL;R-PL-05;Fasáda a strecha;Náklad;2026-11-01;75000;;2026-11-19T18:30
+CF0038;PL;R-PL-05;Fasáda a strecha;Náklad;2026-12-01;75000;;2026-11-19T18:30
+CF0039;PL;R-PL-05;Fasáda a strecha;Náklad;2027-01-01;75000;;2026-11-19T18:30
+CF0040;PL;R-PL-05;Fasáda a strecha;Náklad;2027-02-01;75000;;2026-11-19T18:30
+CF0041;PL;R-PL-05;Fasáda a strecha;Náklad;2027-03-01;75000;;2026-11-19T18:30
+CF0042;PL;R-PL-06;Dokončovacie práce;Náklad;2026-12-01;121429;;2026-11-19T18:30
+CF0043;PL;R-PL-06;Dokončovacie práce;Náklad;2027-01-01;121429;;2026-11-19T18:30
+CF0044;PL;R-PL-06;Dokončovacie práce;Náklad;2027-02-01;121429;;2026-11-19T18:30
+CF0045;PL;R-PL-06;Dokončovacie práce;Náklad;2027-03-01;121429;;2026-11-19T18:30
+CF0046;PL;R-PL-06;Dokončovacie práce;Náklad;2027-04-01;121429;;2026-11-19T18:30
+CF0047;PL;R-PL-06;Dokončovacie práce;Náklad;2027-05-01;121429;;2026-11-19T18:30
+CF0048;PL;R-PL-06;Dokončovacie práce;Náklad;2027-06-01;121429;;2026-11-19T18:30
+CF0049;PL;R-PL-07;Vonkajšie úpravy a prípojky;Náklad;2027-03-01;62500;;2026-11-19T18:30
+CF0050;PL;R-PL-07;Vonkajšie úpravy a prípojky;Náklad;2027-04-01;62500;;2026-11-19T18:30
+CF0051;PL;R-PL-07;Vonkajšie úpravy a prípojky;Náklad;2027-05-01;62500;;2026-11-19T18:30
+CF0052;PL;R-PL-07;Vonkajšie úpravy a prípojky;Náklad;2027-06-01;62500;;2026-11-19T18:30
+CF0053;PL;R-PL-08;Marketing a predaj;Náklad;2025-10-01;9524;10769;2026-11-19T18:30
+CF0054;PL;R-PL-08;Marketing a predaj;Náklad;2025-11-01;9524;10769;2026-11-19T18:30
+CF0055;PL;R-PL-08;Marketing a predaj;Náklad;2025-12-01;9524;10769;2026-11-19T18:30
+CF0056;PL;R-PL-08;Marketing a predaj;Náklad;2026-01-01;9524;10769;2026-11-19T18:30
+CF0057;PL;R-PL-08;Marketing a predaj;Náklad;2026-02-01;9524;10769;2026-11-19T18:30
+CF0058;PL;R-PL-08;Marketing a predaj;Náklad;2026-03-01;9524;10769;2026-11-19T18:30
+CF0059;PL;R-PL-08;Marketing a predaj;Náklad;2026-04-01;9524;10769;2026-11-19T18:30
+CF0060;PL;R-PL-08;Marketing a predaj;Náklad;2026-05-01;9524;10769;2026-11-19T18:30
+CF0061;PL;R-PL-08;Marketing a predaj;Náklad;2026-06-01;9524;10769;2026-11-19T18:30
+CF0062;PL;R-PL-08;Marketing a predaj;Náklad;2026-07-01;9524;10769;2026-11-19T18:30
+CF0063;PL;R-PL-08;Marketing a predaj;Náklad;2026-08-01;9524;10769;2026-11-19T18:30
+CF0064;PL;R-PL-08;Marketing a predaj;Náklad;2026-09-01;9524;10769;2026-11-19T18:30
+CF0065;PL;R-PL-08;Marketing a predaj;Náklad;2026-10-01;9524;10772;2026-11-19T18:30
+CF0066;PL;R-PL-08;Marketing a predaj;Náklad;2026-11-01;9524;;2026-11-19T18:30
+CF0067;PL;R-PL-08;Marketing a predaj;Náklad;2026-12-01;9524;;2026-11-19T18:30
+CF0068;PL;R-PL-08;Marketing a predaj;Náklad;2027-01-01;9524;;2026-11-19T18:30
+CF0069;PL;R-PL-08;Marketing a predaj;Náklad;2027-02-01;9524;;2026-11-19T18:30
+CF0070;PL;R-PL-08;Marketing a predaj;Náklad;2027-03-01;9524;;2026-11-19T18:30
+CF0071;PL;R-PL-08;Marketing a predaj;Náklad;2027-04-01;9524;;2026-11-19T18:30
+CF0072;PL;R-PL-08;Marketing a predaj;Náklad;2027-05-01;9524;;2026-11-19T18:30
+CF0073;PL;R-PL-08;Marketing a predaj;Náklad;2027-06-01;9524;;2026-11-19T18:30
+CF0074;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-01-01;16667;;2026-11-19T18:30
+CF0075;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-02-01;16667;;2026-11-19T18:30
+CF0076;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-03-01;16667;;2026-11-19T18:30
+CF0077;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-04-01;16667;;2026-11-19T18:30
+CF0078;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-05-01;16667;;2026-11-19T18:30
+CF0079;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-06-01;16667;;2026-11-19T18:30
+CF0080;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-07-01;16667;;2026-11-19T18:30
+CF0081;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-08-01;16667;;2026-11-19T18:30
+CF0082;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-09-01;16667;;2026-11-19T18:30
+CF0083;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-10-01;16667;;2026-11-19T18:30
+CF0084;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-11-01;16667;;2026-11-19T18:30
+CF0085;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2026-12-01;16667;;2026-11-19T18:30
+CF0086;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2027-01-01;16667;;2026-11-19T18:30
+CF0087;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2027-02-01;16667;;2026-11-19T18:30
+CF0088;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2027-03-01;16667;;2026-11-19T18:30
+CF0089;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2027-04-01;16667;;2026-11-19T18:30
+CF0090;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2027-05-01;16667;;2026-11-19T18:30
+CF0091;PL;R-PL-09;Rezerva na nepredvídané náklady;Náklad;2027-06-01;16667;;2026-11-19T18:30
+CF0092;NZ;R-NZ-01;Pozemok;Náklad;2025-09-01;550000;550000;2026-11-19T18:30
+CF0093;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2025-10-01;16364;14545;2026-11-19T18:30
+CF0094;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2025-11-01;16364;14545;2026-11-19T18:30
+CF0095;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2025-12-01;16364;14545;2026-11-19T18:30
+CF0096;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2026-01-01;16364;14545;2026-11-19T18:30
+CF0097;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2026-02-01;16364;14545;2026-11-19T18:30
+CF0098;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2026-03-01;16364;14545;2026-11-19T18:30
+CF0099;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2026-04-01;16364;14545;2026-11-19T18:30
+CF0100;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2026-05-01;16364;14545;2026-11-19T18:30
+CF0101;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2026-06-01;16364;14545;2026-11-19T18:30
+CF0102;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2026-07-01;16364;14545;2026-11-19T18:30
+CF0103;NZ;R-NZ-02;Projekcia a inžiniering;Náklad;2026-08-01;16364;14550;2026-11-19T18:30
+CF0104;NZ;R-NZ-03;Hrubá stavba;Náklad;2026-09-01;79167;60000;2026-11-19T18:30
+CF0105;NZ;R-NZ-03;Hrubá stavba;Náklad;2026-10-01;79167;60000;2026-11-19T18:30
+CF0106;NZ;R-NZ-03;Hrubá stavba;Náklad;2026-11-01;79167;;2026-11-19T18:30
+CF0107;NZ;R-NZ-03;Hrubá stavba;Náklad;2026-12-01;79167;;2026-11-19T18:30
+CF0108;NZ;R-NZ-03;Hrubá stavba;Náklad;2027-01-01;79167;;2026-11-19T18:30
+CF0109;NZ;R-NZ-03;Hrubá stavba;Náklad;2027-02-01;79167;;2026-11-19T18:30
+CF0110;NZ;R-NZ-03;Hrubá stavba;Náklad;2027-03-01;79167;;2026-11-19T18:30
+CF0111;NZ;R-NZ-03;Hrubá stavba;Náklad;2027-04-01;79167;;2026-11-19T18:30
+CF0112;NZ;R-NZ-03;Hrubá stavba;Náklad;2027-05-01;79167;;2026-11-19T18:30
+CF0113;NZ;R-NZ-03;Hrubá stavba;Náklad;2027-06-01;79167;;2026-11-19T18:30
+CF0114;NZ;R-NZ-03;Hrubá stavba;Náklad;2027-07-01;79167;;2026-11-19T18:30
+CF0115;NZ;R-NZ-03;Hrubá stavba;Náklad;2027-08-01;79167;;2026-11-19T18:30
+CF0116;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-03-01;42000;;2026-11-19T18:30
+CF0117;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-04-01;42000;;2026-11-19T18:30
+CF0118;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-05-01;42000;;2026-11-19T18:30
+CF0119;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-06-01;42000;;2026-11-19T18:30
+CF0120;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-07-01;42000;;2026-11-19T18:30
+CF0121;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-08-01;42000;;2026-11-19T18:30
+CF0122;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-09-01;42000;;2026-11-19T18:30
+CF0123;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-10-01;42000;;2026-11-19T18:30
+CF0124;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-11-01;42000;;2026-11-19T18:30
+CF0125;NZ;R-NZ-04;Technické zariadenia budov (TZB);Náklad;2027-12-01;42000;;2026-11-19T18:30
+CF0126;NZ;R-NZ-05;Fasáda a strecha;Náklad;2027-06-01;27500;;2026-11-19T18:30
+CF0127;NZ;R-NZ-05;Fasáda a strecha;Náklad;2027-07-01;27500;;2026-11-19T18:30
+CF0128;NZ;R-NZ-05;Fasáda a strecha;Náklad;2027-08-01;27500;;2026-11-19T18:30
+CF0129;NZ;R-NZ-05;Fasáda a strecha;Náklad;2027-09-01;27500;;2026-11-19T18:30
+CF0130;NZ;R-NZ-05;Fasáda a strecha;Náklad;2027-10-01;27500;;2026-11-19T18:30
+CF0131;NZ;R-NZ-05;Fasáda a strecha;Náklad;2027-11-01;27500;;2026-11-19T18:30
+CF0132;NZ;R-NZ-05;Fasáda a strecha;Náklad;2027-12-01;27500;;2026-11-19T18:30
+CF0133;NZ;R-NZ-05;Fasáda a strecha;Náklad;2028-01-01;27500;;2026-11-19T18:30
+CF0134;NZ;R-NZ-06;Dokončovacie práce;Náklad;2027-09-01;42857;;2026-11-19T18:30
+CF0135;NZ;R-NZ-06;Dokončovacie práce;Náklad;2027-10-01;42857;;2026-11-19T18:30
+CF0136;NZ;R-NZ-06;Dokončovacie práce;Náklad;2027-11-01;42857;;2026-11-19T18:30
+CF0137;NZ;R-NZ-06;Dokončovacie práce;Náklad;2027-12-01;42857;;2026-11-19T18:30
+CF0138;NZ;R-NZ-06;Dokončovacie práce;Náklad;2028-01-01;42857;;2026-11-19T18:30
+CF0139;NZ;R-NZ-06;Dokončovacie práce;Náklad;2028-02-01;42857;;2026-11-19T18:30
+CF0140;NZ;R-NZ-06;Dokončovacie práce;Náklad;2028-03-01;42857;;2026-11-19T18:30
+CF0141;NZ;R-NZ-07;Vonkajšie úpravy a prípojky;Náklad;2028-01-01;26667;;2026-11-19T18:30
+CF0142;NZ;R-NZ-07;Vonkajšie úpravy a prípojky;Náklad;2028-02-01;26667;;2026-11-19T18:30
+CF0143;NZ;R-NZ-07;Vonkajšie úpravy a prípojky;Náklad;2028-03-01;26667;;2026-11-19T18:30
+CF0144;NZ;R-NZ-08;Marketing a predaj;Náklad;2026-06-01;3182;8000;2026-11-19T18:30
+CF0145;NZ;R-NZ-08;Marketing a predaj;Náklad;2026-07-01;3182;8000;2026-11-19T18:30
+CF0146;NZ;R-NZ-08;Marketing a predaj;Náklad;2026-08-01;3182;8000;2026-11-19T18:30
+CF0147;NZ;R-NZ-08;Marketing a predaj;Náklad;2026-09-01;3182;8000;2026-11-19T18:30
+CF0148;NZ;R-NZ-08;Marketing a predaj;Náklad;2026-10-01;3182;8000;2026-11-19T18:30
+CF0149;NZ;R-NZ-08;Marketing a predaj;Náklad;2026-11-01;3182;;2026-11-19T18:30
+CF0150;NZ;R-NZ-08;Marketing a predaj;Náklad;2026-12-01;3182;;2026-11-19T18:30
+CF0151;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-01-01;3182;;2026-11-19T18:30
+CF0152;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-02-01;3182;;2026-11-19T18:30
+CF0153;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-03-01;3182;;2026-11-19T18:30
+CF0154;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-04-01;3182;;2026-11-19T18:30
+CF0155;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-05-01;3182;;2026-11-19T18:30
+CF0156;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-06-01;3182;;2026-11-19T18:30
+CF0157;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-07-01;3182;;2026-11-19T18:30
+CF0158;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-08-01;3182;;2026-11-19T18:30
+CF0159;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-09-01;3182;;2026-11-19T18:30
+CF0160;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-10-01;3182;;2026-11-19T18:30
+CF0161;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-11-01;3182;;2026-11-19T18:30
+CF0162;NZ;R-NZ-08;Marketing a predaj;Náklad;2027-12-01;3182;;2026-11-19T18:30
+CF0163;NZ;R-NZ-08;Marketing a predaj;Náklad;2028-01-01;3182;;2026-11-19T18:30
+CF0164;NZ;R-NZ-08;Marketing a predaj;Náklad;2028-02-01;3182;;2026-11-19T18:30
+CF0165;NZ;R-NZ-08;Marketing a predaj;Náklad;2028-03-01;3182;;2026-11-19T18:30
+CF0166;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2026-09-01;7368;;2026-11-19T18:30
+CF0167;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2026-10-01;7368;;2026-11-19T18:30
+CF0168;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2026-11-01;7368;;2026-11-19T18:30
+CF0169;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2026-12-01;7368;;2026-11-19T18:30
+CF0170;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-01-01;7368;;2026-11-19T18:30
+CF0171;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-02-01;7368;;2026-11-19T18:30
+CF0172;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-03-01;7368;;2026-11-19T18:30
+CF0173;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-04-01;7368;;2026-11-19T18:30
+CF0174;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-05-01;7368;;2026-11-19T18:30
+CF0175;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-06-01;7368;;2026-11-19T18:30
+CF0176;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-07-01;7368;;2026-11-19T18:30
+CF0177;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-08-01;7368;;2026-11-19T18:30
+CF0178;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-09-01;7368;;2026-11-19T18:30
+CF0179;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-10-01;7368;;2026-11-19T18:30
+CF0180;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-11-01;7368;;2026-11-19T18:30
+CF0181;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2027-12-01;7368;;2026-11-19T18:30
+CF0182;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2028-01-01;7368;;2026-11-19T18:30
+CF0183;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2028-02-01;7368;;2026-11-19T18:30
+CF0184;NZ;R-NZ-09;Rezerva na nepredvídané náklady;Náklad;2028-03-01;7368;;2026-11-19T18:30
+CF0185;PL;;Príjmy z predaja (biznis plán);Príjem;2026-10-01;1072310;;2026-11-19T18:30
+CF0186;PL;;Príjmy z predaja (biznis plán);Príjem;2026-11-01;89359;;2026-11-19T18:30
+CF0187;PL;;Príjmy z predaja (biznis plán);Príjem;2026-12-01;89359;;2026-11-19T18:30
+CF0188;PL;;Príjmy z predaja (biznis plán);Príjem;2027-01-01;89359;;2026-11-19T18:30
+CF0189;PL;;Príjmy z predaja (biznis plán);Príjem;2027-02-01;89359;;2026-11-19T18:30
+CF0190;PL;;Príjmy z predaja (biznis plán);Príjem;2027-03-01;89359;;2026-11-19T18:30
+CF0191;PL;;Príjmy z predaja (biznis plán);Príjem;2027-04-01;89359;;2026-11-19T18:30
+CF0192;PL;;Príjmy z predaja (biznis plán);Príjem;2027-05-01;89359;;2026-11-19T18:30
+CF0193;PL;;Príjmy z predaja (biznis plán);Príjem;2027-06-01;89359;;2026-11-19T18:30
+CF0194;PL;;Príjmy z predaja (biznis plán);Príjem;2027-07-01;7148734;;2026-11-19T18:30
+CF0195;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-03-01;154062;;2026-11-19T18:30
+CF0196;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-04-01;22009;;2026-11-19T18:30
+CF0197;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-05-01;22009;;2026-11-19T18:30
+CF0198;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-06-01;22009;;2026-11-19T18:30
+CF0199;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-07-01;22009;;2026-11-19T18:30
+CF0200;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-08-01;22009;;2026-11-19T18:30
+CF0201;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-09-01;22009;;2026-11-19T18:30
+CF0202;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-10-01;22009;;2026-11-19T18:30
+CF0203;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-11-01;22009;;2026-11-19T18:30
+CF0204;NZ;;Príjmy z predaja (biznis plán);Príjem;2027-12-01;22009;;2026-11-19T18:30
+CF0205;NZ;;Príjmy z predaja (biznis plán);Príjem;2028-04-01;3169284;;2026-11-19T18:30

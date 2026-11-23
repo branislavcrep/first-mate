@@ -1,0 +1,19 @@
+﻿id;projekt_id;polozka;skupina;rozpocet_eur;zazmluvnene_eur;vyfakturovane_eur;dokoncenie_pct;odhad_na_dokoncenie_eur;dodavatel;aktualizovane;created_at
+R-PL-01;PL;Pozemok;Pozemok;1350000;1350000;1350000;100;1350000;Kúpna zmluva, Lamač;2026-10-31;2026-11-19T18:30
+R-PL-02;PL;Projekcia a inžiniering;Príprava;450000;470000;420000;90;470000;Atelier Kontúra s.r.o.;2026-10-31;2026-11-19T18:30
+R-PL-03;PL;Hrubá stavba;Výstavba;2300000;2340000;2310000;100;2340000;Stavby Hron a.s.;2026-10-31;2026-11-19T18:30
+R-PL-04;PL;Technické zariadenia budov (TZB);Výstavba;1100000;1240000;360000;30;1260000;TZB Servis Západ s.r.o.;2026-10-31;2026-11-19T18:30
+R-PL-05;PL;Fasáda a strecha;Výstavba;600000;650000;120000;20;660000;Fasády Morava s.r.o.;2026-10-31;2026-11-19T18:30
+R-PL-06;PL;Dokončovacie práce;Výstavba;850000;300000;0;0;880000;Interiér Plus s.r.o. (čiastočne);2026-10-31;2026-11-19T18:30
+R-PL-07;PL;Vonkajšie úpravy a prípojky;Výstavba;250000;0;0;0;250000;;2026-10-31;2026-11-19T18:30
+R-PL-08;PL;Marketing a predaj;Predaj;200000;160000;140000;65;210000;Agentúra Svetlík, portály;2026-10-31;2026-11-19T18:30
+R-PL-09;PL;Rezerva na nepredvídané náklady;Rezerva;300000;;;;;;2026-10-31;2026-11-19T18:30
+R-NZ-01;NZ;Pozemok;Pozemok;550000;550000;550000;100;550000;Kúpna zmluva, Senec;2026-10-31;2026-11-19T18:30
+R-NZ-02;NZ;Projekcia a inžiniering;Príprava;180000;180000;160000;90;180000;Atelier Kontúra s.r.o.;2026-10-31;2026-11-19T18:30
+R-NZ-03;NZ;Hrubá stavba;Výstavba;950000;965000;120000;12;960000;Stavby Hron a.s.;2026-10-31;2026-11-19T18:30
+R-NZ-04;NZ;Technické zariadenia budov (TZB);Výstavba;420000;0;0;0;420000;;2026-10-31;2026-11-19T18:30
+R-NZ-05;NZ;Fasáda a strecha;Výstavba;220000;0;0;0;220000;;2026-10-31;2026-11-19T18:30
+R-NZ-06;NZ;Dokončovacie práce;Výstavba;300000;0;0;0;300000;;2026-10-31;2026-11-19T18:30
+R-NZ-07;NZ;Vonkajšie úpravy a prípojky;Výstavba;80000;0;0;0;80000;;2026-10-31;2026-11-19T18:30
+R-NZ-08;NZ;Marketing a predaj;Predaj;70000;52000;40000;45;80000;Agentúra Svetlík, portály, billboard;2026-10-31;2026-11-19T18:30
+R-NZ-09;NZ;Rezerva na nepredvídané náklady;Rezerva;140000;;;;;;2026-10-31;2026-11-19T18:30

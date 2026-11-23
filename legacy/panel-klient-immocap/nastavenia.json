@@ -1,0 +1,24 @@
+{
+  "klient": "Immocap, a.s.",
+  "poznamka": "Nastavenia panela First Mate · môj panel. Pri inštalácii ich skill first-mate-panel prispôsobí e-mailovej službe klienta. Hodnoty {{…}} doplní panel pri odoslaní: {{prijemcovia}} = zoznam adries, {{prijemcovia_text}} = adresy oddelené čiarkou, {{prijemcovia_graph}} = [{emailAddress:{address}}], {{predmet}}, {{text}}, {{html}}.",
+  "slack": {
+    "server": "Slack",
+    "nastroj": "slack_send_message",
+    "workspace": "firstmate-booksmirror",
+    "kanaly": [
+      { "id": "C0CDY6XG8MR", "nazov": "#first-mate-developer" }
+    ]
+  },
+  "email": {
+    "sluzba": "Gmail",
+    "server": "Gmail",
+    "odoslat": {
+      "nastroj": "send_message",
+      "argumenty": { "to": "{{prijemcovia}}", "subject": "{{predmet}}", "body": "{{text}}", "htmlBody": "{{html}}" }
+    },
+    "koncept": {
+      "nastroj": "create_draft",
+      "argumenty": { "to": "{{prijemcovia}}", "subject": "{{predmet}}", "body": "{{text}}", "htmlBody": "{{html}}" }
+    }
+  }
+}
