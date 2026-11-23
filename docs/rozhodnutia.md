@@ -30,3 +30,9 @@ Datované. Neplatné sa nemažú, označia sa `NEPLATÍ od RRRR-MM-DD`.
 - Golden pokrýva celý výstup `FM.compute` a `FIN.compute` (nielen level a count) a aj pravidlové texty (`fallbackTexts`). Nové jadro musí dať rovnaký výstup cez `panel/golden.mjs`; tolerancia čísel 1e-9 relatívne.
 - Golden súbory sa prepisujú (`npm run golden`) len po schválenej zmene výpočtu so zápisom sem.
 - Overené: F1–F6 z JS sa zhodujú s `tools/first_mate_financny_model.py` (187 hodnôt) aj s 20 číslami z `legacy/README.md`.
+
+## 2026-11-24 · fáza 3: katalóg use casov (Branislav, schválené)
+- Katalóg `usecases/` (typy.json, usecases.json, schema.md, export CSV) schválený: 17 signálov, 30 tipov, 3 demá, 5 ilustračných návrhov pre stavebnú firmu.
+- Zlúčený jediný use case: `dopyty-bez-reakcie` (realitka s1 + developer s4), predvolená hranica podľa typu 48 h / 24 h. Ostatné ostávajú samostatné.
+- `cas-prvej-reakcie` len realitka; návrh rozšíriť na developera je Issue #7. Spoločný `zaujem-bez-akcie` (ležiaky + záujem bez obhliadky) a samostatné vypredané typy sú Issue #8. Oboje mení čísla, robí sa až po ďalšom súhlase.
+- Kategórie a typy tipov ostávajú podľa návrhu (napr. `podmienka-banky`, `zalohy-po-splatnosti` vo financiách).
