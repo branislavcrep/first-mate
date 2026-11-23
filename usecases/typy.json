@@ -1,0 +1,82 @@
+{
+  "verzia": "2026-11-24",
+  "poznamka": "Typy firiem pre panel First Mate. Menu: poradie v poli = poradie záložiek, čísla 01, 02… doplní panel sám. Signály: predvolené poradie use casov typu druh signal (id z usecases.json). Popis polí v usecases/schema.md.",
+  "typy": [
+    {
+      "id": "realitka",
+      "nazov": "Realitná kancelária",
+      "kratko": "Realitka",
+      "stav": "hotovy",
+      "farba": "#0B7A5C",
+      "popis": "Predáva cudzie nehnuteľnosti: ponuky, dopyty, obhliadky, exkluzivity, tím maklérov.",
+      "osoba_predaja": { "jednotne": "maklér", "mnozne": "makléri" },
+      "data_dir": "data/realitka/",
+      "csv": {
+        "potrebne": ["nehnutelnosti.csv", "dopyty.csv", "obhliadky.csv"],
+        "volitelne": []
+      },
+      "spolocne_parametre": [
+        { "kluc": "period", "nazov": "Obdobie porovnania", "jednotka": "dni", "moznosti": [7, 14], "predvolene": 7 }
+      ],
+      "menu": [
+        { "id": "brifing", "nazov": "Brífing", "zapnute": true },
+        { "id": "tim", "nazov": "Tím", "zapnute": true },
+        { "id": "signaly", "nazov": "Signály", "zapnute": true },
+        { "id": "rozvrh", "nazov": "Rozvrh", "zapnute": true },
+        { "id": "architektura", "nazov": "Architektúra", "zapnute": true },
+        { "id": "tipy", "nazov": "Čo vyskúšať", "zapnute": false }
+      ],
+      "signaly": ["dopyty-bez-reakcie", "cas-prvej-reakcie", "zaujem-bez-obhliadky", "konciace-exkluzivity"]
+    },
+    {
+      "id": "developer",
+      "nazov": "Developer",
+      "kratko": "Developer",
+      "stav": "hotovy",
+      "farba": "#1B2CC1",
+      "popis": "Predáva vlastné jednotky v projektoch: predaj, rezervácie, zálohy, podmienky banky, financovanie projektu.",
+      "osoba_predaja": { "jednotne": "predajca", "mnozne": "predajcovia" },
+      "data_dir": "data/developer/",
+      "csv": {
+        "potrebne": ["dev_projekty.csv", "dev_jednotky.csv", "dev_dopyty.csv"],
+        "volitelne": ["dev_uver.csv", "dev_tranze.csv", "dev_podmienky_cerpania.csv", "dev_rozpocet.csv", "dev_cashflow.csv"]
+      },
+      "spolocne_parametre": [],
+      "menu": [
+        { "id": "brifing", "nazov": "Brífing", "zapnute": true },
+        { "id": "projekty", "nazov": "Projekty", "zapnute": true },
+        { "id": "financie", "nazov": "Financie", "zapnute": true },
+        { "id": "tim", "nazov": "Tím", "zapnute": true },
+        { "id": "signaly", "nazov": "Signály", "zapnute": true },
+        { "id": "rozvrh", "nazov": "Rozvrh", "zapnute": true },
+        { "id": "architektura", "nazov": "Architektúra", "zapnute": true },
+        { "id": "tipy", "nazov": "Čo vyskúšať", "zapnute": false }
+      ],
+      "signaly": ["podmienka-banky", "zalohy-po-splatnosti", "konciace-rezervacie", "dopyty-bez-reakcie", "obhliadky-bez-dalsieho-kroku", "klientske-zmeny", "leziaky", "obchodne-priestory"],
+      "financne_signaly": ["podmienky-cerpania-tranzi", "krytie-uveru-zmluvami", "potrebne-tempo-predaja", "rozpocet-a-rezerva", "irr-projektu", "stres-test"]
+    },
+    {
+      "id": "stavebna-firma",
+      "nazov": "Stavebná firma",
+      "kratko": "Stavebná firma",
+      "stav": "pripravuje-sa",
+      "farba": "#B45A0A",
+      "popis": "Pripravuje sa. Stavia pre investorov: zákazky, rozpočty, subdodávatelia, fakturácia, kapacity. Zatiaľ len návrhy use casov, bez dát a výpočtov.",
+      "osoba_predaja": { "jednotne": "stavbyvedúci", "mnozne": "stavbyvedúci" },
+      "data_dir": "data/stavebna-firma/",
+      "csv": { "potrebne": [], "volitelne": [] },
+      "spolocne_parametre": [],
+      "menu": [
+        { "id": "brifing", "nazov": "Brífing", "zapnute": true },
+        { "id": "projekty", "nazov": "Zákazky", "zapnute": true },
+        { "id": "financie", "nazov": "Financie", "zapnute": true },
+        { "id": "tim", "nazov": "Tím", "zapnute": true },
+        { "id": "signaly", "nazov": "Signály", "zapnute": true },
+        { "id": "rozvrh", "nazov": "Rozvrh", "zapnute": true },
+        { "id": "architektura", "nazov": "Architektúra", "zapnute": true },
+        { "id": "tipy", "nazov": "Čo vyskúšať", "zapnute": false }
+      ],
+      "signaly": []
+    }
+  ]
+}

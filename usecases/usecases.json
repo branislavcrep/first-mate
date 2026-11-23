@@ -1,0 +1,1926 @@
+{
+ "verzia": "2026-11-24",
+ "kategorie": [
+  {
+   "id": "predaj",
+   "nazov": "Predaj"
+  },
+  {
+   "id": "financie",
+   "nazov": "Financie"
+  },
+  {
+   "id": "tim",
+   "nazov": "Tím"
+  },
+  {
+   "id": "vseobecne",
+   "nazov": "Všeobecné"
+  },
+  {
+   "id": "stavba",
+   "nazov": "Stavba"
+  }
+ ],
+ "urovne": [
+  {
+   "id": "prve-kroky",
+   "nazov": "Prvé kroky"
+  },
+  {
+   "id": "kazdodenna",
+   "nazov": "Každodenná práca"
+  },
+  {
+   "id": "pokrocile",
+   "nazov": "Pokročilé"
+  },
+  {
+   "id": "hromadne",
+   "nazov": "Hromadné akcie"
+  }
+ ],
+ "temy": [
+  {
+   "id": "vseobecne",
+   "nazov": "Všeobecné"
+  },
+  {
+   "id": "banka",
+   "nazov": "Podmienka banky"
+  },
+  {
+   "id": "zalohy",
+   "nazov": "Zálohy"
+  },
+  {
+   "id": "rezervacie",
+   "nazov": "Rezervácie"
+  },
+  {
+   "id": "dopyty",
+   "nazov": "Dopyty a predajcovia"
+  },
+  {
+   "id": "obhliadky",
+   "nazov": "Obhliadky"
+  },
+  {
+   "id": "klientske",
+   "nazov": "Klientske zmeny"
+  },
+  {
+   "id": "cennik",
+   "nazov": "Ležiaky a cenník"
+  },
+  {
+   "id": "priestory",
+   "nazov": "Obchodné priestory"
+  },
+  {
+   "id": "uver",
+   "nazov": "Úver a tranže"
+  },
+  {
+   "id": "rozpocet",
+   "nazov": "Rozpočet a rezerva"
+  },
+  {
+   "id": "vynosnost",
+   "nazov": "Výnosnosť a stres test"
+  }
+ ],
+ "miesta": {
+  "cowork": "Claude · Cowork, príkaz /first-mate",
+  "brifing": "Claude · Cowork, príkaz /first-mate-brifing",
+  "reset": "Claude · Cowork, príkaz /first-mate-reset",
+  "slack": "Vlákno brífingu v Slacku, potom v Claude /first-mate pozri Slack",
+  "panel": "First Mate · môj panel, záložka Brífing"
+ },
+ "usecases": [
+  {
+   "id": "dopyty-bez-reakcie",
+   "nazov": "Dopyty bez reakcie",
+   "druh": "signal",
+   "typy": [
+    "realitka",
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": {
+    "realitka": "Dopyt, na ktorý nikto nereagoval dlhšie ako hranica. Každá hodina zvyšuje riziko, že kupujúci odíde ku konkurencii.",
+    "developer": "Záujemca, ktorému sa nikto neozval dlhšie ako hranica. Ukáže aj vyťaženosť a rýchlosť jednotlivých predajcov."
+   },
+   "parametre": [
+    {
+     "kluc": "hours",
+     "nazov": "Hranica (hodiny)",
+     "min": 1,
+     "max": 240,
+     "predvolene": {
+      "realitka": 48,
+      "developer": 24
+     }
+    }
+   ],
+   "zdroje_dat": {
+    "realitka": {
+     "systemy": [
+      {
+       "system": "CRM",
+       "co": "dopyty s časom prijatia, stavom a maklérom"
+      },
+      {
+       "system": "Realitné portály a web",
+       "co": "kontaktné formuláre, ak neprichádzajú priamo do CRM"
+      }
+     ],
+     "csv": [
+      "dopyty.csv",
+      "nehnutelnosti.csv"
+     ]
+    },
+    "developer": {
+     "systemy": [
+      {
+       "system": "CRM",
+       "co": "dopyty záujemcov s časom prijatia, časom prvej reakcie a predajcom"
+      },
+      {
+       "system": "Web projektu a realitné portály",
+       "co": "kontaktné formuláre, ak neprichádzajú priamo do CRM"
+      },
+      {
+       "system": "Spoločná e-mailová schránka",
+       "co": "ak sa dopyty vybavujú e-mailom mimo CRM"
+      }
+     ],
+     "csv": [
+      "dev_dopyty.csv"
+     ]
+    }
+   },
+   "vypocet": {
+    "modul": "panel/usecases/dopyty-bez-reakcie.js"
+   },
+   "uroven": "červená, ak je aspoň jeden dopyt bez reakcie nad hranicu; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "realitka": "s1",
+    "developer": "s4"
+   },
+   "poznamka": "Zlúčené: rovnaké pravidlo v oboch paneloch (stav „nový – bez reakcie“ a prijatý pred viac ako hranicou hodín; úroveň červená pri aspoň jednom). Líši sa predvolená hranica (realitka 48 h, developer 24 h), veľkosť písmen v hodnote stavu v CSV a doplnky výstupu: realitka porovnáva s predchádzajúcim obdobím, developer pridáva vyťaženosť a priemernú rýchlosť predajcov."
+  },
+  {
+   "id": "cas-prvej-reakcie",
+   "nazov": "Čas prvej reakcie",
+   "druh": "signal",
+   "typy": [
+    "realitka"
+   ],
+   "kategoria": "tim",
+   "popis": "Priemerný čas od dopytu po prvú reakciu makléra. Ukáže, kto tím brzdí a kto je vzorom.",
+   "parametre": [
+    {
+     "kluc": "fastHours",
+     "nazov": "Rýchla reakcia do (h)",
+     "min": 1,
+     "max": 72,
+     "predvolene": 4
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "CRM",
+      "co": "dopyty s časom prijatia, časom prvej reakcie a maklérom"
+     }
+    ],
+    "csv": [
+     "dopyty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/cas-prvej-reakcie.js"
+   },
+   "uroven": "zelená, ak priemer za obdobie je do hranice rýchlej reakcie (alebo nie sú dáta); červená, ak je nad hranicou a o viac ako 25 % horší ako v predchádzajúcom období; inak žltá",
+   "stav": "hotovy",
+   "legacy": {
+    "realitka": "s2"
+   },
+   "poznamka": "Nezlúčené s developerom: developer nemá samostatný signál, priemer reakcie predajcov je len doplnok v dopyty-bez-reakcie (za všetky dopyty, bez obdobia, bez úrovne). Realitka počíta priemer za obdobie, porovnáva s predchádzajúcim a má úroveň."
+  },
+  {
+   "id": "zaujem-bez-obhliadky",
+   "nazov": "Záujem bez obhliadky",
+   "druh": "signal",
+   "typy": [
+    "realitka"
+   ],
+   "kategoria": "predaj",
+   "popis": "Ponuka, ktorú si ľudia pozerajú, ale nikto nejde na obhliadku. Najčastejšie je problém v cene alebo v inzeráte.",
+   "parametre": [
+    {
+     "kluc": "minViews",
+     "nazov": "Min. zobrazení za 7 dní",
+     "min": 10,
+     "max": 5000,
+     "predvolene": 200
+    },
+    {
+     "kluc": "days",
+     "nazov": "Bez obhliadky (dni)",
+     "min": 1,
+     "max": 60,
+     "predvolene": 14
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "CRM",
+      "co": "aktívne ponuky s cenou za m² a priemerom lokality"
+     },
+     {
+      "system": "Realitné portály",
+      "co": "zobrazenia inzerátu za posledných 7 dní"
+     },
+     {
+      "system": "CRM alebo kalendár maklérov",
+      "co": "obhliadky s dátumom"
+     }
+    ],
+    "csv": [
+     "nehnutelnosti.csv",
+     "obhliadky.csv",
+     "dopyty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/zaujem-bez-obhliadky.js"
+   },
+   "uroven": "žltá, ak je aspoň jedna ponuka; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "realitka": "s3"
+   },
+   "poznamka": "Podobný význam ako leziaky (developer), ale iná logika: zobrazenia za 7 dní, chýba obhliadka za 14 dní, len aktívne ponuky. Nezlúčené, návrh spoločného use casu je v STOP fázy 3."
+  },
+  {
+   "id": "konciace-exkluzivity",
+   "nazov": "Končiace exkluzivity",
+   "druh": "signal",
+   "typy": [
+    "realitka"
+   ],
+   "kategoria": "predaj",
+   "popis": "Exkluzívne zmluvy, ktoré čoskoro končia. Upozorní včas, aby maklér stihol dohodnúť predĺženie.",
+   "parametre": [
+    {
+     "kluc": "days",
+     "nazov": "Končí do (dni)",
+     "min": 1,
+     "max": 90,
+     "predvolene": 14
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "CRM alebo zmluvy s predávajúcimi",
+      "co": "exkluzívne zmluvy a dátum ich konca"
+     },
+     {
+      "system": "CRM",
+      "co": "dopyty a obhliadky za posledných 14 dní"
+     }
+    ],
+    "csv": [
+     "nehnutelnosti.csv",
+     "dopyty.csv",
+     "obhliadky.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/konciace-exkluzivity.js"
+   },
+   "uroven": "žltá, ak končí aspoň jedna exkluzivita; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "realitka": "s4"
+   }
+  },
+  {
+   "id": "podmienka-banky",
+   "nazov": "Podmienka banky",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Banka pustí úver až pri určitom podiele predaných bytov. Signál stráži, koľko zmlúv chýba a koľko dní zostáva do termínu.",
+   "parametre": [
+    {
+     "kluc": "days",
+     "nazov": "Upozorniť dní pred termínom",
+     "min": 7,
+     "max": 365,
+     "predvolene": 90
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "CRM alebo cenník",
+      "co": "stav každej jednotky (voľná, rezervovaná, zmluva o budúcej zmluve, kúpna zmluva) a dátum zmeny"
+     },
+     {
+      "system": "Úverová zmluva",
+      "co": "požadovaný podiel predaných bytov a termín jeho splnenia"
+     }
+    ],
+    "csv": [
+     "dev_projekty.csv",
+     "dev_jednotky.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/podmienka-banky.js"
+   },
+   "uroven": "červená, ak je projekt v riziku a do termínu banky zostáva najviac 60 dní; žltá, ak je v riziku (do termínu zostáva najviac nastavený počet dní); inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "s1"
+   }
+  },
+  {
+   "id": "zalohy-po-splatnosti",
+   "nazov": "Zálohy po splatnosti",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Zálohy kupujúcich podľa splátkového kalendára, ktoré nie sú uhradené. Bez nich sa zdrží čerpanie úveru a cash-flow stavby.",
+   "parametre": [
+    {
+     "kluc": "graceDays",
+     "nazov": "Tolerancia (dni po splatnosti)",
+     "min": 0,
+     "max": 60,
+     "predvolene": 0
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Zmluvy s kupujúcimi alebo CRM",
+      "co": "splátkový kalendár: výška a splatnosť každej zálohy"
+     },
+     {
+      "system": "Účtovníctvo alebo výpis z banky",
+      "co": "úhrady záloh, ideálne z viazaného účtu na zálohy"
+     }
+    ],
+    "csv": [
+     "dev_jednotky.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/zalohy-po-splatnosti.js"
+   },
+   "uroven": "červená, ak je aspoň jedna záloha po splatnosti; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "s2"
+   }
+  },
+  {
+   "id": "konciace-rezervacie",
+   "nazov": "Končiace rezervácie",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Rezervácie, ktoré čoskoro vypršia bez zmluvy o budúcej zmluve, aj tie, ktoré už vypršali a jednotka stále nie je voľná.",
+   "parametre": [
+    {
+     "kluc": "days",
+     "nazov": "Končí do (dni)",
+     "min": 1,
+     "max": 30,
+     "predvolene": 5
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "CRM",
+      "co": "rezervácie s dátumom platnosti, záujemca a predajca"
+     },
+     {
+      "system": "Rezervačné zmluvy",
+      "co": "ak sa neevidujú v CRM, aspoň dátum platnosti"
+     }
+    ],
+    "csv": [
+     "dev_jednotky.csv",
+     "dev_dopyty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/konciace-rezervacie.js"
+   },
+   "uroven": "červená, ak niektorá rezervácia vypršala alebo končí do 2 dní; žltá, ak končí do nastaveného počtu dní; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "s3"
+   }
+  },
+  {
+   "id": "obhliadky-bez-dalsieho-kroku",
+   "nazov": "Obhliadky bez ďalšieho kroku",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Záujemca bol na obhliadke vzorového bytu alebo na predajnom mieste, ale nemá dohodnutý ďalší krok. Tu sa strácajú rezervácie.",
+   "parametre": [
+    {
+     "kluc": "days",
+     "nazov": "Od obhliadky aspoň (dni)",
+     "min": 1,
+     "max": 30,
+     "predvolene": 3
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "CRM",
+      "co": "obhliadky, ich výsledok a dohodnutý ďalší krok"
+     },
+     {
+      "system": "Kalendár predajcov",
+      "co": "naplánované obhliadky a stretnutia (voliteľné)"
+     }
+    ],
+    "csv": [
+     "dev_dopyty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/obhliadky-bez-dalsieho-kroku.js"
+   },
+   "uroven": "žltá, ak je aspoň jedna obhliadka bez ďalšieho kroku; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "s5"
+   }
+  },
+  {
+   "id": "klientske-zmeny",
+   "nazov": "Klientske zmeny",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Blíži sa uzávierka zmien štandardu a niektorí kupujúci sa ešte nevyjadrili. Po uzávierke sa zmeny robiť nedajú alebo sú drahé.",
+   "parametre": [
+    {
+     "kluc": "days",
+     "nazov": "Uzávierka do (dni)",
+     "min": 1,
+     "max": 90,
+     "predvolene": 21
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Harmonogram stavby alebo zmluva s dodávateľom",
+      "co": "termín uzávierky klientskych zmien"
+     },
+     {
+      "system": "Evidencia klientskych zmien alebo CRM",
+      "co": "stav pri každom kupujúcom (nevyjadril sa, v riešení, uzavreté)"
+     }
+    ],
+    "csv": [
+     "dev_projekty.csv",
+     "dev_jednotky.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/klientske-zmeny.js"
+   },
+   "uroven": "červená, ak je uzávierka do 7 dní a niekto sa nevyjadril; žltá, ak do nastaveného počtu dní; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "s6"
+   }
+  },
+  {
+   "id": "leziaky",
+   "nazov": "Ležiaky a vypredané typy",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Voľné byty, ktoré si ľudia pozerajú, ale nikto o ne neprejavil záujem. Zároveň ukáže typy, ktoré sa už vypredali, ako podklad pre cenník a ďalšiu etapu.",
+   "parametre": [
+    {
+     "kluc": "minViews",
+     "nazov": "Min. zobrazení za 30 dní",
+     "min": 10,
+     "max": 5000,
+     "predvolene": 150
+    },
+    {
+     "kluc": "minDays",
+     "nazov": "V predaji aspoň (dni)",
+     "min": 0,
+     "max": 365,
+     "predvolene": 60
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Cenník (CRM alebo Excel)",
+      "co": "voľné byty, ceny a dátum zaradenia do ponuky"
+     },
+     {
+      "system": "Realitné portály a analytika webu",
+      "co": "zobrazenia inzerátu za posledných 30 dní"
+     },
+     {
+      "system": "CRM",
+      "co": "dopyty a spätná väzba záujemcov"
+     }
+    ],
+    "csv": [
+     "dev_jednotky.csv",
+     "dev_dopyty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/leziaky.js"
+   },
+   "uroven": "žltá, ak je aspoň jeden ležiak; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "s7"
+   },
+   "poznamka": "Okrem ležiakov (voľné byty s veľa zobrazeniami za 30 dní, v ponuke aspoň N dní, bez dopytu za 30 dní) vráti aj vypredané typy bytov. Porovnanie so zaujem-bez-obhliadky (realitka) v STOP fázy 3."
+  },
+  {
+   "id": "obchodne-priestory",
+   "nazov": "Obchodné priestory",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Obchodné priestory, ktoré sa dlho nepredali. Signál porovná, či záujemcovia chcú kúpu alebo nájom.",
+   "parametre": [
+    {
+     "kluc": "days",
+     "nazov": "V ponuke dlhšie ako (dni)",
+     "min": 30,
+     "max": 720,
+     "predvolene": 180
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Cenník (CRM alebo Excel)",
+      "co": "obchodné priestory, ceny a dátum zaradenia do ponuky"
+     },
+     {
+      "system": "CRM",
+      "co": "dopyty s typom záujmu (kúpa alebo nájom) a spätnou väzbou"
+     }
+    ],
+    "csv": [
+     "dev_jednotky.csv",
+     "dev_dopyty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/obchodne-priestory.js"
+   },
+   "uroven": "žltá, ak je aspoň jeden priestor v ponuke dlhšie ako hranica; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "s8"
+   }
+  },
+  {
+   "id": "podmienky-cerpania-tranzi",
+   "nazov": "Podmienky čerpania tranží",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Stráži všetky podmienky najbližších tranží naraz: predpredaj, krytie úveru po čerpaní, vlastný kapitál a potvrdenia technického dozoru. Ukáže, čo chýba, a koľko vlastných zdrojov by stálo neskoršie čerpanie.",
+   "parametre": [
+    {
+     "kluc": "days",
+     "nazov": "Upozorniť dní pred čerpaním",
+     "min": 7,
+     "max": 365,
+     "predvolene": 60
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Úverová zmluva",
+      "co": "tranže, ich výška, plánované termíny a podmienky čerpania"
+     },
+     {
+      "system": "Výpis z úverového účtu",
+      "co": "ktoré tranže sú načerpané a kedy"
+     },
+     {
+      "system": "CRM alebo cenník",
+      "co": "predané byty a hodnota podpísaných zmlúv"
+     },
+     {
+      "system": "Účtovníctvo alebo výpis z banky",
+      "co": "doteraz vložený vlastný kapitál"
+     },
+     {
+      "system": "Technický dozor investora",
+      "co": "potvrdenia o postupe stavby a o rozpočte"
+     }
+    ],
+    "csv": [
+     "dev_uver.csv",
+     "dev_tranze.csv",
+     "dev_podmienky_cerpania.csv",
+     "dev_jednotky.csv",
+     "dev_projekty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/podmienky-cerpania-tranzi.js"
+   },
+   "uroven": "červená, ak má tranža do 30 dní nesplnenú podmienku; žltá, ak v nastavenom okne; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "f1"
+   }
+  },
+  {
+   "id": "krytie-uveru-zmluvami",
+   "nazov": "Krytie úveru zmluvami",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Hodnota podpísaných zmlúv (s DPH) voči čerpanému úveru a kovenantu banky. Ukáže aj, ako krytie klesne po najbližšej tranži.",
+   "parametre": [
+    {
+     "kluc": "buffer",
+     "nazov": "Rezerva nad kovenantom (%)",
+     "min": 0,
+     "max": 100,
+     "predvolene": 10
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Úverová zmluva",
+      "co": "kovenant: minimálne krytie úveru zmluvami"
+     },
+     {
+      "system": "Výpis z úverového účtu",
+      "co": "čerpaná suma úveru"
+     },
+     {
+      "system": "CRM alebo zmluvy s kupujúcimi",
+      "co": "hodnota podpísaných zmlúv o budúcej zmluve a kúpnych zmlúv"
+     }
+    ],
+    "csv": [
+     "dev_uver.csv",
+     "dev_tranze.csv",
+     "dev_jednotky.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/krytie-uveru-zmluvami.js"
+   },
+   "uroven": "červená, ak je krytie pod kovenantom; žltá, ak je pod kovenantom plus rezerva alebo klesne pod kovenant po najbližšej tranži; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "f2"
+   }
+  },
+  {
+   "id": "potrebne-tempo-predaja",
+   "nazov": "Potrebné tempo predaja",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Koľko zmlúv mesačne treba na podmienku banky, podmienky tranží a vypredanie do kolaudácie, oproti tempu posledných 90 dní. Odhadne, kedy sa cieľ pri dnešnom tempe naozaj splní.",
+   "parametre": [
+    {
+     "kluc": "pct",
+     "nazov": "Potrebné tempo vyššie o (%)",
+     "min": 0,
+     "max": 300,
+     "predvolene": 30
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "CRM",
+      "co": "dátumy podpisu zmlúv za posledné 3 mesiace a zostávajúce voľné byty"
+     },
+     {
+      "system": "Úverová zmluva",
+      "co": "požadovaný predpredaj pre banku a pre jednotlivé tranže s termínmi"
+     },
+     {
+      "system": "Harmonogram stavby",
+      "co": "termín kolaudácie"
+     }
+    ],
+    "csv": [
+     "dev_jednotky.csv",
+     "dev_projekty.csv",
+     "dev_tranze.csv",
+     "dev_podmienky_cerpania.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/potrebne-tempo-predaja.js"
+   },
+   "uroven": "červená, ak treba vyššie tempo pre banku alebo tranžu; žltá, ak len pre vypredanie do kolaudácie; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "f3"
+   }
+  },
+  {
+   "id": "rozpocet-a-rezerva",
+   "nazov": "Rozpočet a rezerva",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Položky rozpočtu nad toleranciou, čerpanie rezervy oproti postupu stavby a či na dokončenie stačia prisľúbené vlastné zdroje.",
+   "parametre": [
+    {
+     "kluc": "tol",
+     "nazov": "Tolerancia položky (%)",
+     "min": 0,
+     "max": 50,
+     "predvolene": 5
+    },
+    {
+     "kluc": "rezPp",
+     "nazov": "Rezerva minutá rýchlejšie ako stavba o (p. b.)",
+     "min": 0,
+     "max": 100,
+     "predvolene": 10
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Rozpočet projektu (controlling alebo štúdia uskutočniteľnosti)",
+      "co": "rozpočet po položkách vrátane rezervy"
+     },
+     {
+      "system": "Zmluvy s dodávateľmi",
+      "co": "zazmluvnené sumy"
+     },
+     {
+      "system": "Účtovníctvo",
+      "co": "vyfakturované náklady po položkách"
+     },
+     {
+      "system": "Stavbyvedúci alebo technický dozor investora",
+      "co": "percento dokončenia a odhad nákladov na dokončenie"
+     },
+     {
+      "system": "Dohoda so spoločníkmi alebo investormi",
+      "co": "prisľúbený a vložený vlastný kapitál"
+     }
+    ],
+    "csv": [
+     "dev_rozpocet.csv",
+     "dev_cashflow.csv",
+     "dev_projekty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/rozpocet-a-rezerva.js"
+   },
+   "uroven": "červená, ak je rezerva prečerpaná alebo nestačia vlastné zdroje; žltá, ak rezerva mizne rýchlejšie ako stavba alebo položky prekročili toleranciu; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "f4"
+   }
+  },
+  {
+   "id": "irr-projektu",
+   "nazov": "IRR projektu a vlastného kapitálu",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Odhad výnosnosti z aktuálnych dát oproti biznis plánu a cieľu investorov. Rozloží zmenu IRR na vplyv predaja (tempo a ceny) a nákladov.",
+   "parametre": [
+    {
+     "kluc": "pp",
+     "nazov": "Pokles IRR projektu oproti plánu (p. b.)",
+     "min": 0,
+     "max": 20,
+     "predvolene": 2
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Štúdia uskutočniteľnosti alebo biznis plán",
+      "co": "plánované peňažné toky po mesiacoch a cieľová výnosnosť investorov"
+     },
+     {
+      "system": "Účtovníctvo",
+      "co": "skutočné náklady po mesiacoch"
+     },
+     {
+      "system": "Rozpočet s odhadom na dokončenie",
+      "co": "koľko ešte stavba bude stáť"
+     },
+     {
+      "system": "CRM a cenník",
+      "co": "podpísané zmluvy, zálohy a ceny voľných jednotiek"
+     },
+     {
+      "system": "Zmluvy s kupujúcimi",
+      "co": "splátkový kalendár: záloha a doplatok pri kolaudácii"
+     },
+     {
+      "system": "Úverová zmluva",
+      "co": "úroková sadzba, tranže a splatnosť úveru"
+     }
+    ],
+    "csv": [
+     "dev_cashflow.csv",
+     "dev_rozpocet.csv",
+     "dev_uver.csv",
+     "dev_tranze.csv",
+     "dev_jednotky.csv",
+     "dev_projekty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/irr-projektu.js"
+   },
+   "uroven": "červená, ak je IRR vlastného kapitálu pod cieľom investorov; žltá, ak IRR projektu kleslo oproti plánu viac ako hranica; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "f5"
+   }
+  },
+  {
+   "id": "stres-test",
+   "nazov": "Stres test",
+   "druh": "signal",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Ako sa zmení IRR a zisk pri nižších cenách voľných jednotiek, vyšších nákladoch, neskoršej kolaudácii a vyššom úroku, aj všetko naraz. Upozorní, keď scenár padne pod cieľ alebo do straty.",
+   "parametre": [
+    {
+     "kluc": "cena",
+     "nazov": "Pokles cien (%)",
+     "min": 0,
+     "max": 50,
+     "predvolene": 5
+    },
+    {
+     "kluc": "naklady",
+     "nazov": "Rast nákladov (%)",
+     "min": 0,
+     "max": 50,
+     "predvolene": 5
+    },
+    {
+     "kluc": "mesiace",
+     "nazov": "Oneskorenie kolaudácie (mes.)",
+     "min": 0,
+     "max": 24,
+     "predvolene": 3
+    },
+    {
+     "kluc": "urok",
+     "nazov": "Rast úroku (p. b.)",
+     "min": 0,
+     "max": 10,
+     "predvolene": 1
+    }
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Rovnaké zdroje ako výnosnosť (F5)",
+      "co": "štúdia uskutočniteľnosti, účtovníctvo, rozpočet, CRM, úverová zmluva"
+     },
+     {
+      "system": "Vedenie alebo investori",
+      "co": "aké zhoršenie cien, nákladov, termínov a úrokov sa má testovať"
+     }
+    ],
+    "csv": [
+     "dev_cashflow.csv",
+     "dev_rozpocet.csv",
+     "dev_uver.csv",
+     "dev_tranze.csv",
+     "dev_jednotky.csv",
+     "dev_projekty.csv"
+    ]
+   },
+   "vypocet": {
+    "modul": "panel/usecases/stres-test.js"
+   },
+   "uroven": "červená, ak niektorý scenár skončí stratou; žltá, ak padne pod cieľ IRR; inak zelená",
+   "stav": "hotovy",
+   "legacy": {
+    "developer": "f6"
+   }
+  },
+  {
+   "id": "tip-ranny-brifing-na-poziadanie",
+   "nazov": "Ranný brífing na požiadanie",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "vseobecne",
+   "popis": "Prečíta dáta, vypočíta osem signálov, napíše brífing, uloží ho do priečinka brifingy a po vašom súhlase ho pošle do Slacku.",
+   "stav": "hotovy",
+   "otazka": "/first-mate-brifing Pripravte ranný brífing a ukážte mi ho pred odoslaním.",
+   "kde": "brifing",
+   "co_urobi": "Prečíta dáta, vypočíta osem signálov, napíše brífing, uloží ho do priečinka brifingy a po vašom súhlase ho pošle do Slacku.",
+   "meni_data": false,
+   "uroven": "prve-kroky",
+   "tema": "vseobecne",
+   "overenie": "S1–S8 = 1/3/4/4/3/5/4/1, hlavná téma Podmienka banky, NZ chýbajú 3 zmluvy.",
+   "legacy": {
+    "immocap": "t01"
+   }
+  },
+  {
+   "id": "tip-co-je-dnes-najdolezitejsie",
+   "nazov": "Čo je dnes najdôležitejšie",
+   "druh": "tip",
+   "typy": [
+    "realitka",
+    "developer"
+   ],
+   "kategoria": "vseobecne",
+   "popis": "Zoradí signály podľa dopadu na peniaze a termíny a ku každému povie, kto má čo urobiť.",
+   "stav": "hotovy",
+   "otazka": "/first-mate Čo je dnes najdôležitejšie a prečo? Stačia tri body.",
+   "kde": "cowork",
+   "co_urobi": "Zoradí signály podľa dopadu na peniaze a termíny a ku každému povie, kto má čo urobiť.",
+   "meni_data": false,
+   "uroven": "prve-kroky",
+   "tema": "vseobecne",
+   "overenie": "Banka NZ (59 dní, chýbajú 3), zálohy 209 500 € po splatnosti, vypršaná rezervácia PL-B-402.",
+   "legacy": {
+    "immocap": "t02"
+   },
+   "poznamka": "Text tipu je písaný pre Immocap (developer). Pri tipoch pre oba typy treba pre realitku upraviť príklad."
+  },
+  {
+   "id": "tip-preco-chybaju-zmluvy-pre-banku",
+   "nazov": "Vysvetlenie čísla z brífingu",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Ukáže výpočet krok po kroku: počet bytov, koľko je predaných, koľko percent chce banka a dokedy.",
+   "stav": "hotovy",
+   "otazka": "Prečo brífing píše, že Novým Záhradám Senec chýbajú 3 zmluvy pre banku? Ako ste to vypočítali?",
+   "kde": "cowork",
+   "co_urobi": "Ukáže výpočet krok po kroku: počet bytov, koľko je predaných, koľko percent chce banka a dokedy.",
+   "meni_data": false,
+   "uroven": "prve-kroky",
+   "tema": "banka",
+   "suvisi": [
+    "podmienka-banky"
+   ],
+   "overenie": "20 bytov, predané 3 (ZoBZ), banka 30 % = 6 bytov do 17. 1. 2027, chýbajú 3.",
+   "legacy": {
+    "immocap": "t03"
+   }
+  },
+  {
+   "id": "tip-projekt-oproti-planu-predaja",
+   "nazov": "Ako sa predáva projekt",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "vseobecne",
+   "popis": "Spočíta predané, rezervované a voľné byty a porovná ich s plánom k dnešku.",
+   "stav": "hotovy",
+   "otazka": "Ako je na tom Rezidencia Pod Lesom oproti plánu predaja? Koľko bytov je predaných, rezervovaných a voľných?",
+   "kde": "cowork",
+   "co_urobi": "Spočíta predané, rezervované a voľné byty a porovná ich s plánom k dnešku.",
+   "meni_data": false,
+   "uroven": "prve-kroky",
+   "tema": "vseobecne",
+   "overenie": "PL 22 z 32 (68,8 %) pri pláne 70 %, rezervované 3, voľné 7 (z toho 1 vzorový byt).",
+   "legacy": {
+    "immocap": "t04"
+   }
+  },
+  {
+   "id": "tip-kto-ma-najviac-otvorenych-dopytov",
+   "nazov": "Otázka priamo vo vlákne Slacku",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "vseobecne",
+   "popis": "Napíšte otázku do vlákna ranného brífingu. V Claude potom zadajte „/first-mate pozri Slack“: First Mate otázku nájde, odpovie a navrhne odpoveď do vlákna.",
+   "stav": "hotovy",
+   "otazka": "Kto z predajcov má najviac otvorených dopytov?",
+   "kde": "slack",
+   "co_urobi": "Napíšte otázku do vlákna ranného brífingu. V Claude potom zadajte „/first-mate pozri Slack“: First Mate otázku nájde, odpovie a navrhne odpoveď do vlákna.",
+   "meni_data": false,
+   "uroven": "prve-kroky",
+   "tema": "vseobecne",
+   "overenie": "Michal Hrnčiar 14 otvorených dopytov, Zuzana Polakovičová 11, Martina Vargová 2.",
+   "legacy": {
+    "immocap": "t06"
+   }
+  },
+  {
+   "id": "tip-financny-brifing-na-poziadanie",
+   "nazov": "Finančný brífing e-mailom",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Panel spočíta finančné signály (úver, tranže, rozpočet, výnosnosť), Claude napíše finančný brífing a po vašom potvrdení v okne ho pošle e-mailom. Do Slacku nejde.",
+   "stav": "hotovy",
+   "otazka": "Brífing → karta „Finančný brífing“ → Komu: vaša adresa → Poslať finančný brífing → potvrďte v okne",
+   "kde": "panel",
+   "co_urobi": "Panel spočíta finančné signály (úver, tranže, rozpočet, výnosnosť), Claude napíše finančný brífing a po vašom potvrdení v okne ho pošle e-mailom. Do Slacku nejde.",
+   "meni_data": false,
+   "uroven": "prve-kroky",
+   "tema": "vynosnost",
+   "suvisi": [
+    "irr-projektu",
+    "stres-test"
+   ],
+   "overenie": "Vyžaduje nahraté aj finančné súbory (5). Brífing: T-PL-4 a T-NZ-2 s nesplnenými podmienkami, IRR VK NZ 15,0 % pod cieľom 18 %.",
+   "legacy": {
+    "immocap": "t31"
+   }
+  },
+  {
+   "id": "tip-zalohy-po-splatnosti",
+   "nazov": "Zálohy po splatnosti",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Vypíše jednotky s neuhradenou zálohou po splatnosti, predajcu, sumu a počet dní po splatnosti.",
+   "stav": "hotovy",
+   "otazka": "Ktoré zálohy sú po splatnosti, kto má jednotky na starosti a o akú sumu ide spolu?",
+   "kde": "cowork",
+   "co_urobi": "Vypíše jednotky s neuhradenou zálohou po splatnosti, predajcu, sumu a počet dní po splatnosti.",
+   "meni_data": false,
+   "uroven": "kazdodenna",
+   "tema": "zalohy",
+   "suvisi": [
+    "zalohy-po-splatnosti"
+   ],
+   "overenie": "PL-A-204 (87 600 €, M. Hrnčiar), PL-B-102 (74 700 €) a PL-B-303 (47 200 €, M. Vargová), spolu 209 500 €, 8 dní po splatnosti.",
+   "legacy": {
+    "immocap": "t07"
+   }
+  },
+  {
+   "id": "tip-konciace-rezervacie",
+   "nazov": "Končiace rezervácie",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Ukáže rezervácie s dátumom konca, záujemcu a jeho ďalší krok a pri každej navrhne predĺžiť, podpísať zmluvu o budúcej alebo uvoľniť.",
+   "stav": "hotovy",
+   "otazka": "Ktoré rezervácie končia do 5 dní alebo už vypršali a čo s nimi navrhujete?",
+   "kde": "cowork",
+   "co_urobi": "Ukáže rezervácie s dátumom konca, záujemcu a jeho ďalší krok a pri každej navrhne predĺžiť, podpísať zmluvu o budúcej alebo uvoľniť.",
+   "meni_data": false,
+   "uroven": "kazdodenna",
+   "tema": "rezervacie",
+   "suvisi": [
+    "konciace-rezervacie"
+   ],
+   "overenie": "PL-B-402 vypršala 17. 11., PL-A-303 do 21. 11., PL-B-204 do 22. 11., NZ-302 do 23. 11.",
+   "legacy": {
+    "immocap": "t08"
+   }
+  },
+  {
+   "id": "tip-dopyty-bez-reakcie",
+   "nazov": "Dopyty bez reakcie",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "tim",
+   "popis": "Vypíše čakajúce dopyty s menom záujemcu, jednotkou, predajcom, zdrojom a počtom hodín bez reakcie.",
+   "stav": "hotovy",
+   "otazka": "Na ktoré dopyty nikto nezareagoval viac ako 24 hodín? Kto ich má a odkiaľ prišli?",
+   "kde": "cowork",
+   "co_urobi": "Vypíše čakajúce dopyty s menom záujemcu, jednotkou, predajcom, zdrojom a počtom hodín bez reakcie.",
+   "meni_data": false,
+   "uroven": "kazdodenna",
+   "tema": "dopyty",
+   "suvisi": [
+    "dopyty-bez-reakcie"
+   ],
+   "overenie": "4 dopyty: DD001, DD002, DD003 (M. Hrnčiar), DD004 (Z. Polakovičová); najdlhšie DD001, 78 h.",
+   "legacy": {
+    "immocap": "t09"
+   }
+  },
+  {
+   "id": "tip-zaujemcovia-po-obhliadke",
+   "nazov": "Obhliadky bez ďalšieho kroku",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Nájde obhliadky bez naplánovaného ďalšieho kroku, ukáže spätnú väzbu a ku každej navrhne konkrétny krok.",
+   "stav": "hotovy",
+   "otazka": "Ktorí záujemcovia po obhliadke nemajú dohodnutý ďalší krok a čo im predajca môže ponúknuť?",
+   "kde": "cowork",
+   "co_urobi": "Nájde obhliadky bez naplánovaného ďalšieho kroku, ukáže spätnú väzbu a ku každej navrhne konkrétny krok.",
+   "meni_data": false,
+   "uroven": "kazdodenna",
+   "tema": "obhliadky",
+   "suvisi": [
+    "obhliadky-bez-dalsieho-kroku"
+   ],
+   "overenie": "DD022 Andrej Baláž (NZ-101, 12 dní), DD033 Oľga Kubíková (PL-A-303), DD030 Ladislav Uhrin (PL-A-401), všetkých má M. Hrnčiar.",
+   "legacy": {
+    "immocap": "t10"
+   }
+  },
+  {
+   "id": "tip-klientske-zmeny-pred-uzavierkou",
+   "nazov": "Klientske zmeny pred uzávierkou",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Vypíše jednotky bez rozhodnutia o klientskych zmenách, predajcu a dátum uzávierky.",
+   "stav": "hotovy",
+   "otazka": "Ktorí kupujúci v Rezidencii Pod Lesom sa ešte nevyjadrili ku klientskym zmenám a koľko dní zostáva do uzávierky?",
+   "kde": "cowork",
+   "co_urobi": "Vypíše jednotky bez rozhodnutia o klientskych zmenách, predajcu a dátum uzávierky.",
+   "meni_data": false,
+   "uroven": "kazdodenna",
+   "tema": "klientske",
+   "suvisi": [
+    "klientske-zmeny"
+   ],
+   "overenie": "5 jednotiek (PL-A-104, PL-A-302, PL-B-104, PL-B-302, PL-B-404), všetky M. Vargová, uzávierka 7. 12., 18 dní.",
+   "legacy": {
+    "immocap": "t11"
+   }
+  },
+  {
+   "id": "tip-upomienka-zalohy",
+   "nazov": "Koncept e-mailu kupujúcemu",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Napíše koncept s jednotkou, sumou a dátumom splatnosti. Nič neodosiela, text si skopírujete do vlastného e-mailu.",
+   "stav": "hotovy",
+   "otazka": "Napíšte koncept zdvorilej upomienky kupujúcemu jednotky PL-A-204 kvôli zálohe po splatnosti.",
+   "kde": "cowork",
+   "co_urobi": "Napíše koncept s jednotkou, sumou a dátumom splatnosti. Nič neodosiela, text si skopírujete do vlastného e-mailu.",
+   "meni_data": false,
+   "uroven": "kazdodenna",
+   "tema": "zalohy",
+   "suvisi": [
+    "zalohy-po-splatnosti"
+   ],
+   "overenie": "PL-A-204, záloha 87 600 €, splatná 11. 11. Meno kupujúceho dáta nemajú, koncept ostane s oslovením „Vážený klient“.",
+   "legacy": {
+    "immocap": "t13"
+   }
+  },
+  {
+   "id": "tip-zapisat-uhradu-zalohy",
+   "nazov": "Zápis uhradenej zálohy",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Ukáže zmenu (záloha uhradená: Nie → Áno) a zapíše ju až po vašom potvrdení. Zmena sa objaví v zmeny.md a v ďalšom brífingu.",
+   "stav": "hotovy",
+   "otazka": "Kupujúci PL-B-303 dnes zaplatil zálohu. Zapíšte to.",
+   "kde": "cowork",
+   "co_urobi": "Ukáže zmenu (záloha uhradená: Nie → Áno) a zapíše ju až po vašom potvrdení. Zmena sa objaví v zmeny.md a v ďalšom brífingu.",
+   "meni_data": true,
+   "uroven": "kazdodenna",
+   "tema": "zalohy",
+   "suvisi": [
+    "zalohy-po-splatnosti"
+   ],
+   "overenie": "PL-B-303 zaloha_uhradena Nie → Áno; S2 klesne z 3 na 2 (162 300 €).",
+   "legacy": {
+    "immocap": "t14"
+   }
+  },
+  {
+   "id": "tip-predlzit-rezervaciu",
+   "nazov": "Predĺženie rezervácie",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Navrhne nový dátum konca rezervácie, po potvrdení ho zapíše a zaznamená dôvod.",
+   "stav": "hotovy",
+   "otazka": "Predĺžte rezerváciu PL-B-402 o 7 dní, záujemca potvrdil podpis zmluvy o budúcej.",
+   "kde": "cowork",
+   "co_urobi": "Navrhne nový dátum konca rezervácie, po potvrdení ho zapíše a zaznamená dôvod.",
+   "meni_data": true,
+   "uroven": "kazdodenna",
+   "tema": "rezervacie",
+   "suvisi": [
+    "konciace-rezervacie"
+   ],
+   "overenie": "PL-B-402 rezervacia_do 17. 11. → 26. 11. (od dnes + 7); S3 klesne zo 4 na 3. Otestované.",
+   "legacy": {
+    "immocap": "t15"
+   }
+  },
+  {
+   "id": "tip-odpoved-do-vlakna-brifingu",
+   "nazov": "Odpoveď do vlákna",
+   "druh": "tip",
+   "typy": [
+    "realitka",
+    "developer"
+   ],
+   "kategoria": "vseobecne",
+   "popis": "Prečíta vlákno brífingu, odpovie na poslednú nevybavenú otázku, ukáže text odpovede a pošle ho do vlákna až po vašom súhlase.",
+   "stav": "hotovy",
+   "otazka": "/first-mate pozri Slack a navrhnite odpoveď do vlákna brífingu.",
+   "kde": "slack",
+   "co_urobi": "Prečíta vlákno brífingu, odpovie na poslednú nevybavenú otázku, ukáže text odpovede a pošle ho do vlákna až po vašom súhlase.",
+   "meni_data": false,
+   "uroven": "kazdodenna",
+   "tema": "vseobecne",
+   "overenie": "Vyžaduje brífing v #first-mate-developer a otázku vo vlákne (napr. tip t06).",
+   "legacy": {
+    "immocap": "t16"
+   },
+   "poznamka": "Text tipu je písaný pre Immocap (developer). Pri tipoch pre oba typy treba pre realitku upraviť príklad."
+  },
+  {
+   "id": "tip-tranze-a-podmienky-cerpania",
+   "nazov": "Tranže a podmienky čerpania",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Vypíše plánované tranže s dátumom a sumou, pri každej podmienky banky, čo chýba (zmluvy, eurá, potvrdenia) a kto zodpovedá.",
+   "stav": "hotovy",
+   "otazka": "Ktoré tranže úveru čerpáme v najbližších 60 dňoch a ktoré podmienky ešte nie sú splnené? Kto ich má na starosti?",
+   "kde": "cowork",
+   "co_urobi": "Vypíše plánované tranže s dátumom a sumou, pri každej podmienky banky, čo chýba (zmluvy, eurá, potvrdenia) a kto zodpovedá.",
+   "meni_data": false,
+   "uroven": "kazdodenna",
+   "tema": "uver",
+   "suvisi": [
+    "podmienky-cerpania-tranzi",
+    "krytie-uveru-zmluvami"
+   ],
+   "overenie": "T-PL-4 (1,2 mil. €, o 23 dní): krytie po čerpaní 1,39× z 1,45× (chýba 319 500 €, 2 zmluvy), chýba rozpočet potvrdený technickým dozorom. T-NZ-2 (600 000 €, o 43 dní): 15 % predaných z 30 %, krytie 0,78× z 1,0×, potvrdenie dozoru o základoch.",
+   "legacy": {
+    "immocap": "t32"
+   }
+  },
+  {
+   "id": "tip-rozpocet-a-rezerva",
+   "nazov": "Rozpočet a rezerva",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Ukáže položky nad rozpočtom, minutú rezervu oproti dokončeniu stavby a náklady do dokončenia (bez DPH).",
+   "stav": "hotovy",
+   "otazka": "Ako sme na tom s rozpočtom a rezervou v Rezidencii Pod Lesom? Ktoré položky rezervu minuli a koľko nákladov ešte zostáva?",
+   "kde": "cowork",
+   "co_urobi": "Ukáže položky nad rozpočtom, minutú rezervu oproti dokončeniu stavby a náklady do dokončenia (bez DPH).",
+   "meni_data": false,
+   "uroven": "kazdodenna",
+   "tema": "rozpocet",
+   "suvisi": [
+    "rozpocet-a-rezerva"
+   ],
+   "overenie": "PL: rezerva 300 000 € minutá na 106,7 % pri 53,9 % dokončenia stavby; TZB +14,5 %, fasáda a strecha +10 %; do dokončenia 2,72 mil. € bez DPH.",
+   "legacy": {
+    "immocap": "t34"
+   }
+  },
+  {
+   "id": "tip-zapisat-splnenu-podmienku-tranze",
+   "nazov": "Zápis splnenej podmienky",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Ukáže zmenu (podmienka PC04: nesplnená → splnená), zapíše ju po vašom potvrdení a povie, čo ešte pri tranži chýba.",
+   "stav": "hotovy",
+   "otazka": "Technický dozor potvrdil aktualizovaný rozpočet Rezidencie Pod Lesom (podmienka pre 4. tranžu). Zapíšte to.",
+   "kde": "cowork",
+   "co_urobi": "Ukáže zmenu (podmienka PC04: nesplnená → splnená), zapíše ju po vašom potvrdení a povie, čo ešte pri tranži chýba.",
+   "meni_data": true,
+   "uroven": "kazdodenna",
+   "tema": "uver",
+   "suvisi": [
+    "podmienky-cerpania-tranzi",
+    "krytie-uveru-zmluvami"
+   ],
+   "overenie": "PC04 splnene nie → ano; T-PL-4 z 2 na 1 nesplnenú podmienku (zostáva krytie 1,39× z 1,45×). Otestované.",
+   "legacy": {
+    "immocap": "t37"
+   }
+  },
+  {
+   "id": "tip-zaujemcovia-pre-podmienku-banky",
+   "nazov": "Kto prinesie zmluvy pre banku",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Zoradí rezervácie a záujemcov po obhliadke podľa toho, ako blízko sú k podpisu, a navrhne, s kým hovoriť ako prvým.",
+   "stav": "hotovy",
+   "otazka": "Ktorí záujemcovia môžu Novým Záhradám Senec najrýchlejšie priniesť zmluvy o budúcej pre banku?",
+   "kde": "cowork",
+   "co_urobi": "Zoradí rezervácie a záujemcov po obhliadke podľa toho, ako blízko sú k podpisu, a navrhne, s kým hovoriť ako prvým.",
+   "meni_data": false,
+   "uroven": "pokrocile",
+   "tema": "banka",
+   "suvisi": [
+    "podmienka-banky"
+   ],
+   "overenie": "NZ-302 (D. Vavrová, rezervácia do 23. 11.), po obhliadke zvažujú DD013, DD019, DD024, dohodnuté obhliadky DD026, DD012, DD021, DD023 (20. až 25. 11.).",
+   "legacy": {
+    "immocap": "t17"
+   }
+  },
+  {
+   "id": "tip-potrebne-tempo-pre-banku",
+   "nazov": "Stihne NZ podmienku banky",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Porovná potrebné tempo do termínu banky so skutočným tempom predaja a povie, aká veľká je rezerva.",
+   "stav": "hotovy",
+   "otazka": "Koľko zmlúv týždenne musia Nové Záhrady Senec podpísať, aby splnili podmienku banky? Stíhajú to pri tempe za posledných 30 dní?",
+   "kde": "cowork",
+   "co_urobi": "Porovná potrebné tempo do termínu banky so skutočným tempom predaja a povie, aká veľká je rezerva.",
+   "meni_data": false,
+   "uroven": "pokrocile",
+   "tema": "banka",
+   "suvisi": [
+    "podmienka-banky"
+   ],
+   "overenie": "3 zmluvy za 59 dní (8,4 týždňa) = 0,36 týždenne; za 30 dní pribudli 2 (≈ 0,47 týždenne), tempo tesne stačí.",
+   "legacy": {
+    "immocap": "t18"
+   }
+  },
+  {
+   "id": "tip-predaj-30-dni-oproti-predchadzajucim",
+   "nazov": "Porovnanie v čase",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "vseobecne",
+   "popis": "Spočíta predaje podľa dátumu zmeny stavu a ukáže trend po mesiacoch.",
+   "stav": "hotovy",
+   "otazka": "Koľko bytov sme predali za posledných 30 dní v porovnaní s predchádzajúcimi 30 dňami? A po mesiacoch od začiatku predaja?",
+   "kde": "cowork",
+   "co_urobi": "Spočíta predaje podľa dátumu zmeny stavu a ukáže trend po mesiacoch.",
+   "meni_data": false,
+   "uroven": "pokrocile",
+   "tema": "vseobecne",
+   "overenie": "Posledných 30 dní 2 (NZ-203, NZ-305), predchádzajúcich 30 dní 2 (PL-B-401, NZ-103); najsilnejší mesiac 7 predajov.",
+   "legacy": {
+    "immocap": "t19"
+   }
+  },
+  {
+   "id": "tip-preco-sa-nepredavaju-byty",
+   "nazov": "Prečo stoja ležiaky",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Spojí zobrazenia inzerátov, dopyty a spätnú väzbu z obhliadok a pomenuje spoločný dôvod.",
+   "stav": "hotovy",
+   "otazka": "Prečo sa nepredávajú 2-izbové byty na sever v Rezidencii Pod Lesom? Čo hovoria záujemcovia?",
+   "kde": "cowork",
+   "co_urobi": "Spojí zobrazenia inzerátov, dopyty a spätnú väzbu z obhliadok a pomenuje spoločný dôvod.",
+   "meni_data": false,
+   "uroven": "pokrocile",
+   "tema": "cennik",
+   "suvisi": [
+    "leziaky"
+   ],
+   "overenie": "PL-A-201, PL-B-201, PL-B-101, PL-A-101: 163 až 224 zobrazení, 0 dopytov za 30 dní; spätná väzba „Výhľad na parkovisko“.",
+   "legacy": {
+    "immocap": "t20"
+   }
+  },
+  {
+   "id": "tip-zlava-na-leziaky",
+   "nazov": "Čo ak zľava",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Prepočíta nové ceny, rozdiel v tržbe a cenu za m² oproti priemeru konkurencie. Nič nezapisuje.",
+   "stav": "hotovy",
+   "otazka": "Čo ak dáme na ležiaky zľavu 5 %? Aký bude dopad na tržbu a na cenu za m² oproti konkurencii?",
+   "kde": "cowork",
+   "co_urobi": "Prepočíta nové ceny, rozdiel v tržbe a cenu za m² oproti priemeru konkurencie. Nič nezapisuje.",
+   "meni_data": false,
+   "uroven": "pokrocile",
+   "tema": "cennik",
+   "suvisi": [
+    "leziaky"
+   ],
+   "overenie": "881 200 € → 837 100 € (−44 100 €); ceny za m² už dnes pod konkurenciou 4 250 €/m².",
+   "legacy": {
+    "immocap": "t21"
+   }
+  },
+  {
+   "id": "tip-obchodny-priestor-predaj-alebo-najom",
+   "nazov": "Obchodný priestor: kúpa alebo nájom",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Spočíta dopyty podľa typu záujmu, zhrnie spätnú väzbu a odporučí ďalší postup.",
+   "stav": "hotovy",
+   "otazka": "Oplatí sa PL-OP2 predávať, alebo radšej prenajať? Čo chcú záujemcovia?",
+   "kde": "cowork",
+   "co_urobi": "Spočíta dopyty podľa typu záujmu, zhrnie spätnú väzbu a odporučí ďalší postup.",
+   "meni_data": false,
+   "uroven": "pokrocile",
+   "tema": "priestory",
+   "suvisi": [
+    "obchodne-priestory"
+   ],
+   "overenie": "PL-OP2 v ponuke 364 dní, 6 dopytov, všetky Nájom (kaviareň, ambulancia na 5 rokov).",
+   "legacy": {
+    "immocap": "t23"
+   }
+  },
+  {
+   "id": "tip-stihneme-podmienky-tranze",
+   "nazov": "Stihneme čerpať včas",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Porovná chýbajúce zmluvy s tempom predaja, odhadne dátum splnenia a prepočíta, koľko vlastných zdrojov treba navyše, ak sa čerpanie posunie.",
+   "stav": "hotovy",
+   "otazka": "Stihnú Nové Záhrady Senec splniť podmienky 2. tranže v termíne? Ak nie, kedy pri dnešnom tempe a koľko vlastného kapitálu nás bude stáť oneskorenie?",
+   "kde": "cowork",
+   "co_urobi": "Porovná chýbajúce zmluvy s tempom predaja, odhadne dátum splnenia a prepočíta, koľko vlastných zdrojov treba navyše, ak sa čerpanie posunie.",
+   "meni_data": false,
+   "uroven": "pokrocile",
+   "tema": "uver",
+   "suvisi": [
+    "podmienky-cerpania-tranzi",
+    "krytie-uveru-zmluvami"
+   ],
+   "overenie": "T-NZ-2: chýbajú 3 zmluvy, tempo 1 mesačne (treba 2,12), splnenie okolo 19. 2. 2027, o 49 dní neskôr, +33 800 € vlastného kapitálu.",
+   "legacy": {
+    "immocap": "t33"
+   }
+  },
+  {
+   "id": "tip-irr-oproti-planu",
+   "nazov": "Výnosnosť projektov",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Porovná IRR projektu a vlastného kapitálu (plán, aktuálny odhad, cieľ) a rozloží rozdiel na predaj a náklady.",
+   "stav": "hotovy",
+   "otazka": "Aké je IRR vlastného kapitálu v oboch projektoch oproti biznis plánu a cieľu 18 %? Čo ho najviac ovplyvňuje?",
+   "kde": "cowork",
+   "co_urobi": "Porovná IRR projektu a vlastného kapitálu (plán, aktuálny odhad, cieľ) a rozloží rozdiel na predaj a náklady.",
+   "meni_data": false,
+   "uroven": "pokrocile",
+   "tema": "vynosnost",
+   "suvisi": [
+    "irr-projektu",
+    "stres-test"
+   ],
+   "overenie": "PL IRR VK 23,9 % (plán 22,4 %), NZ 15,0 % (plán 21,4 %, cieľ 18 %); pri NZ predaj znižuje IRR projektu o 4,6 p. b.",
+   "legacy": {
+    "immocap": "t35"
+   }
+  },
+  {
+   "id": "tip-stres-test-projektu",
+   "nazov": "Stres test",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Ukáže IRR a zisk pri nižších cenách, vyšších nákladoch, neskoršej kolaudácii a vyššom úroku a navrhne, na čo sa zamerať.",
+   "stav": "hotovy",
+   "otazka": "Ukážte stres test pre Nové Záhrady Senec. Ktorý scenár je najhorší a čo by sme mali urobiť, aby sme sa mu vyhli?",
+   "kde": "cowork",
+   "co_urobi": "Ukáže IRR a zisk pri nižších cenách, vyšších nákladoch, neskoršej kolaudácii a vyššom úroku a navrhne, na čo sa zamerať.",
+   "meni_data": false,
+   "uroven": "pokrocile",
+   "tema": "vynosnost",
+   "suvisi": [
+    "irr-projektu",
+    "stres-test"
+   ],
+   "overenie": "NZ pod cieľom vo všetkých 5 scenároch; najhorší „všetko naraz“ IRR VK 0,9 %, zisk 19 632 €; samostatne najviac bolí pokles cien o 5 % (IRR VK 8,9 %).",
+   "legacy": {
+    "immocap": "t36"
+   }
+  },
+  {
+   "id": "tip-prerozdelit-dopyty",
+   "nazov": "Prerozdelenie dopytov",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "tim",
+   "popis": "Navrhne, ktorý dopyt komu presunúť a prečo, a po potvrdení zmení predajcu pri každom dopyte. Každá zmena sa zapíše do zmeny.md.",
+   "stav": "hotovy",
+   "otazka": "Navrhnite prerozdelenie dopytov bez reakcie medzi predajcov podľa ich vyťaženosti a po mojom potvrdení ho zapíšte.",
+   "kde": "cowork",
+   "co_urobi": "Navrhne, ktorý dopyt komu presunúť a prečo, a po potvrdení zmení predajcu pri každom dopyte. Každá zmena sa zapíše do zmeny.md.",
+   "meni_data": true,
+   "uroven": "hromadne",
+   "tema": "dopyty",
+   "suvisi": [
+    "dopyty-bez-reakcie"
+   ],
+   "overenie": "4 dopyty bez reakcie, M. Hrnčiar 14 otvorených a 31,2 h; napr. DD002 → Z. Polakovičová, DD001 a DD003 → M. Vargová.",
+   "legacy": {
+    "immocap": "t26"
+   }
+  },
+  {
+   "id": "tip-kroky-po-obhliadkach",
+   "nazov": "Ďalší krok po všetkých obhliadkach",
+   "druh": "tip",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "predaj",
+   "popis": "Navrhne krok pre každého záujemcu a po potvrdení zmení follow-up pri všetkých naraz.",
+   "stav": "hotovy",
+   "otazka": "Pri všetkých obhliadkach bez ďalšieho kroku navrhnite konkrétny krok a po mojom potvrdení nastavte follow-up na Naplánovaný.",
+   "kde": "cowork",
+   "co_urobi": "Navrhne krok pre každého záujemcu a po potvrdení zmení follow-up pri všetkých naraz.",
+   "meni_data": true,
+   "uroven": "hromadne",
+   "tema": "obhliadky",
+   "suvisi": [
+    "obhliadky-bez-dalsieho-kroku"
+   ],
+   "overenie": "DD022, DD033, DD030: follow_up Chýba → Naplánovaný; S5 klesne z 3 na 0.",
+   "legacy": {
+    "immocap": "t27"
+   }
+  },
+  {
+   "id": "tip-reset-ukazky",
+   "nazov": "Návrat na pôvodné dáta",
+   "druh": "tip",
+   "typy": [
+    "realitka",
+    "developer"
+   ],
+   "kategoria": "vseobecne",
+   "popis": "Ukáže, čo sa obnoví, a po potvrdení vráti dáta do pôvodného stavu. Staré brífingy a záznam zmien presunie do archívu.",
+   "stav": "hotovy",
+   "otazka": "/first-mate-reset",
+   "kde": "reset",
+   "co_urobi": "Ukáže, čo sa obnoví, a po potvrdení vráti dáta do pôvodného stavu. Staré brífingy a záznam zmien presunie do archívu.",
+   "meni_data": true,
+   "uroven": "hromadne",
+   "tema": "vseobecne",
+   "overenie": "data/ = data-zaloha/ bajt po bajte, brífingy a zmeny.md v archiv/. Otestované.",
+   "legacy": {
+    "immocap": "t30"
+   },
+   "poznamka": "Text tipu je písaný pre Immocap (developer). Pri tipoch pre oba typy treba pre realitku upraviť príklad."
+  },
+  {
+   "id": "demo-nova-ponuka-kupujucim",
+   "nazov": "Nová ponuka kupujúcim so súhlasom",
+   "druh": "demo",
+   "typy": [
+    "realitka"
+   ],
+   "kategoria": "predaj",
+   "popis": "Pri novej ponuke First Mate nájde vhodných kupujúcich so súhlasom s marketingom, pripraví e-mail a zapíše kontakt do CRM.",
+   "kroky": [
+    "Maklér zaradí novú ponuku N015 (3-izbový byt, Pezinok, 183 000 €).",
+    "First Mate nájde kupujúcich, ktorých dopyty zodpovedajú ponuke (lokalita, počet izieb, cena), a ponechá len tých so súhlasom GDPR s marketingom.",
+    "Pripraví koncept e-mailu v Gmaile, príjemcov dá do skrytej kópie (BCC). Nič neodošle bez potvrdenia.",
+    "Po odoslaní zapíše pri každom kontakte záznam do CRM (kto, kedy, ktorá ponuka)."
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "CRM (Attio)",
+      "co": "ponuky, dopyty a kontakty so súhlasom GDPR"
+     },
+     {
+      "system": "Gmail",
+      "co": "koncept e-mailu"
+     }
+    ],
+    "csv": [
+     "nehnutelnosti.csv",
+     "dopyty.csv",
+     "kontakty.csv"
+    ]
+   },
+   "konektory": [
+    "Gmail",
+    "Attio"
+   ],
+   "stav": "navrh",
+   "poznamka": "kontakty.csv (súhlas GDPR) zatiaľ nie je v repozitári; zápis do CRM vyžaduje zápisový konektor Attio."
+  },
+  {
+   "id": "demo-ranny-brifing-slack",
+   "nazov": "Ranný brífing a otázka vo vlákne Slacku",
+   "druh": "demo",
+   "typy": [
+    "realitka",
+    "developer"
+   ],
+   "kategoria": "vseobecne",
+   "popis": "Ráno príde brífing do Slacku. Kolega sa vo vlákne opýta na detail a First Mate odpovie z rovnakých dát.",
+   "kroky": [
+    "Panel vypočíta signály a AI napíše brífing (nadpis, zhrnutie, kroky na dnes).",
+    "Brífing sa pošle do demo kanála (#first-mate-demo alebo #first-mate-developer).",
+    "Kolega sa vo vlákne opýta, napr. „Kto má najviac dopytov bez reakcie?“.",
+    "V Claude príkaz /first-mate (realitka) alebo /first-mate-dev (developer) prečíta vlákno a navrhne odpoveď z rovnakých dát."
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Slack",
+      "co": "demo kanál a vlákno brífingu"
+     }
+    ],
+    "csv": []
+   },
+   "konektory": [
+    "Slack"
+   ],
+   "stav": "hotovy",
+   "suvisi": [
+    "tip-odpoved-do-vlakna-brifingu"
+   ]
+  },
+  {
+   "id": "demo-financny-brifing-majitel",
+   "nazov": "Finančný brífing pre majiteľa",
+   "druh": "demo",
+   "typy": [
+    "developer"
+   ],
+   "kategoria": "financie",
+   "popis": "Majiteľ dostane e-mailom finančný brífing: tranže a ich podmienky, krytie úveru, rozpočet, IRR a stres test.",
+   "kroky": [
+    "Panel vypočíta finančné signály F1–F6 z úveru, tranží, rozpočtu a cash-flow.",
+    "AI napíše finančný brífing (hlavné zistenie, signály, tri kroky).",
+    "Náhľad v paneli, po potvrdení odoslanie e-mailom majiteľovi (len e-mail, nie Slack).",
+    "Príklad zistenia: PL tranža T-PL-4 má 2 nesplnené podmienky; NZ IRR vlastného kapitálu 15,0 % pod cieľom 18 %."
+   ],
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Gmail",
+      "co": "odoslanie brífingu"
+     }
+    ],
+    "csv": [
+     "dev_uver.csv",
+     "dev_tranze.csv",
+     "dev_podmienky_cerpania.csv",
+     "dev_rozpocet.csv",
+     "dev_cashflow.csv",
+     "dev_projekty.csv",
+     "dev_jednotky.csv"
+    ]
+   },
+   "konektory": [
+    "Gmail"
+   ],
+   "stav": "hotovy",
+   "suvisi": [
+    "podmienky-cerpania-tranzi",
+    "irr-projektu",
+    "stres-test",
+    "tip-financny-brifing-na-poziadanie"
+   ]
+  },
+  {
+   "id": "zakazky-nad-rozpoctom",
+   "nazov": "Zákazky nad rozpočtom",
+   "druh": "navrh",
+   "typy": [
+    "stavebna-firma"
+   ],
+   "kategoria": "stavba",
+   "popis": "Zákazky, kde odhad nákladov na dokončenie prekročil rozpočet o viac ako toleranciu. Upozorní skôr, ako zmizne marža.",
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Rozpočet zákazky",
+      "co": "rozpočet po položkách"
+     },
+     {
+      "system": "Účtovníctvo",
+      "co": "skutočné náklady"
+     },
+     {
+      "system": "Stavbyvedúci",
+      "co": "percento dokončenia a odhad na dokončenie"
+     }
+    ],
+    "csv": []
+   },
+   "stav": "navrh",
+   "priklad": true,
+   "poznamka": "Príklad pre typ Stavebná firma, zatiaľ bez dát a výpočtu. Overiť s prvým klientom."
+  },
+  {
+   "id": "faktury-po-splatnosti",
+   "nazov": "Faktúry investorom po splatnosti",
+   "druh": "navrh",
+   "typy": [
+    "stavebna-firma"
+   ],
+   "kategoria": "stavba",
+   "popis": "Vystavené faktúry a súpisy prác, ktoré investor nezaplatil v splatnosti. Ukáže sumu a dopad na cash-flow.",
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Účtovníctvo",
+      "co": "vystavené faktúry, splatnosť a úhrady"
+     }
+    ],
+    "csv": []
+   },
+   "stav": "navrh",
+   "priklad": true,
+   "poznamka": "Príklad pre typ Stavebná firma, zatiaľ bez dát a výpočtu. Overiť s prvým klientom."
+  },
+  {
+   "id": "cenove-ponuky-bez-odpovede",
+   "nazov": "Cenové ponuky bez odpovede",
+   "druh": "navrh",
+   "typy": [
+    "stavebna-firma"
+   ],
+   "kategoria": "stavba",
+   "popis": "Odoslané cenové ponuky, na ktoré investor dlhšie neodpovedal. Pripomenie, komu sa ozvať.",
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "CRM alebo e-mail",
+      "co": "odoslané ponuky, dátum a stav"
+     }
+    ],
+    "csv": []
+   },
+   "stav": "navrh",
+   "priklad": true,
+   "poznamka": "Príklad pre typ Stavebná firma, zatiaľ bez dát a výpočtu. Overiť s prvým klientom."
+  },
+  {
+   "id": "zadrzne-na-uvolnenie",
+   "nazov": "Zádržné na uvoľnenie",
+   "druh": "navrh",
+   "typy": [
+    "stavebna-firma"
+   ],
+   "kategoria": "stavba",
+   "popis": "Zádržné po skončení záručnej doby alebo po odovzdaní, ktoré si firma môže vyžiadať späť.",
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Zmluvy o dielo",
+      "co": "výška zádržného a podmienky uvoľnenia"
+     },
+     {
+      "system": "Účtovníctvo",
+      "co": "zadržané sumy"
+     }
+    ],
+    "csv": []
+   },
+   "stav": "navrh",
+   "priklad": true,
+   "poznamka": "Príklad pre typ Stavebná firma, zatiaľ bez dát a výpočtu. Overiť s prvým klientom."
+  },
+  {
+   "id": "kapacita-partii",
+   "nazov": "Kapacita partií",
+   "druh": "navrh",
+   "typy": [
+    "stavebna-firma"
+   ],
+   "kategoria": "stavba",
+   "popis": "Porovná plánované práce na najbližšie týždne s kapacitou vlastných partií a subdodávateľov.",
+   "zdroje_dat": {
+    "systemy": [
+     {
+      "system": "Harmonogram zákaziek",
+      "co": "plánované práce po týždňoch"
+     },
+     {
+      "system": "Dochádzka alebo plán ľudí",
+      "co": "kapacita partií"
+     }
+    ],
+    "csv": []
+   },
+   "stav": "navrh",
+   "priklad": true,
+   "poznamka": "Príklad pre typ Stavebná firma, zatiaľ bez dát a výpočtu. Overiť s prvým klientom."
+  }
+ ]
+}

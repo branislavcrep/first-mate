@@ -3,14 +3,16 @@
 // 1. Pôvodné panely (legacy/) stále dávajú presne golden výstup → golden súbory a nástroj sedia.
 // 2. F1–F6 z golden výstupu = referenčný model v Pythone (tools/first_mate_financny_model.py).
 // 3. Overené čísla z legacy/README.md (IRR VK PL 23,9 %, NZ 15,0 % …).
-// 4. Nové jadro: ak existuje panel/golden.mjs, musí dať pre oba typy rovnaký výstup ako golden.
+// 4. Katalóg use casov: schéma (tools/export_usecases.py --kontrola) a aktuálny CSV export.
+// 5. Nové jadro: ak existuje panel/golden.mjs, musí dať pre oba typy rovnaký výstup ako golden.
 //    Kontrakt: `export function nacitaj(typ, nowMs)` vráti {FMCSV, FM, FIN, CSV} v tvare legacy modulov
 //    (FM.compute, FM.fallbackTexts, FM.DEFAULTS, FM.KEYS, FM.localParts; FIN.compute, FIN.normalize, …).
 //
-// Prepínače: FM_JADRO=legacy (len body 1–3) · FM_JADRO=panel (len body 2–4 nad jadrom).
+// Prepínače: FM_JADRO=legacy (bez bodu 5) · FM_JADRO=panel (bez bodu 1).
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { spawnSync } from "node:child_process";
 import { KOREN } from "./legacy.mjs";
 import { vypocitaj } from "./vypocet.mjs";
 import { rozdiely, vypisRozdiely } from "./porovnaj.mjs";
@@ -64,6 +66,13 @@ console.log("Financie F1–F6 ↔ Python model a legacy/README.md");
   } catch (e) { zle("Python model sa nepodarilo spustiť (python3)", "  " + String(e.message).split("\n")[0]); }
   const b = porovnajSReadme(fin);
   b.chyby.length ? zle(`README: ${b.chyby.length} nezhôd z ${b.pocet}`, b.chyby.map((c) => "  " + c).join("\n")) : ok(`README: ${b.pocet} overených čísel sedí`);
+}
+
+console.log("Katalóg use casov (usecases/)");
+{
+  const r = spawnSync("python3", ["-I", path.join(KOREN, "tools", "export_usecases.py"), "--kontrola"], { encoding: "utf8" });
+  process.stdout.write(r.stdout || "");
+  if (r.status !== 0) { zlyhania++; if (r.stderr) console.log(r.stderr); }
 }
 
 const jadro = path.join(KOREN, "panel", "golden.mjs");
