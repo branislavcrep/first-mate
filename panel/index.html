@@ -8,8 +8,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <!-- First Mate · panel. Vygenerované z legacy/panel-developer (docs/migracia/nastroje/rozdel_rozhranie.mjs, 2026-11-24), odvtedy sa upravuje ručne.
-     Prvky s data-typy="…" patria len uvedeným typom firmy (app.js ostatné odstráni). Čísla záložiek 01, 02… dopĺňa app.js podľa poradia v menu. -->
+     Prvky s data-typy="…" patria len uvedeným typom firmy (app.js ostatné odstráni). Čísla záložiek 01, 02… dopĺňa app.js podľa poradia v menu.
+     data-prepni="<typ>" = odkaz, ktorý prepne panel na iný typ (len ak nastavenia klienta majú prepinac: true, inak zmizne).
+     fm-nastavenia = cesta k nastaveniam klienta od fm-koren (build vo fáze 5 ich vloží podľa klienta). -->
 <meta name="fm-koren" content="../">
+<meta name="fm-nastavenia" content="klienti/demo/nastavenia.json">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,8 +23,8 @@
   </div>
   <section class="hero">
     <div>
-      <div class="kicker" data-typy="realitka"><b>Ovládací panel</b> · verzia pre realitnú kanceláriu<a class="dslink" href="https://claude.ai/artifact/Thwr8YV58gP7RprXQHRw2Y" target="_blank" rel="noopener">verzia pre developera →</a></div>
-      <div class="kicker" data-typy="developer"><b>Ovládací panel</b> · verzia pre developera<a class="dslink" href="https://claude.ai/artifact/TMqLo37PgkvMqetibH7a5P" target="_blank" rel="noopener">verzia pre realitnú kanceláriu →</a></div>
+      <div class="kicker" data-typy="realitka"><b>Ovládací panel</b> · <span class="typ-badge">verzia pre realitnú kanceláriu</span><a class="dslink" data-prepni="developer" href="https://claude.ai/artifact/Thwr8YV58gP7RprXQHRw2Y" target="_blank" rel="noopener">verzia pre developera →</a></div>
+      <div class="kicker" data-typy="developer"><b>Ovládací panel</b> · <span class="typ-badge">verzia pre developera</span><a class="dslink" data-prepni="realitka" href="https://claude.ai/artifact/TMqLo37PgkvMqetibH7a5P" target="_blank" rel="noopener">verzia pre realitnú kanceláriu →</a></div>
       <h1>First Mate<i>.</i></h1>
       <p data-typy="realitka">Čísla z CRM prídu samy tam, kde tím pracuje. Kód ich spočíta, AI vysvetlí a navrhne, čo s nimi urobiť dnes.</p>
       <p data-typy="developer">Predaj projektov bez dashboardov. Kód každé ráno spočíta, ako sa plní plán a podmienka banky, čo horí pri rezerváciách a zálohách a kde čakajú záujemcovia. Majiteľovi stráži čerpanie úveru, rozpočet a výnosnosť. AI vysvetlí a navrhne kroky na dnes.</p>

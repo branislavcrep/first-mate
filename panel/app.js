@@ -5,51 +5,97 @@ import { zostavSignaly } from "./jadro/signaly.js";
 import ROZ_REALITKA from "./rozhranie/realitka.js";
 import ROZ_DEVELOPER from "./rozhranie/developer.js";
 
-// koreň repozitára (alebo zverejneného artefaktu) s data/ a usecases/
-const KOREN = (document.querySelector('meta[name="fm-koren"]') || {}).content ?? "../";
-// typ firmy: zatiaľ z adresy (?typ=realitka), neskôr z nastavení klienta; predvolene developer
+// koreň repozitára (alebo zverejneného artefaktu) s data/, usecases/ a klienti/
+const meta = n => (document.querySelector(`meta[name="${n}"]`) || {}).content;
+const KOREN = meta("fm-koren") ?? "../";
 const ROZHRANIA = { realitka: ROZ_REALITKA, developer: ROZ_DEVELOPER };
-const TYP_Z_ADRESY = new URLSearchParams(location.search).get("typ");
-const TYP_ID = Object.hasOwn(ROZHRANIA, TYP_Z_ADRESY || "") ? TYP_Z_ADRESY : "developer";
-const T = ROZHRANIA[TYP_ID];
-const { FM, CSV, FIN } = T;
-const DEV = T.financie;
-let TYP = { id: TYP_ID, data_dir: `data/${TYP_ID}/` };
+// pôvodné značky so všetkými typmi; pri prepnutí typu sa z nich panel postaví znova (bez načítania stránky)
+const SABLONA = document.body.cloneNode(true);
 
-// značky iných typov: prvky s data-typy bez tohto typu sa odstránia (nie len skryjú, aby nevznikli duplicitné id)
-document.querySelectorAll("[data-typy]").forEach(e => { if (e.dataset.typy.split(/\s+/).includes(TYP_ID)) e.removeAttribute("data-typy"); else e.remove(); });
-// čísla záložiek 01, 02… podľa poradia v menu
-document.querySelectorAll("#nav a").forEach((a, i) => {
-  const n = String(i + 1).padStart(2, "0"), k = document.querySelector(`#v-${a.dataset.v} > .kicker b`);
-  a.querySelector("span").textContent = n; if (k) k.textContent = n;
-});
-async function nacitajKatalog() {
-  const [katalog, typy] = await Promise.all(["usecases/usecases.json", "usecases/typy.json"].map((p) => fetch(KOREN + p, { cache: "no-store" }).then((r) => {
-    if (!r.ok) throw new Error(`Katalóg ${p} sa nepodarilo načítať (${r.status}).`);
-    return r.json();
-  })));
-  TYP = typy.typy.find((t) => t.id === TYP_ID) || TYP;
-  CSV.dir = KOREN + TYP.data_dir;
-  FM.nastavSignaly(zostavSignaly(TYP_ID, katalog, typy, "signaly"));
-  if (FIN) FIN.nastavSignaly(zostavSignaly(TYP_ID, katalog, typy, "financne_signaly"));
+// nastavenia klienta (zatiaľ len typ a prepínač); bez nich jeden typ bez prepínača
+const zaklad = { prepinac: false, typy: ["developer"], typ: "developer" };
+let NASTAVENIA = zaklad;
+async function nacitajNastavenia() {
+  try {
+    const r = await fetch(KOREN + (meta("fm-nastavenia") || "klienti/demo/nastavenia.json"), { cache: "no-store" });
+    if (r.ok) NASTAVENIA = { ...zaklad, ...(await r.json()) };
+  } catch (e) { }
+  NASTAVENIA.typy = (NASTAVENIA.typy || []).filter(t => Object.hasOwn(ROZHRANIA, t));
+  if (!NASTAVENIA.typy.includes(NASTAVENIA.typ)) NASTAVENIA.typ = NASTAVENIA.typy[0] || "developer";
+}
+// typ: z adresy (?typ=), ak ho prepínač povoľuje, inak z nastavení klienta
+function zvolTyp() {
+  const q = new URLSearchParams(location.search).get("typ");
+  return NASTAVENIA.prepinac && NASTAVENIA.typy.includes(q) ? q : NASTAVENIA.typ;
 }
 
-// dialóg Architektúra
-(function(){
-  var ov=document.getElementById('dsOv'),op=document.getElementById('dsOpen'),cl=document.getElementById('dsClose');
-  if(!ov||!op)return;
-  function show(){ov.classList.remove('hidden');cl.focus();}
-  function hide(){ov.classList.add('hidden');op.focus();}
-  op.addEventListener('click',show);
-  cl.addEventListener('click',hide);
-  ov.addEventListener('click',function(e){if(e.target===ov)hide();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!ov.classList.contains('hidden'))hide();});
-})();
+let katalogP = null;
+function nacitajKatalog() {
+  return katalogP = katalogP || Promise.all(["usecases/usecases.json", "usecases/typy.json"].map((p) => fetch(KOREN + p, { cache: "no-store" }).then((r) => {
+    if (!r.ok) throw new Error(`Katalóg ${p} sa nepodarilo načítať (${r.status}).`);
+    return r.json();
+  }))).catch(e => { katalogP = null; throw e; });
+}
+async function pripravTyp(T) {
+  const [katalog, typy] = await nacitajKatalog();
+  const TYP = typy.typy.find((t) => t.id === T.id) || { id: T.id, data_dir: `data/${T.id}/` };
+  T.CSV.dir = KOREN + TYP.data_dir;
+  T.FM.nastavSignaly(zostavSignaly(T.id, katalog, typy, "signaly"));
+  if (T.FIN) T.FIN.nastavSignaly(zostavSignaly(T.id, katalog, typy, "financne_signaly"));
+  return TYP;
+}
+
+// značky pre typ: prvky s data-typy bez tohto typu sa odstránia (nie len skryjú, aby nevznikli duplicitné id),
+// čísla záložiek 01, 02… podľa poradia v menu, odkaz na iný typ prepína typ (ak to nastavenia dovolia)
+function pripravZnacky(koren, typId) {
+  koren.querySelectorAll("[data-typy]").forEach(e => { if (e.dataset.typy.split(/\s+/).includes(typId)) e.removeAttribute("data-typy"); else e.remove(); });
+  koren.querySelectorAll("#nav a").forEach((a, i) => {
+    const n = String(i + 1).padStart(2, "0"), k = koren.querySelector(`#v-${a.dataset.v} > .kicker b`);
+    a.querySelector("span").textContent = n; if (k) k.textContent = n;
+  });
+  koren.querySelectorAll("[data-prepni]").forEach(a => {
+    const ciel = a.dataset.prepni;
+    if (!NASTAVENIA.prepinac || !NASTAVENIA.typy.includes(ciel)) { a.remove(); return; }
+    a.href = "?typ=" + ciel; a.removeAttribute("target");
+    a.addEventListener("click", e => { e.preventDefault(); spusti(ciel); });
+  });
+}
+
+let beh = null;
+async function spusti(typId) {
+  if (beh) beh.abort();
+  beh = new AbortController();
+  let koren = document.body;
+  if (koren.dataset.fmTyp) { koren = SABLONA.cloneNode(true); document.body.replaceWith(koren); window.scrollTo(0, 0); }
+  koren.dataset.fmTyp = typId;
+  try { if (new URLSearchParams(location.search).get("typ") !== typId && NASTAVENIA.prepinac) history.replaceState(null, "", "?typ=" + typId + location.hash); } catch (e) { }
+  pripravZnacky(koren, typId);
+  aplikacia(ROZHRANIA[typId], koren, beh.signal);
+}
+
+// ---------- aplikácia jedného typu ----------
+// T = objekt typu (panel/rozhranie/<typ>.js), koren = <body> tohto behu, signal = zrušenie pri prepnutí typu
+function aplikacia(T, koren, signal) {
+  const { FM, CSV, FIN } = T;
+  const DEV = T.financie;
+  let TYP = { id: T.id, data_dir: `data/${T.id}/` };
+
+  // dialóg Dáta ukážky
+  (function(){
+    var ov=koren.querySelector('#dsOv'),op=koren.querySelector('#dsOpen'),cl=koren.querySelector('#dsClose');
+    if(!ov||!op)return;
+    function show(){ov.classList.remove('hidden');cl.focus();}
+    function hide(){ov.classList.add('hidden');op.focus();}
+    op.addEventListener('click',show);
+    cl.addEventListener('click',hide);
+    ov.addEventListener('click',function(e){if(e.target===ov)hide();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!ov.classList.contains('hidden'))hide();},{signal});
+  })();
 
 (function () {
   "use strict";
-  const $ = s => document.querySelector(s);
-  const $$ = s => [...document.querySelectorAll(s)];
+  const $ = s => koren.querySelector(s);
+  const $$ = s => [...koren.querySelectorAll(s)];
   const esc = FM.esc;
   const clone = o => JSON.parse(JSON.stringify(o));
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -69,7 +115,7 @@ async function nacitajKatalog() {
     $$(".view").forEach(e => e.classList.toggle("on", e.id === "v-" + v));
     $$("#nav a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
   }
-  window.addEventListener("hashchange", route);
+  window.addEventListener("hashchange", route, { signal });
 
   // ---------- nastavenia (db) ----------
   function mergeSettings(d) {
@@ -701,7 +747,7 @@ async function nacitajKatalog() {
     ["#sig", "#fsig"].forEach(id => $(id).addEventListener("click", e => {
       const b = e.target.closest("[data-src]"); if (!b) return;
       e.preventDefault(); e.stopPropagation();
-      const k = b.dataset.src, box = document.getElementById("src-" + k);
+      const k = b.dataset.src, box = koren.querySelector(`[id="src-${CSS.escape(k)}"]`);
       if (srcOpen.has(k)) srcOpen.delete(k); else srcOpen.add(k);
       if (box) box.classList.toggle("hidden", !srcOpen.has(k));
       b.classList.toggle("on", srcOpen.has(k)); b.setAttribute("aria-expanded", srcOpen.has(k));
@@ -891,7 +937,7 @@ async function nacitajKatalog() {
     $("#csClose").addEventListener("click", closeCustom);
     $("#csCancel").addEventListener("click", closeCustom);
     $("#csOv").addEventListener("click", e => { if (e.target.id === "csOv") closeCustom(); });
-    document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#csOv").classList.contains("hidden")) closeCustom(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#csOv").classList.contains("hidden")) closeCustom(); }, { signal });
     $("#csObj").addEventListener("change", e => { draft.objekt = e.target.value; draft.podmienky = [{ pole: FM.FIELDS[draft.objekt][0][0], op: "eq", hodnota: "" }]; renderConds(); previewDraft(); });
     ["#csName", "#csDesc", "#csLevel"].forEach(id => $(id).addEventListener("input", () => { readDraft(); }));
     $("#csConds").addEventListener("input", e => {
@@ -1036,7 +1082,8 @@ async function nacitajKatalog() {
     bindDataBar(); if (DEV) { bindProjects(); bindFinance(); } bindTeam(); bindSignals(); if (DEV) { bindSources(); bindCustom(); } bindSchedule(); bindConn();
   }
   async function boot() {
-    await nacitajKatalog();
+    TYP = await pripravTyp(T);
+    if (TYP.farba) koren.style.setProperty("--typ", TYP.farba);
     route(); bind(); renderAll();
     try { lock(true); await loadData(null); updateSignalNow(); $(DEV ? "#btnLoadProj" : "#btnLoad").textContent = `Načítané ${hm(st.dataAt)} · obnoviť`; }
     catch (e) { $(DEV ? "#projInfo" : "#sigSaved").textContent = errText(e, "Dáta"); }
@@ -1052,4 +1099,8 @@ async function nacitajKatalog() {
   }
   boot();
 })();
+}
+
+await nacitajNastavenia();
+spusti(zvolTyp());
 

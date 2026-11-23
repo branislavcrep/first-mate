@@ -1,0 +1,8 @@
+{
+  "klient": "demo",
+  "nazov": "First Mate · demo",
+  "poznamka": "Zatiaľ len typ a prepínač (fáza 4). Ostatné nastavenia (Slack, e-mail, tím, menu, klientsky režim) doplní fáza 5.",
+  "prepinac": true,
+  "typy": ["realitka", "developer"],
+  "typ": "developer"
+}

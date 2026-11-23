@@ -18,6 +18,9 @@ try { ({ chromium } = require("playwright")); } catch { console.log("Playwright 
 const PRIPADY = [
   { typ: "developer", legacy: "legacy/panel-developer/index.html", panel: "panel/index.html", teraz: "2026-11-02T17:00:00Z" },
   { typ: "realitka", legacy: "legacy/panel-realitka/index.html", panel: "panel/index.html?typ=realitka", teraz: "2026-11-03T17:00:00Z" },
+  // prepínač typu bez načítania stránky (nastavenia demo: prepinac true): developer → realitka, developer → realitka → developer
+  { typ: "prepínač → realitka", legacy: "legacy/panel-realitka/index.html", panel: "panel/index.html", prepni: ["realitka"], teraz: "2026-11-03T17:00:00Z" },
+  { typ: "prepínač → realitka → developer", legacy: "legacy/panel-developer/index.html", panel: "panel/index.html", prepni: ["realitka", "developer"], teraz: "2026-11-02T17:00:00Z" },
 ];
 const TYPY = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".csv": "text/csv; charset=utf-8", ".md": "text/markdown; charset=utf-8" };
 const server = http.createServer((req, res) => {
@@ -29,7 +32,7 @@ const server = http.createServer((req, res) => {
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${server.address().port}/`;
 
-async function snimok(browser, url, teraz) {
+async function snimok(browser, url, teraz, prepni = []) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, timezoneId: "Europe/Bratislava" });
   const p = await ctx.newPage();
   await p.clock.setFixedTime(new Date(teraz));
@@ -39,6 +42,13 @@ async function snimok(browser, url, teraz) {
   await p.goto(BASE + url);
   await p.waitForFunction(() => /projekt|nehnuteľnost|ponuk/i.test(document.body.innerText), null, { timeout: 15000 }).catch(() => {});
   await p.waitForTimeout(1500);
+  for (const typ of prepni) {
+    await p.evaluate(() => { location.hash = "signaly"; });
+    await p.click(`[data-prepni="${typ}"]`);
+    await p.waitForFunction((t) => document.body.dataset.fmTyp === t, typ);
+    await p.waitForTimeout(2000);
+  }
+  await p.evaluate(() => { location.hash = "brifing"; }); await p.waitForTimeout(100);
   const zalozky = {};
   for (const id of await p.$$eval(".view", (vs) => vs.map((v) => v.id))) {
     await p.evaluate((h) => { location.hash = h; }, id.replace(/^v-/, ""));
@@ -74,7 +84,7 @@ const browser = await chromium.launch();
 try {
   for (const c of PRIPADY) {
     console.log(`UI ${c.typ}: ${c.legacy} ↔ ${c.panel}`);
-    const [a, b] = [await snimok(browser, c.legacy, c.teraz), await snimok(browser, c.panel, c.teraz)];
+    const [a, b] = [await snimok(browser, c.legacy, c.teraz), await snimok(browser, c.panel, c.teraz, c.prepni)];
     if (b.chyby.length) { zlyhania++; console.log("  ✗ chyby v konzole nového panela:\n    " + b.chyby.join("\n    ")); }
     for (const id of Object.keys(a.zalozky)) {
       if (a.zalozky[id] === b.zalozky[id]) { console.log(`  ✓ ${id}`); continue; }
