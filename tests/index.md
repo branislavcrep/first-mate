@@ -14,4 +14,4 @@ Golden testy: čísla signálov z pôvodných panelov sú zdroj pravdy. Spusteni
 Kontrakt pre nové jadro: `panel/golden.mjs` exportuje `nacitaj(typ, nowMs)` → `{FMCSV, FM, FIN, CSV}` v tvare legacy modulov. `FM_JADRO=legacy` alebo `FM_JADRO=panel` spustí len jednu časť.
 
 ## UI test
-- ui/porovnaj.mjs — `npm run test:ui`: pôvodný a nový panel v Chromiu (Playwright) s pevným časom, bez AI a konektorov; porovná text všetkých záložiek a náhľad brífingu po „Prepočítať“. Zatiaľ developer; realitka pribudne s prepínačom typov.
+- ui/porovnaj.mjs — `npm run test:ui`: pôvodný a nový panel v Chromiu (Playwright) s pevným časom, bez AI a konektorov, pre oba typy (developer `panel/index.html`, realitka `panel/index.html?typ=realitka`). Porovná viditeľný text každej záložky, hlavičku, menu, pätu, dialóg „Dáta ukážky“, pôvodné/posunuté dátumy a po „Prepočítať“ priebeh a náhľad vo všetkých kartách.

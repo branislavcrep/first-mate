@@ -42,3 +42,10 @@ Datované. Neplatné sa nemažú, označia sa `NEPLATÍ od RRRR-MM-DD`.
 - Kľúče výstupu ostávajú zatiaľ pôvodné (`s1`…, `f1`…), lebo na ne sú viazané texty brífingu, AI prompty a šablóny. Prechod na ID z katalógu je samostatný krok.
 - Moduly sú ES moduly (fungujú v prehliadači aj v Node pre testy). Fáza 1 ukázala, že artefakt môže mať viac súborov.
 - `CSV.toData` realitky dostáva čas ako parameter (`teraz`) namiesto `Date.now()`; správanie v paneli je rovnaké.
+
+## 2026-11-24 · fáza 4: realitka v tom istom paneli (Claude Code, v rámci schváleného plánu)
+- Jeden `panel/app.js` pre všetky typy. Čo sa medzi typmi líši (popisy signálov, texty „Dnes“, tím a roly, dokumenty v db, súhrn priebehu), je v objekte typu `panel/rozhranie/<typ>.js`. Väčšie celky len pre developera (Projekty, Financie, finančné a vlastné signály, zdroje dát) sú vo vetvách `if (DEV)`.
+- Typ sa zatiaľ volí v adrese (`?typ=realitka`), predvolený je developer. Neskôr ho určia nastavenia klienta a prepínač.
+- Značky: prvky len pre niektorý typ majú `data-typy="…"` a `app.js` ich pri štarte z DOM odstráni (nie len skryje), aby nevznikli duplicitné `id`. Čísla záložiek (01, 02…) dopĺňa `app.js` podľa poradia v menu.
+- Nastavenia v db ostávajú podľa pôvodných panelov: realitka `fm/settings`, `fm/log`, developer `fmdev/settings`, `fmdev/log`. Uložené nastavenia z pôvodných artefaktov sa tak dajú prevziať.
+- UI test porovnáva viditeľný text (záložka po prepnutí na ňu) a samotný náhľad brífingu vo všetkých kartách, nie celé `innerHTML` záložky. Rozdiely v medzerách a skrytých značkách tak nespôsobia zlyhanie, rozdiely vo viditeľnom texte áno.

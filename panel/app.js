@@ -1,13 +1,28 @@
 // First Mate · aplikácia panela (ES modul). Vygenerované z legacy/panel-developer (docs/migracia/nastroje/rozdel_rozhranie.mjs, 2026-11-24), odvtedy sa upravuje ručne.
+// Typ firmy (realitka, developer) určuje objekt typu z panel/rozhranie/<typ>.js; rozdiely sú v ňom alebo v malých vetvách `if (DEV)`.
 import FMCSV from "./jadro/csv.js";
 import { zostavSignaly } from "./jadro/signaly.js";
-import FM, { CSV } from "./typy/developer.js";
-import FIN from "./financie/fin.js";
+import ROZ_REALITKA from "./rozhranie/realitka.js";
+import ROZ_DEVELOPER from "./rozhranie/developer.js";
 
 // koreň repozitára (alebo zverejneného artefaktu) s data/ a usecases/
 const KOREN = (document.querySelector('meta[name="fm-koren"]') || {}).content ?? "../";
-const TYP_ID = "developer";
-let TYP = { id: TYP_ID, data_dir: "data/developer/" };
+// typ firmy: zatiaľ z adresy (?typ=realitka), neskôr z nastavení klienta; predvolene developer
+const ROZHRANIA = { realitka: ROZ_REALITKA, developer: ROZ_DEVELOPER };
+const TYP_Z_ADRESY = new URLSearchParams(location.search).get("typ");
+const TYP_ID = Object.hasOwn(ROZHRANIA, TYP_Z_ADRESY || "") ? TYP_Z_ADRESY : "developer";
+const T = ROZHRANIA[TYP_ID];
+const { FM, CSV, FIN } = T;
+const DEV = T.financie;
+let TYP = { id: TYP_ID, data_dir: `data/${TYP_ID}/` };
+
+// značky iných typov: prvky s data-typy bez tohto typu sa odstránia (nie len skryjú, aby nevznikli duplicitné id)
+document.querySelectorAll("[data-typy]").forEach(e => { if (e.dataset.typy.split(/\s+/).includes(TYP_ID)) e.removeAttribute("data-typy"); else e.remove(); });
+// čísla záložiek 01, 02… podľa poradia v menu
+document.querySelectorAll("#nav a").forEach((a, i) => {
+  const n = String(i + 1).padStart(2, "0"), k = document.querySelector(`#v-${a.dataset.v} > .kicker b`);
+  a.querySelector("span").textContent = n; if (k) k.textContent = n;
+});
 async function nacitajKatalog() {
   const [katalog, typy] = await Promise.all(["usecases/usecases.json", "usecases/typy.json"].map((p) => fetch(KOREN + p, { cache: "no-store" }).then((r) => {
     if (!r.ok) throw new Error(`Katalóg ${p} sa nepodarilo načítať (${r.status}).`);
@@ -16,7 +31,7 @@ async function nacitajKatalog() {
   TYP = typy.typy.find((t) => t.id === TYP_ID) || TYP;
   CSV.dir = KOREN + TYP.data_dir;
   FM.nastavSignaly(zostavSignaly(TYP_ID, katalog, typy, "signaly"));
-  FIN.nastavSignaly(zostavSignaly(TYP_ID, katalog, typy, "financne_signaly"));
+  if (FIN) FIN.nastavSignaly(zostavSignaly(TYP_ID, katalog, typy, "financne_signaly"));
 }
 
 // dialóg Architektúra
@@ -40,14 +55,14 @@ async function nacitajKatalog() {
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const hm = ms => FM.localParts(ms).hm;
   const SERVERS = ["Slack", "Gmail"];
-  const DOC_SETTINGS = "fmdev/settings", DOC_LOG = "fmdev/log";
+  const DOC_SETTINGS = T.db + "/settings", DOC_LOG = T.db + "/log";
 
   let S = mergeSettings({});
   let db = null, mcp = null, sample = null;
   const st = { data: null, dataAt: 0, brief: null, texts: null, briefAt: 0, briefSig: "", running: false, log: [], conn: {}, lastOk: {}, pv: "email", capsReady: false, fin: null, finTexts: null, finAt: 0, finSig: "", finDay: null, finWhy: null };
 
   // ---------- routing ----------
-  const VIEWS = ["brifing", "projekty", "financie", "tim", "signaly", "rozvrh", "architektura"];
+  const VIEWS = $$("#nav a").map(a => a.dataset.v);
   function route() {
     const h = (location.hash || "").slice(1);
     const v = VIEWS.includes(h) ? h : "brifing";
@@ -59,16 +74,13 @@ async function nacitajKatalog() {
   // ---------- nastavenia (db) ----------
   function mergeSettings(d) {
     const D = FM.DEFAULTS, g = d.signals || {};
-    const sig = {}; FM.KEYS.forEach(k => sig[k] = { ...D.signals[k], ...(g[k] || {}) });
-    FIN.KEYS.forEach(k => sig[k] = { ...FIN.DEFAULTS[k], ...(g[k] || {}) });
-    sig.custom = Array.isArray(g.custom) ? g.custom : [];
     return {
-      ...clone(D), ...d, signals: sig,
+      ...clone(D), ...d, signals: T.signaly(D, g),
       schedule: { ...D.schedule, ...(d.schedule || {}) },
       automation: { ...D.automation, ...(d.automation || {}) },
       team: Array.isArray(d.team) && d.team.length ? d.team : clone(D.team),
       email: d.email || D.email,
-      finEmail: d.finEmail || D.finEmail
+      ...(DEV ? { finEmail: d.finEmail || D.finEmail } : {})
     };
   }
   const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: "timeout" }), ms))]);
@@ -133,8 +145,8 @@ async function nacitajKatalog() {
       FMCSV.validate(file, p, spec).forEach(e => errs.push(e));
       raw[key] = p.rows.map(r => ({ attributes: FMCSV.typed(r, spec.schema, n) }));
     }
-    const data = CSV.toData(raw);
-    data.fin = FIN.normalize(raw);
+    const data = CSV.toData(raw, Date.now());
+    if (DEV) data.fin = FIN.normalize(raw);
     data.finMissing = missing;
     data.warn = errs;
     return data;
@@ -171,12 +183,12 @@ async function nacitajKatalog() {
       if (/\.md$|\.txt$/.test(name) && /manifest/.test(name)) { manifest = FMCSV.readManifest(t); continue; }
       const all = want.concat(optional);
       const target = all.find(w => w === name) || all.find(w => name.endsWith(w));
-      if (!target) { errs.push(`Súbor „${esc(f.name)}“ nepoznám. Panel čaká ${want.map(w => "„" + w + "“").join(", ")}, voliteľne finančné ${optional.map(w => "„" + w + "“").join(", ")}.`); continue; }
+      if (!target) { errs.push(`Súbor „${esc(f.name)}“ nepoznám. Panel čaká ${want.map(w => "„" + w + "“").join(", ")}${optional.length ? `, voliteľne finančné ${optional.map(w => "„" + w + "“").join(", ")}` : ""}.`); continue; }
       if (t.includes(String.fromCharCode(0xFFFD))) errs.push(`${esc(f.name)}: niektoré znaky sa nedajú prečítať. Uložte súbor v kódovaní UTF-8 (v Exceli „CSV UTF-8“).`);
       texts[target] = t; names.push(target);
     }
     const miss = want.filter(w => !texts[w]);
-    if (miss.length) errs.unshift(`${miss.length === 1 ? "Chýba súbor" : "Chýbajú súbory"} ${miss.map(w => "„" + w + "“").join(", ")}. Vyberte naraz všetky ${want.length} súbory predaja (a voliteľne ${optional.length} finančných).`);
+    if (miss.length) errs.unshift(`${miss.length === 1 ? "Chýba súbor" : "Chýbajú súbory"} ${miss.map(w => "„" + w + "“").join(", ")}. Vyberte naraz všetky ${want.length} súbory${optional.length ? ` predaja (a voliteľne ${optional.length} finančných)` : ""}.`);
     for (const w of want.concat(optional)) if (texts[w]) {
       const p = FMCSV.parse(texts[w]);
       FMCSV.validate(w, p, CSV.spec[w]).forEach(e => { if (!/oddeľovač/.test(e)) errs.push(esc(e)); });
@@ -207,7 +219,7 @@ async function nacitajKatalog() {
     st.data = buildData(); st.dataAt = Date.now(); st.brief = null; st.texts = null; st.briefAt = 0; st.fin = null; st.finTexts = null; st.finAt = 0;
     renderDataBar(); afterData();
   }
-  function afterData() { renderProjects(); updateSignalNow(); renderFinance(); const pv = $("#pvInfo"); if (pv && !st.brief) pv.textContent = "Dáta sa zmenili. Kliknite na „Prepočítať bez odoslania“."; }
+  function afterData() { if (DEV) renderProjects(); updateSignalNow(); if (DEV) renderFinance(); const pv = $("#pvInfo"); if (pv && !st.brief) pv.textContent = "Dáta sa zmenili. Kliknite na „Prepočítať bez odoslania“."; }
 
   // ---------- MCP ----------
   async function call(server, tool, input, opt) {
@@ -337,28 +349,18 @@ async function nacitajKatalog() {
     return R;
   }
   const BRIEF_STEPS = ["Načítať dáta", "Vypočítať signály v kóde", "AI napíše interpretáciu a kroky"];
-  function summaryLine(b) {
-    const p = [];
-    b.projekty.forEach(x => p.push(`${x.kod} ${FM.fmtPct(x.soldPct)}`));
-    if (b.s2.on && b.s2.count) p.push(`zálohy ${FM.eur(b.s2.suma)}`);
-    if (b.s3.on) p.push(`${b.s3.count} rezerv.`);
-    if (b.s4.on) p.push(`${b.s4.count} bez reakcie`);
-    if (b.s7.on) p.push(`${b.s7.count} ležiaky`);
-    return p.join(" · ");
-  }
+  const summaryLine = T.summaryLine;
   async function loadData(R, i) {
     R && R.set(i, "active", "Načítavam CSV…");
     if (!st.src) await loadDemoCsv(step => R && R.set(i, "active", step + "…"));
     st.data = buildData();
     st.dataAt = Date.now();
     renderDataBar();
-    const c = st.data.counts;
-    const fc = st.data.fin && st.data.fin.available ? st.data.fin.counts : null;
-    R && R.set(i, "done", `${c.projekty} projekty, ${c.jednotky} jednotiek, ${c.dopyty} dopytov` + (fc ? `, ${fc.tranze} tranží, ${fc.rozpocet} položiek rozpočtu` : ""));
-    renderProjects(); renderFinance();
+    R && R.set(i, "done", T.loadedLine(st.data));
+    if (DEV) { renderProjects(); renderFinance(); }
   }
   async function ensureBrief(force, R) {
-    const sig = JSON.stringify([...FM.KEYS.map(k => S.signals[k]), S.signals.custom]);
+    const sig = T.briefSig(S);
     const age = Date.now() - st.briefAt;
     if (!force && st.brief && age < 15 * 60e3 && st.briefSig === sig && (st.texts.ai || !sample)) {
       const min = Math.max(1, Math.round(age / 60e3));
@@ -424,9 +426,10 @@ async function nacitajKatalog() {
   }
   async function recalc() {
     if (st.running) return; lock(true);
-    const R = makeRun($("#run"), $("#steps"), $("#runTitle"), "Prepočet bez odoslania", [...BRIEF_STEPS, "AI napíše finančný brífing"]);
+    const R = makeRun($("#run"), $("#steps"), $("#runTitle"), "Prepočet bez odoslania", DEV ? [...BRIEF_STEPS, "AI napíše finančný brífing"] : BRIEF_STEPS);
     try {
       await ensureBrief(true, R);
+      if (!DEV) { R.msg("Hotovo. Náhľad nižšie ukazuje, čo by odišlo."); return; }
       try { await ensureFin(true, R, { load: null, comp: null, ai: 3 }); }
       catch (e) { R.set(3, "warn", errText(e, "Dáta")); }
       R.msg("Hotovo. Náhľad nižšie ukazuje, čo by odišlo (záložky E-mail, Slack a Financie).");
@@ -599,7 +602,7 @@ async function nacitajKatalog() {
   // ---------- tím ----------
   function recipients() {
     return S.team.filter(m => m.aktivny && String(m.email || "").trim()).map(m => {
-      const scope = m.rozsah === "financie" ? "financie" : (m.rozsah === "svoje" && m.predajca ? "svoje" : "cely");
+      const scope = DEV && m.rozsah === "financie" ? "financie" : (m.rozsah === "svoje" && m[T.osoba] ? "svoje" : "cely");
       return { ...m, scope, err: FM.validEmail(m.email) };
     });
   }
@@ -616,7 +619,7 @@ async function nacitajKatalog() {
       const mk = ok.filter(r => r.scope === "svoje");
       let personal = {};
       if (mk.length) {
-        R.set(2, "active", "AI píše osobné brífingy predajcov…");
+        R.set(2, "active", `AI píše osobné brífingy ${T.osobyGen}…`);
         try { personal = (await aiJson(FM.personalPrompt(b, mk))) || {}; } catch (e) { personal = {}; }
         R.set(2, "done", `Celý brífing + ${mk.length} ${mk.length === 1 ? "osobný" : "osobné"}`);
       }
@@ -639,8 +642,8 @@ async function nacitajKatalog() {
             const f = st.fin, ft = st.finTexts, day = st.finDay;
             await call("Gmail", "send_message", { to: [r.email], subject: FIN.emailSubject(f, ft, day), body: FIN.emailText(f, ft, day), htmlBody: FIN.emailHtml(f, ft, day) }, { write: true });
           } else {
-            const p0 = personal[r.predajca];
-            const fb = FM.personalFallback(b, r.predajca);
+            const p0 = personal[r[T.osoba]];
+            const fb = FM.personalFallback(b, r[T.osoba]);
             const p = (p0 && typeof p0.veta === "string" && Array.isArray(p0.kroky) && p0.kroky.length) ? { veta: p0.veta, kroky: p0.kroky.slice(0, 3).map(String) } : fb;
             const pe = FM.personalEmail(b, r, p);
             await call("Gmail", "send_message", { to: [r.email], subject: pe.subject, body: pe.text, htmlBody: pe.html }, { write: true });
@@ -655,13 +658,13 @@ async function nacitajKatalog() {
   }
   function renderTeam() {
     const opt = (v, cur, label) => `<option value="${esc(v)}"${v === cur ? " selected" : ""}>${esc(label || v)}</option>`;
-    $("#team").innerHTML = `<div class="trow head"><span class="lbl">Meno</span><span class="lbl">Rola</span><span class="lbl">Predajca v dátach</span><span class="lbl">E-mail</span><span class="lbl">Dostáva</span><span class="lbl">Posielať</span><span></span></div>` +
+    $("#team").innerHTML = `<div class="trow head"><span class="lbl">Meno</span><span class="lbl">Rola</span><span class="lbl">${T.osobaLbl} v dátach</span><span class="lbl">E-mail</span><span class="lbl">Dostáva</span><span class="lbl">Posielať</span><span></span></div>` +
       S.team.map((m, i) => `<div class="trow" data-i="${i}">
         <input type="text" data-k="meno" value="${esc(m.meno)}" placeholder="Meno" aria-label="Meno">
-        <select data-k="rola" aria-label="Rola">${opt("riaditel", m.rola, "Riaditeľ predaja")}${opt("vedenie", m.rola, "Majiteľ / financie")}${opt("predajca", m.rola, "Predajca")}</select>
-        <select data-k="predajca" aria-label="Predajca v dátach">${opt("", m.predajca, "—")}${FM.PREDAJCOVIA.map(x => opt(x, m.predajca)).join("")}</select>
+        <select data-k="rola" aria-label="Rola">${T.roly.map(([v, l]) => opt(v, m.rola, l)).join("")}</select>
+        <select data-k="${T.osoba}" aria-label="${T.osobaLbl} v dátach">${opt("", m[T.osoba], "—")}${T.osoby().map(x => opt(x, m[T.osoba])).join("")}</select>
         <input type="email" data-k="email" value="${esc(m.email)}" placeholder="e-mail" aria-label="E-mail" class="${m.email && FM.validEmail(m.email) ? "err" : ""}" title="${esc(m.email ? (FM.validEmail(m.email) || "") : "")}">
-        <select data-k="rozsah" aria-label="Dostáva">${opt("cely", m.rozsah, "Celý brífing")}${opt("svoje", m.rozsah, "Len svoje")}${opt("financie", m.rozsah, "Finančný brífing")}</select>
+        <select data-k="rozsah" aria-label="Dostáva">${T.rozsahy.map(([v, l]) => opt(v, m.rozsah, l)).join("")}</select>
         <label class="toggle" title="Posielať"><input type="checkbox" data-k="aktivny"${m.aktivny ? " checked" : ""}><span class="box"></span></label>
         <button class="x" data-del="${i}" aria-label="Odstrániť">×</button></div>`).join("");
     teamInfo();
@@ -677,58 +680,23 @@ async function nacitajKatalog() {
       const m = S.team[+row.dataset.i]; if (!m) return;
       m[k] = e.target.type === "checkbox" ? e.target.checked : e.target.value;
       if (k === "email") { const bad = m.email && FM.validEmail(m.email); e.target.classList.toggle("err", !!bad); e.target.title = bad || ""; }
-      if (k === "rola" && m.rola !== "predajca") { m.rozsah = m.rola === "vedenie" ? "financie" : "cely"; renderTeam(); }
-      if (k === "predajca" && m.predajca && m.rola === "predajca" && !m.meno) { m.meno = m.predajca; renderTeam(); }
+      if (k === "rola" && m.rola !== T.osoba) { m.rozsah = T.rolaRozsah[m.rola] || "cely"; renderTeam(); }
+      if (k === T.osoba && m[T.osoba] && m.rola === T.osoba && !m.meno) { m.meno = m[T.osoba]; renderTeam(); }
       teamInfo(); save();
     });
     $("#team").addEventListener("change", e => { if (e.target.tagName === "SELECT" || e.target.type === "checkbox") e.target.dispatchEvent(new Event("input", { bubbles: true })); });
     $("#team").addEventListener("click", e => { const d = e.target.dataset.del; if (d == null) return; S.team.splice(+d, 1); renderTeam(); save(); });
-    $("#addMember").addEventListener("click", () => { S.team.push({ id: "m" + Date.now(), meno: "", rola: "predajca", predajca: "", email: "", rozsah: "svoje", aktivny: true }); renderTeam(); save(); });
+    $("#addMember").addEventListener("click", () => { S.team.push({ id: "m" + Date.now(), meno: "", rola: T.osoba, [T.osoba]: "", email: "", rozsah: "svoje", aktivny: true }); renderTeam(); save(); });
     $("#btnTeam").addEventListener("click", sendTeam);
   }
 
   // ---------- signály ----------
-  const SIG = [
-    { k: "s1", t: "Podmienka banky", d: "Banka pustí úver až pri určitom podiele predaných bytov. Signál stráži, koľko zmlúv chýba a koľko dní zostáva do termínu.", p: [["days", "Upozorniť dní pred termínom", 7, 365]] },
-    { k: "s2", t: "Zálohy po splatnosti", d: "Zálohy kupujúcich podľa splátkového kalendára, ktoré nie sú uhradené. Bez nich sa zdrží čerpanie úveru a cash-flow stavby.", p: [["graceDays", "Tolerancia (dni po splatnosti)", 0, 60]] },
-    { k: "s3", t: "Končiace rezervácie", d: "Rezervácie, ktoré čoskoro vypršia bez zmluvy o budúcej zmluve, aj tie, ktoré už vypršali a jednotka stále nie je voľná.", p: [["days", "Končí do (dni)", 1, 30]] },
-    { k: "s4", t: "Dopyty bez reakcie", d: "Záujemca, ktorému sa nikto neozval dlhšie ako hranica. Ukáže aj vyťaženosť a rýchlosť jednotlivých predajcov.", p: [["hours", "Hranica (hodiny)", 1, 240]] },
-    { k: "s5", t: "Obhliadky bez ďalšieho kroku", d: "Záujemca bol na obhliadke vzorového bytu alebo na predajnom mieste, ale nemá dohodnutý ďalší krok. Tu sa strácajú rezervácie.", p: [["days", "Od obhliadky aspoň (dni)", 1, 30]] },
-    { k: "s6", t: "Klientske zmeny", d: "Blíži sa uzávierka zmien štandardu a niektorí kupujúci sa ešte nevyjadrili. Po uzávierke sa zmeny robiť nedajú alebo sú drahé.", p: [["days", "Uzávierka do (dni)", 1, 90]] },
-    { k: "s7", t: "Ležiaky", d: "Voľné byty, ktoré si ľudia pozerajú, ale nikto o ne neprejavil záujem. Zároveň ukáže typy, ktoré sa už vypredali, ako podklad pre cenník a ďalšiu etapu.", p: [["minViews", "Min. zobrazení za 30 dní", 10, 5000], ["minDays", "V predaji aspoň (dni)", 0, 365]] },
-    { k: "s8", t: "Obchodné priestory", d: "Obchodné priestory, ktoré sa dlho nepredali. Signál porovná, či záujemcovia chcú kúpu alebo nájom.", p: [["days", "V ponuke dlhšie ako (dni)", 30, 720]] }
-  ];
-  const FSIG = [
-    { k: "f1", t: "Podmienky čerpania tranží", d: "Stráži všetky podmienky najbližších tranží naraz: predpredaj, krytie úveru po čerpaní, vlastný kapitál a potvrdenia technického dozoru. Ukáže, čo chýba, a koľko vlastných zdrojov by stálo neskoršie čerpanie.", p: [["days", "Upozorniť dní pred čerpaním", 7, 365]] },
-    { k: "f2", t: "Krytie úveru zmluvami", d: "Hodnota podpísaných zmlúv (s DPH) voči čerpanému úveru a kovenantu banky. Ukáže aj, ako krytie klesne po najbližšej tranži.", p: [["buffer", "Rezerva nad kovenantom (%)", 0, 100]] },
-    { k: "f3", t: "Potrebné tempo predaja", d: "Koľko zmlúv mesačne treba na podmienku banky, podmienky tranží a vypredanie do kolaudácie, oproti tempu posledných 90 dní. Odhadne, kedy sa cieľ pri dnešnom tempe naozaj splní.", p: [["pct", "Potrebné tempo vyššie o (%)", 0, 300]] },
-    { k: "f4", t: "Rozpočet a rezerva", d: "Položky rozpočtu nad toleranciou, čerpanie rezervy oproti postupu stavby a či na dokončenie stačia prisľúbené vlastné zdroje.", p: [["tol", "Tolerancia položky (%)", 0, 50], ["rezPp", "Rezerva minutá rýchlejšie ako stavba o (p. b.)", 0, 100]] },
-    { k: "f5", t: "IRR projektu a vlastného kapitálu", d: "Odhad výnosnosti z aktuálnych dát oproti biznis plánu a cieľu investorov. Rozloží zmenu IRR na vplyv predaja (tempo a ceny) a nákladov.", p: [["pp", "Pokles IRR projektu oproti plánu (p. b.)", 0, 20]] },
-    { k: "f6", t: "Stres test", d: "Ako sa zmení IRR a zisk pri nižších cenách voľných jednotiek, vyšších nákladoch, neskoršej kolaudácii a vyššom úroku, aj všetko naraz. Upozorní, keď scenár padne pod cieľ alebo do straty.", p: [["cena", "Pokles cien (%)", 0, 50], ["naklady", "Rast nákladov (%)", 0, 50], ["mesiace", "Oneskorenie kolaudácie (mes.)", 0, 24], ["urok", "Rast úroku (p. b.)", 0, 10]] }
-  ];
-
-  // ---------- zdroje dát pre signály ----------
-  const SRC = {
-    s1: { z: [["CRM alebo cenník", "stav každej jednotky (voľná, rezervovaná, zmluva o budúcej zmluve, kúpna zmluva) a dátum zmeny"], ["Úverová zmluva", "požadovaný podiel predaných bytov a termín jeho splnenia"]], f: "dev_projekty.csv, dev_jednotky.csv" },
-    s2: { z: [["Zmluvy s kupujúcimi alebo CRM", "splátkový kalendár: výška a splatnosť každej zálohy"], ["Účtovníctvo alebo výpis z banky", "úhrady záloh, ideálne z viazaného účtu na zálohy"]], f: "dev_jednotky.csv" },
-    s3: { z: [["CRM", "rezervácie s dátumom platnosti, záujemca a predajca"], ["Rezervačné zmluvy", "ak sa neevidujú v CRM, aspoň dátum platnosti"]], f: "dev_jednotky.csv, dev_dopyty.csv" },
-    s4: { z: [["CRM", "dopyty záujemcov s časom prijatia, časom prvej reakcie a predajcom"], ["Web projektu a realitné portály", "kontaktné formuláre, ak neprichádzajú priamo do CRM"], ["Spoločná e-mailová schránka", "ak sa dopyty vybavujú e-mailom mimo CRM"]], f: "dev_dopyty.csv" },
-    s5: { z: [["CRM", "obhliadky, ich výsledok a dohodnutý ďalší krok"], ["Kalendár predajcov", "naplánované obhliadky a stretnutia (voliteľné)"]], f: "dev_dopyty.csv" },
-    s6: { z: [["Harmonogram stavby alebo zmluva s dodávateľom", "termín uzávierky klientskych zmien"], ["Evidencia klientskych zmien alebo CRM", "stav pri každom kupujúcom (nevyjadril sa, v riešení, uzavreté)"]], f: "dev_projekty.csv, dev_jednotky.csv" },
-    s7: { z: [["Cenník (CRM alebo Excel)", "voľné byty, ceny a dátum zaradenia do ponuky"], ["Realitné portály a analytika webu", "zobrazenia inzerátu za posledných 30 dní"], ["CRM", "dopyty a spätná väzba záujemcov"]], f: "dev_jednotky.csv, dev_dopyty.csv" },
-    s8: { z: [["Cenník (CRM alebo Excel)", "obchodné priestory, ceny a dátum zaradenia do ponuky"], ["CRM", "dopyty s typom záujmu (kúpa alebo nájom) a spätnou väzbou"]], f: "dev_jednotky.csv, dev_dopyty.csv" },
-    f1: { z: [["Úverová zmluva", "tranže, ich výška, plánované termíny a podmienky čerpania"], ["Výpis z úverového účtu", "ktoré tranže sú načerpané a kedy"], ["CRM alebo cenník", "predané byty a hodnota podpísaných zmlúv"], ["Účtovníctvo alebo výpis z banky", "doteraz vložený vlastný kapitál"], ["Technický dozor investora", "potvrdenia o postupe stavby a o rozpočte"]], f: "dev_uver.csv, dev_tranze.csv, dev_podmienky_cerpania.csv, dev_jednotky.csv, dev_projekty.csv" },
-    f2: { z: [["Úverová zmluva", "kovenant: minimálne krytie úveru zmluvami"], ["Výpis z úverového účtu", "čerpaná suma úveru"], ["CRM alebo zmluvy s kupujúcimi", "hodnota podpísaných zmlúv o budúcej zmluve a kúpnych zmlúv"]], f: "dev_uver.csv, dev_tranze.csv, dev_jednotky.csv" },
-    f3: { z: [["CRM", "dátumy podpisu zmlúv za posledné 3 mesiace a zostávajúce voľné byty"], ["Úverová zmluva", "požadovaný predpredaj pre banku a pre jednotlivé tranže s termínmi"], ["Harmonogram stavby", "termín kolaudácie"]], f: "dev_jednotky.csv, dev_projekty.csv, dev_tranze.csv, dev_podmienky_cerpania.csv" },
-    f4: { z: [["Rozpočet projektu (controlling alebo štúdia uskutočniteľnosti)", "rozpočet po položkách vrátane rezervy"], ["Zmluvy s dodávateľmi", "zazmluvnené sumy"], ["Účtovníctvo", "vyfakturované náklady po položkách"], ["Stavbyvedúci alebo technický dozor investora", "percento dokončenia a odhad nákladov na dokončenie"], ["Dohoda so spoločníkmi alebo investormi", "prisľúbený a vložený vlastný kapitál"]], f: "dev_rozpocet.csv, dev_cashflow.csv, dev_projekty.csv" },
-    f5: { z: [["Štúdia uskutočniteľnosti alebo biznis plán", "plánované peňažné toky po mesiacoch a cieľová výnosnosť investorov"], ["Účtovníctvo", "skutočné náklady po mesiacoch"], ["Rozpočet s odhadom na dokončenie", "koľko ešte stavba bude stáť"], ["CRM a cenník", "podpísané zmluvy, zálohy a ceny voľných jednotiek"], ["Zmluvy s kupujúcimi", "splátkový kalendár: záloha a doplatok pri kolaudácii"], ["Úverová zmluva", "úroková sadzba, tranže a splatnosť úveru"]], f: "dev_cashflow.csv, dev_rozpocet.csv, dev_uver.csv, dev_tranze.csv, dev_jednotky.csv, dev_projekty.csv" },
-    f6: { z: [["Rovnaké zdroje ako výnosnosť (F5)", "štúdia uskutočniteľnosti, účtovníctvo, rozpočet, CRM, úverová zmluva"], ["Vedenie alebo investori", "aké zhoršenie cien, nákladov, termínov a úrokov sa má testovať"]], f: "rovnaké ako F5" }
-  };
-  const SRC_CUSTOM = { jednotky: { z: [["CRM alebo cenník", "údaje o jednotkách: stav, cena, predajca, zálohy, rezervácie"]], f: "dev_jednotky.csv" }, dopyty: { z: [["CRM", "dopyty záujemcov, obhliadky a ich výsledok"]], f: "dev_dopyty.csv" }, projekty: { z: [["CRM a úverová zmluva", "stav predaja projektu, plán a podmienka banky"]], f: "dev_projekty.csv, dev_jednotky.csv" } };
+  // popisy signálov a zdroje dát sú v panel/rozhranie/<typ>.js
+  const { SIG, FSIG, SRC, SRC_CUSTOM } = T;
   const srcOpen = new Set();
   const SRC_ICON = `<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><ellipse cx="6" cy="2.5" rx="4.5" ry="1.8" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 2.5v7c0 1 2 1.8 4.5 1.8s4.5-.8 4.5-1.8v-7M1.5 6c0 1 2 1.8 4.5 1.8S10.5 7 10.5 6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>`;
-  const srcBtn = k => `<button class="srcbtn${srcOpen.has(k) ? " on" : ""}" type="button" data-src="${esc(k)}" aria-expanded="${srcOpen.has(k)}" title="Odkiaľ pochádzajú dáta">${SRC_ICON}Zdroje</button>`;
-  const srcBox = (k, d) => d ? `<div class="srcbox${srcOpen.has(k) ? "" : " hidden"}" id="src-${esc(k)}"><div class="lbl">Odkiaľ budú dáta</div><ul>${d.z.map(([a, b]) => `<li><b>${esc(a)}</b>: ${esc(b)}</li>`).join("")}</ul><div class="note" style="margin:6px 0 0">V ukážke: ${esc(d.f)}</div></div>` : "";
+  const srcBtn = k => !SRC ? "" : `<button class="srcbtn${srcOpen.has(k) ? " on" : ""}" type="button" data-src="${esc(k)}" aria-expanded="${srcOpen.has(k)}" title="Odkiaľ pochádzajú dáta">${SRC_ICON}Zdroje</button>`;
+  const srcBox = (k, d) => SRC && d ? `<div class="srcbox${srcOpen.has(k) ? "" : " hidden"}" id="src-${esc(k)}"><div class="lbl">Odkiaľ budú dáta</div><ul>${d.z.map(([a, b]) => `<li><b>${esc(a)}</b>: ${esc(b)}</li>`).join("")}</ul><div class="note" style="margin:6px 0 0">V ukážke: ${esc(d.f)}</div></div>` : "";
   function bindSources() {
     ["#sig", "#fsig"].forEach(id => $(id).addEventListener("click", e => {
       const b = e.target.closest("[data-src]"); if (!b) return;
@@ -740,44 +708,36 @@ async function nacitajKatalog() {
     }));
   }
   function renderSignals() {
-    $("#fsig").innerHTML = FSIG.map((g, i) => `<div class="sg ${S.signals[g.k].on ? "" : "off"}" data-k="${g.k}">
+    const per = $("#period"); if (per) per.value = String(S.signals.period);
+    if (DEV) $("#fsig").innerHTML = FSIG.map((g, i) => `<div class="sg ${S.signals[g.k].on ? "" : "off"}" data-k="${g.k}">
       <div class="sg-top"><span class="lbl"><span class="blue">F${i + 1}</span> · finančný signál${srcBtn(g.k)}</span><label class="toggle"><span>${S.signals[g.k].on ? "zapnutý" : "vypnutý"}</span><input type="checkbox" data-on="${g.k}"${S.signals[g.k].on ? " checked" : ""}><span class="box"></span></label></div>
-      <div class="sg-body"><h3>${esc(g.t)}</h3><p>${esc(g.d)}</p>${srcBox(g.k, SRC[g.k])}
+      <div class="sg-body"><h3>${esc(g.t)}</h3><p>${esc(g.d)}</p>${srcBox(g.k, SRC && SRC[g.k])}
       <div class="params">${g.p.map(([f, l, mn, mx]) => `<label><span class="lbl">${esc(l)}</span><input type="number" min="${mn}" max="${mx}" data-s="${g.k}" data-f="${f}" value="${S.signals[g.k][f]}"></label>`).join("")}</div>
       <div class="now"><span class="lbl">Dnes</span><span class="v" id="now-${g.k}">–</span><span class="note" id="nowd-${g.k}" style="margin:0"></span></div></div></div>`).join("");
     $("#sig").innerHTML = SIG.map((g, i) => `<div class="sg ${S.signals[g.k].on ? "" : "off"}" data-k="${g.k}">
       <div class="sg-top"><span class="lbl"><span class="blue">S${i + 1}</span> · signál${srcBtn(g.k)}</span><label class="toggle"><span>${S.signals[g.k].on ? "zapnutý" : "vypnutý"}</span><input type="checkbox" data-on="${g.k}"${S.signals[g.k].on ? " checked" : ""}><span class="box"></span></label></div>
-      <div class="sg-body"><h3>${esc(g.t)}</h3><p>${esc(g.d)}</p>${srcBox(g.k, SRC[g.k])}
+      <div class="sg-body"><h3>${esc(g.t)}</h3><p>${esc(g.d)}</p>${srcBox(g.k, SRC && SRC[g.k])}
       <div class="params">${g.p.map(([f, l, mn, mx]) => `<label><span class="lbl">${esc(l)}</span><input type="number" min="${mn}" max="${mx}" data-s="${g.k}" data-f="${f}" value="${S.signals[g.k][f]}"></label>`).join("")}</div>
-      <div class="now"><span class="lbl">Dnes</span><span class="v" id="now-${g.k}">–</span><span class="note" id="nowd-${g.k}" style="margin:0"></span></div></div></div>`).join("") +
+      <div class="now"><span class="lbl">Dnes</span><span class="v" id="now-${g.k}">–</span><span class="note" id="nowd-${g.k}" style="margin:0"></span></div></div></div>`).join("") + (!DEV ? "" :
       customList().map((r, i) => `<div class="sg ${r.on !== false ? "" : "off"}" data-cid="${esc(r.id)}">
       <div class="sg-top"><span class="lbl"><span class="blue">V${i + 1}</span> · vlastný signál<span class="tagc">${esc(FM.SOURCES[r.objekt] || "")}</span>${srcBtn("c_" + r.id)}</span><label class="toggle"><span>${r.on !== false ? "zapnutý" : "vypnutý"}</span><input type="checkbox" data-con="${esc(r.id)}"${r.on !== false ? " checked" : ""}><span class="box"></span></label></div>
       <div class="sg-body"><h3>${esc(r.nazov)}</h3>${r.popis ? `<p>${esc(r.popis)}</p>` : ""}${srcBox("c_" + r.id, SRC_CUSTOM[r.objekt])}
       <div class="rule">${esc(FM.describeRule(r))}</div>
       <div class="sg-acts"><button class="link" data-edit="${esc(r.id)}" type="button">Upraviť</button><button class="link" data-del="${esc(r.id)}" type="button">Odstrániť</button><span class="note" style="margin:0">${r.uroven === "red" ? "Konať dnes" : "Sledovať"}</span></div>
       <div class="now"><span class="lbl">Dnes</span><span class="v" id="now-c_${esc(r.id)}">–</span><span class="note" id="nowd-c_${esc(r.id)}" style="margin:0"></span></div></div></div>`).join("") +
-      `<button class="sg sg-add" id="sgAdd" type="button"><span class="plus">+</span><b>Pridať signál</b><span class="note">Vlastné pravidlo nad jednotkami, dopytmi alebo projektmi. Opíšte ho slovami a AI navrhne podmienky.</span></button>`;
+      `<button class="sg sg-add" id="sgAdd" type="button"><span class="plus">+</span><b>Pridať signál</b><span class="note">Vlastné pravidlo nad jednotkami, dopytmi alebo projektmi. Opíšte ho slovami a AI navrhne podmienky.</span></button>`);
     updateSignalNow();
   }
   function updateSignalNow() {
     if (!$("#now-s1")) return;
-    if (!st.data) { [...SIG.map(g => g.k), ...FSIG.map(g => g.k), ...customList().map(r => "c_" + r.id)].forEach(k => { const e = $("#now-" + k); if (e) { e.textContent = "–"; $("#nowd-" + k).textContent = "načítajte dáta"; } }); return; }
+    if (!st.data) { [...SIG.map(g => g.k), ...FSIG.map(g => g.k), ...(DEV ? customList().map(r => "c_" + r.id) : [])].forEach(k => { const e = $("#now-" + k); if (e) { e.textContent = "–"; $("#nowd-" + k).textContent = "načítajte dáta"; } }); return; }
     const b = FM.compute(st.data, S.signals, Date.now());
     const set = (k, v, d, hl) => { const e = $("#now-" + k); e.textContent = v; e.classList.toggle("hl", !!hl); $("#nowd-" + k).textContent = d; };
-    const r1 = b.s1.items.find(x => x.riziko);
-    const PNAME = k => (st.data.projekty.find(p => p.kod === k || p.nazov === k) || {}).nazov || k;
-    const TYP = { "Byt": "byt", "Obchodný priestor": "obchodný priestor", "Parkovacie státie": "parkovacie státie" };
-    const UNIT = kod => { const j = st.data.jednotky.find(x => x.kod === kod); return `${TYP[j && j.typ] || "jednotka"} ${String(kod).replace(/^[A-Z]+-/, "").replace(/^(OP|PS)0*/, "č. ")}`; };
-    const byProj = (items, fn) => { const g = {}; items.forEach(x => { const p = PNAME(x.projekt); (g[p] = g[p] || []).push(fn(x)); }); return Object.entries(g).map(([p, a]) => `${p}: ${a.join(", ")}`).join(" · "); };
-    const people = arr => arr.map(x => `${x.predajca} ${x.n}`).join(", ");
-    set("s1", String(b.s1.count), r1 ? `${r1.projekt}: predaných ${FM.fmtPct(r1.predanePct)} bytov, banka požaduje ${r1.cielPct} % do ${r1.terminDm}; ${FM.pl(r1.chyba, "chýba", "chýbajú", "chýba")} ${r1.chyba} ${FM.pl(r1.chyba, "zmluva", "zmluvy", "zmlúv")}, do termínu ${r1.dni} ${FM.pl(r1.dni, "deň", "dni", "dní")}` : (b.s1.items.length ? "podmienka banky ešte nie je splnená, ale do termínu je dosť času" : "podmienky bánk sú splnené"), b.s1.count > 0);
-    set("s2", String(b.s2.count), b.s2.count ? `spolu ${FM.eur(b.s2.suma)}; ` + byProj(b.s2.items, x => `${UNIT(x.jednotka)} ${FM.eur(x.suma)} (splatná ${x.splatna}, predajca ${x.predajca})`) : "všetky splatné zálohy sú uhradené", b.s2.count > 0);
-    set("s3", String(b.s3.count), b.s3.count ? byProj(b.s3.items, x => `${UNIT(x.jednotka)} (${x.vyprsala ? "rezervácia vypršala " + x.do : "rezervácia končí " + x.do})`) : "žiadna rezervácia čoskoro nekončí", b.s3.vyprsane > 0);
-    set("s4", String(b.s4.count), b.s4.byPredajca.length ? `počet záujemcov bez reakcie podľa predajcu: ${people(b.s4.byPredajca)}` : "na všetkých záujemcov niekto zareagoval", b.s4.count > 0);
-    set("s5", String(b.s5.count), b.s5.byPredajca.length ? `záujemcovia po obhliadke bez dohodnutého ďalšieho kroku podľa predajcu: ${people(b.s5.byPredajca)}` : "po každej obhliadke je dohodnutý ďalší krok", false);
-    set("s6", String(b.s6.count), b.s6.items.length ? b.s6.items.map(x => `${x.projekt}: uzávierka klientskych zmien ${x.uzavierka}, nevyjadrili sa kupujúci ${x.jednotky.length} ${FM.pl(x.jednotky.length, "jednotky", "jednotiek", "jednotiek")}`).join(" · ") : "žiadna uzávierka klientskych zmien sa neblíži", false);
-    set("s7", String(b.s7.count), b.s7.count ? byProj(b.s7.items, x => `${UNIT(x.jednotka)} (${x.zobrazenia30} zobrazení za 30 dní, žiadny dopyt)`) : "žiadny voľný byt nestojí bez záujmu", false);
-    set("s8", String(b.s8.count), b.s8.count ? byProj(b.s8.items, x => `${UNIT(x.jednotka)} v ponuke ${x.dniVPonuke} dní, ${x.najom} ${FM.pl(x.najom, "záujemca", "záujemcovia", "záujemcov")} o nájom, ${x.kupa} o kúpu`) : "žiadny obchodný priestor nie je v ponuke príliš dlho", false);
+    T.signalNow(b, set, st.data);
+    if (DEV) updateFinSignalNow(b, set);
+    $("#sigSaved").title = `${dataLabel()} · načítané ${hm(st.dataAt)}`;
+  }
+  function updateFinSignalNow(b, set) {
     const f = finCompute();
     if (!f.available) FSIG.forEach(g => set(g.k, "–", "finančné súbory chýbajú", false));
     else {
@@ -797,7 +757,6 @@ async function nacitajKatalog() {
     }
     renderFinance(f);
     (b.customKeys || []).forEach(k => { const c = b[k]; if ($("#now-" + k)) set(k, String(c.count), c.count ? c.items.slice(0, 6).map(x => x.label).join(", ") + (c.count > 6 ? ` a ďalších ${c.count - 6}` : "") : "nič nespĺňa pravidlo", c.count > 0 && c.level === "red"); });
-    $("#sigSaved").title = `${dataLabel()} · načítané ${hm(st.dataAt)}`;
   }
   function bindSignals() {
     $("#sig").addEventListener("click", e => {
@@ -809,8 +768,10 @@ async function nacitajKatalog() {
         S.signals.custom = customList().filter(r => r.id !== t.dataset.del); renderSignals(); save();
       }
     });
-    $("#btnAddSig").addEventListener("click", () => openCustom(null));
-    $("#sigFilter").addEventListener("click", e => {
+    const per = $("#period");
+    if (per) per.addEventListener("change", e => { S.signals.period = +e.target.value; updateSignalNow(); save(); });
+    if (DEV) $("#btnAddSig").addEventListener("click", () => openCustom(null));
+    if (DEV) $("#sigFilter").addEventListener("click", e => {
       const b = e.target.closest("[data-sf]"); if (!b) return;
       const v = b.dataset.sf;
       $$("#sigFilter button").forEach(x => x.classList.toggle("on", x === b));
@@ -824,18 +785,18 @@ async function nacitajKatalog() {
       const k = e.target.dataset.s, f = e.target.dataset.f, on = e.target.dataset.on;
       if (on) { S.signals[on].on = e.target.checked; renderSignals(); save(); return; }
       if (!k || !f) return;
-      const v = parseInt(e.target.value, 10); if (!(v >= 0)) return;
+      const v = parseInt(e.target.value, 10); if (!(v >= T.minParam)) return;
       S.signals[k][f] = v; updateSignalNow(); save();
     });
     $("#sig").addEventListener("change", e => { if (e.target.type === "checkbox") e.target.dispatchEvent(new Event("input", { bubbles: true })); });
-    $("#fsig").addEventListener("input", e => {
+    if (DEV) $("#fsig").addEventListener("input", e => {
       const k = e.target.dataset.s, fld = e.target.dataset.f, on = e.target.dataset.on;
       if (on) { S.signals[on].on = e.target.checked; renderSignals(); save(); return; }
       if (!k || !fld) return;
       const v = parseInt(e.target.value, 10); if (!(v >= 0)) return;
       S.signals[k][fld] = v; updateSignalNow(); save();
     });
-    $("#fsig").addEventListener("change", e => { if (e.target.type === "checkbox") e.target.dispatchEvent(new Event("input", { bubbles: true })); });
+    if (DEV) $("#fsig").addEventListener("change", e => { if (e.target.type === "checkbox") e.target.dispatchEvent(new Event("input", { bubbles: true })); });
     $("#btnLoad").addEventListener("click", async () => {
       if (st.running) return; lock(true); const btn = $("#btnLoad"); btn.textContent = "Načítavam…";
       try { await loadData(null); updateSignalNow(); btn.textContent = `Načítané ${hm(st.dataAt)} · obnoviť`; }
@@ -999,10 +960,11 @@ async function nacitajKatalog() {
   function renderSchedule() {
     $("#days").innerHTML = DAYS.map(([n, l]) => `<button type="button" data-d="${n}" class="${S.schedule.days.includes(n) ? "on" : ""}">${l}</button>`).join("");
     $("#time").value = S.schedule.time;
-    $("#chSlack").checked = !!S.schedule.slack; $("#chEmail").checked = !!S.schedule.email; $("#chTeam").checked = !!S.schedule.team; $("#chFin").checked = !!S.schedule.fin;
-    $("#chEmailAddr").textContent = S.email; $("#chFinAddr").textContent = S.finEmail;
+    $("#chSlack").checked = !!S.schedule.slack; $("#chEmail").checked = !!S.schedule.email; $("#chTeam").checked = !!S.schedule.team;
+    $("#chEmailAddr").textContent = S.email;
+    if (DEV) { $("#chFin").checked = !!S.schedule.fin; $("#chFinAddr").textContent = S.finEmail; }
     const nx = nextRun();
-    const ch = [S.schedule.slack && "Slack", S.schedule.email && "e-mail", S.schedule.team && "osobné brífingy tímu", S.schedule.fin && "finančný brífing"].filter(Boolean);
+    const ch = [S.schedule.slack && "Slack", S.schedule.email && "e-mail", S.schedule.team && "osobné brífingy tímu", DEV && S.schedule.fin && "finančný brífing"].filter(Boolean);
     $("#autoText").innerHTML = (S.automation.active
       ? `<b>Zapnuté.</b> Naplánovaná úloha v Claude si pred každým odoslaním prečíta toto nastavenie.`
       : `<b>Zatiaľ nezapnuté.</b> Nastavenie sa ukladá. Ranné odosielanie podľa neho spustí naplánovaná úloha v Claude, keď sa zapne.`) +
@@ -1011,10 +973,10 @@ async function nacitajKatalog() {
   function bindSchedule() {
     $("#days").addEventListener("click", e => { const d = e.target.dataset.d; if (d == null) return; const n = +d; const a = S.schedule.days; const i = a.indexOf(n); i >= 0 ? a.splice(i, 1) : a.push(n); renderSchedule(); save(); });
     $("#time").addEventListener("change", e => { if (/^\d\d:\d\d$/.test(e.target.value)) { S.schedule.time = e.target.value; renderSchedule(); save(); } });
-    [["#chSlack", "slack"], ["#chEmail", "email"], ["#chTeam", "team"], ["#chFin", "fin"]].forEach(([id, k]) => $(id).addEventListener("change", e => { S.schedule[k] = e.target.checked; renderSchedule(); save(); }));
+    [["#chSlack", "slack"], ["#chEmail", "email"], ["#chTeam", "team"], ...(DEV ? [["#chFin", "fin"]] : [])].forEach(([id, k]) => $(id).addEventListener("change", e => { S.schedule[k] = e.target.checked; renderSchedule(); save(); }));
   }
   const CONN_ROWS = [
-    { s: "Slack", use: "Doručenie do #first-mate-developer", check: () => call("Slack", "slack_read_channel", { channel_id: FM.SLACK_CHANNEL, limit: 1 }) },
+    { s: "Slack", use: "Doručenie do " + FM.SLACK_NAME, check: () => call("Slack", "slack_read_channel", { channel_id: FM.SLACK_CHANNEL, limit: 1 }) },
     { s: "Gmail", use: "Doručenie e-mailov", check: null },
     { s: "Claude AI", use: "Interpretácia a návrh krokov", check: null }
   ];
@@ -1062,8 +1024,8 @@ async function nacitajKatalog() {
   function renderAll() {
     const lp = FM.localParts(Date.now());
     $("#today").textContent = `${FM.WDL[lp.wd]} ${FM.dm(lp.date)} ${lp.date.slice(0, 4)}`;
-    $("#emailTo").value = S.email; $("#finTo").value = S.finEmail;
-    renderTeam(); renderSignals(); renderSchedule(); renderConn(); renderLog(); renderProjects();
+    $("#emailTo").value = S.email; if (DEV) $("#finTo").value = S.finEmail;
+    renderTeam(); renderSignals(); renderSchedule(); renderConn(); renderLog(); if (DEV) renderProjects();
   }
   function bind() {
     $("#btnSlack").addEventListener("click", sendSlack);
@@ -1071,13 +1033,13 @@ async function nacitajKatalog() {
     $("#emailTo").addEventListener("input", e => { e.target.classList.remove("err"); $("#emailErr").classList.add("hidden"); });
     $("#btnRecalc").addEventListener("click", recalc);
     $$(".tabs2 button").forEach(b => b.addEventListener("click", () => { st.pv = b.dataset.pv; $$(".tabs2 button").forEach(x => x.classList.toggle("on", x === b)); renderPreview(); }));
-    bindDataBar(); bindProjects(); bindFinance(); bindTeam(); bindSignals(); bindSources(); bindCustom(); bindSchedule(); bindConn();
+    bindDataBar(); if (DEV) { bindProjects(); bindFinance(); } bindTeam(); bindSignals(); if (DEV) { bindSources(); bindCustom(); } bindSchedule(); bindConn();
   }
   async function boot() {
     await nacitajKatalog();
     route(); bind(); renderAll();
-    try { lock(true); await loadData(null); updateSignalNow(); $("#btnLoadProj").textContent = `Načítané ${hm(st.dataAt)} · obnoviť`; }
-    catch (e) { $("#projInfo").textContent = errText(e, "Dáta"); }
+    try { lock(true); await loadData(null); updateSignalNow(); $(DEV ? "#btnLoadProj" : "#btnLoad").textContent = `Načítané ${hm(st.dataAt)} · obnoviť`; }
+    catch (e) { $(DEV ? "#projInfo" : "#sigSaved").textContent = errText(e, "Dáta"); }
     finally { lock(false); }
     const C = window.claude;
     if (!C || typeof C.use !== "function") { st.capsReady = true; SERVERS.forEach(s => st.conn[s] = "na"); renderConn(); return; }
@@ -1086,7 +1048,7 @@ async function nacitajKatalog() {
     if (db) await loadSettings();
     renderAll();
     await refreshConn();
-    if (st.data) { renderProjects(); updateSignalNow(); }
+    if (st.data) { if (DEV) renderProjects(); updateSignalNow(); }
   }
   boot();
 })();
