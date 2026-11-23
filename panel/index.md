@@ -1,7 +1,12 @@
 # panel/
 
-Jedno jadro panela First Mate (fáza 4 migrácie). Zatiaľ hotové výpočtové jadro; rozhranie (index.html, styles.css, app.js) pribudne.
+Jedno jadro panela First Mate (fáza 4 migrácie). Hotové: výpočtové jadro a rozhranie pre typ developer (zhodné s legacy, `npm run test:ui`). Pribudne: realitka, prepínač typov, menu a klientsky režim z nastavení, päta s verziou.
 
+Lokálne: `python3 -m http.server` v koreni repozitára a otvoriť `/panel/index.html` (dáta a katalóg číta z `../`, meta `fm-koren`).
+
+- index.html — značky panela (záložky Brífing … Architektúra), načíta styles.css a app.js
+- styles.css — dizajn Books & Mirror (papier #F9F9F5, atrament #0B0B0C, modrá #1B2CC1, Geist)
+- app.js — aplikácia (ES modul): načíta katalóg, nastaví signály podľa typy.json, dáta z data/<typ>/, db, mcp (Slack, Gmail), sample
 - jadro/csv.js — CSV loader FMCSV (BOM, `;`, desatinná čiarka, dátumy v čase Europe/Bratislava), spoločný pre všetky typy
 - jadro/signaly.js — register modulov use casov a `zostavSignaly(typ, katalog, typy, pole)`: poradie z `usecases/typy.json`, kľúč výstupu z `legacy` v katalógu
 - typy/realitka.js — typ realitka: normalizácia dát, kontext signálov, texty brífingu, šablóny e-mailu a Slacku, definícia CSV a `toData(raw, teraz)`

@@ -12,3 +12,6 @@ Golden testy: čísla signálov z pôvodných panelov sú zdroj pravdy. Spusteni
 - golden/run.mjs — `npm test`: legacy ↔ golden, Python, README, katalóg use casov a nové jadro `panel/golden.mjs` ↔ golden (prechádza od 24. 11. 2026)
 
 Kontrakt pre nové jadro: `panel/golden.mjs` exportuje `nacitaj(typ, nowMs)` → `{FMCSV, FM, FIN, CSV}` v tvare legacy modulov. `FM_JADRO=legacy` alebo `FM_JADRO=panel` spustí len jednu časť.
+
+## UI test
+- ui/porovnaj.mjs — `npm run test:ui`: pôvodný a nový panel v Chromiu (Playwright) s pevným časom, bez AI a konektorov; porovná text všetkých záložiek a náhľad brífingu po „Prepočítať“. Zatiaľ developer; realitka pribudne s prepínačom typov.

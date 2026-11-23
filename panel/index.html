@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Mate · panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- First Mate · panel. Vygenerované z legacy/panel-developer (docs/migracia/nastroje/rozdel_rozhranie.mjs, 2026-11-24), odvtedy sa upravuje ručne. -->
+<meta name="fm-koren" content="../">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">Books &amp; Mirror</div>
+    <div class="demo">Ukážka <span>fiktívne dáta</span><button class="dslink" id="dsOpen" type="button">Dáta ukážky</button></div>
+  </div>
+  <section class="hero">
+    <div>
+      <div class="kicker"><b>Ovládací panel</b> · verzia pre developera<a class="dslink" href="https://claude.ai/artifact/TMqLo37PgkvMqetibH7a5P" target="_blank" rel="noopener">verzia pre realitnú kanceláriu →</a></div>
+      <h1>First Mate<i>.</i></h1>
+      <p>Predaj projektov bez dashboardov. Kód každé ráno spočíta, ako sa plní plán a podmienka banky, čo horí pri rezerváciách a zálohách a kde čakajú záujemcovia. Majiteľovi stráži čerpanie úveru, rozpočet a výnosnosť. AI vysvetlí a navrhne kroky na dnes.</p>
+      <div class="conn" id="conn"></div>
+      <div class="databar" id="dataBar">
+        <span class="chip"><i class="dot ok"></i><span id="dbLabel">Dáta: CSV</span></span>
+        <div class="seg" role="group" aria-label="Dátumy v dátach"><button type="button" data-shift="1" class="on">Posunuté k dnešku</button><button type="button" data-shift="0">Pôvodné dátumy</button></div>
+        <button class="link" id="dbUpload" type="button">Nahrať vlastné CSV</button><button class="link hidden" id="dbReset" type="button">Späť na ukážku</button>
+        <input type="file" id="dbFile" accept=".csv,.md,.txt,text/csv" multiple hidden>
+        <div class="note" id="dbShift"></div>
+        <div id="dbMsg"></div>
+      </div>
+    </div>
+  </section>
+  <nav id="nav">
+    <a href="#brifing" data-v="brifing"><span>01</span>Brífing</a>
+    <a href="#projekty" data-v="projekty"><span>02</span>Projekty</a>
+    <a href="#financie" data-v="financie"><span>03</span>Financie</a>
+    <a href="#tim" data-v="tim"><span>04</span>Tím</a>
+    <a href="#signaly" data-v="signaly"><span>05</span>Signály</a>
+    <a href="#rozvrh" data-v="rozvrh"><span>06</span>Rozvrh</a>
+    <a href="#architektura" data-v="architektura"><span>07</span>Architektúra</a>
+  </nav>
+
+  <main>
+  <!-- 01 BRÍFING -->
+  <section class="view" id="v-brifing">
+    <div class="kicker"><b>01</b>&nbsp;&nbsp;Ranný brífing</div>
+    <h2>Poslať brífing teraz <small>/ <span id="today"></span></small></h2>
+    <p class="lead">Jedno kliknutie: First Mate načíta projekty, jednotky a dopyty z CSV exportu CRM, spočíta signály, AI ich vysvetlí a navrhne kroky na dnes. Výsledok odíde tam, kam ho pošlete. Finančný brífing (úver, rozpočet, výnosnosť) ide zvlášť majiteľovi.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="lbl">Kanál 01 · Slack</div>
+        <h3>#first-mate-developer</h3>
+        <p>Celý brífing do kanála predajného tímu. Vo vlákne sa dá pýtať ďalej a pokračovať v Claude príkazom <span class="mono blue">/first-mate-dev</span>.</p>
+        <button class="btn" id="btnSlack">Poslať do Slacku <span>→</span></button>
+      </div>
+      <div class="card">
+        <div class="lbl">Kanál 02 · E-mail</div>
+        <h3>Brífing e-mailom</h3>
+        <div class="field">
+          <label class="lbl" for="emailTo">Komu</label>
+          <input type="email" id="emailTo" autocomplete="email">
+        </div>
+        <button class="btn" id="btnEmail">Poslať e-mailom <span>→</span></button>
+        <div id="emailErr" class="msg warn hidden"></div>
+      </div>
+    </div>
+    <div class="card fincard">
+      <div class="lbl">Kanál 03 · Finančný brífing</div>
+      <h3>Pre majiteľa a finančného riaditeľa</h3>
+      <p>Samostatný e-mail o čerpaní úveru, podmienkach tranží, rozpočte, IRR a stres teste. Do kanála predajného tímu neodchádza.</p>
+      <div class="finrow">
+        <div class="field"><label class="lbl" for="finTo">Komu</label><input type="email" id="finTo" autocomplete="email"></div>
+        <button class="btn" id="btnFin">Poslať finančný brífing <span>→</span></button>
+      </div>
+      <div id="finErr" class="msg warn hidden"></div>
+    </div>
+
+    <div class="run hidden" id="run">
+      <div class="run-head"><div class="lbl" id="runTitle">Priebeh</div><div class="saved" id="runTime"></div></div>
+      <ol class="steps" id="steps"></ol>
+      <div id="runMsg" style="padding:0 20px 18px"></div>
+    </div>
+
+    <div class="pv-head">
+      <div>
+        <div class="kicker"><b>Náhľad</b>&nbsp;&nbsp;posledného brífingu</div>
+        <div class="note" id="pvInfo">Zatiaľ nič. Náhľad sa zobrazí po prvom výpočte.</div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <button class="link" id="btnRecalc">Prepočítať bez odoslania</button>
+        <div class="tabs2"><button data-pv="email" class="on">E-mail</button><button data-pv="slack">Slack</button><button data-pv="fin">Financie</button></div>
+      </div>
+    </div>
+    <div class="pv" id="pv"><div class="empty">Kliknite na „Prepočítať bez odoslania“ alebo pošlite brífing.</div></div>
+
+    <div class="log">
+      <div class="kicker"><b>História</b>&nbsp;&nbsp;odoslaných brífingov</div>
+      <table style="margin-top:12px"><thead><tr><th style="width:150px">Kedy</th><th style="width:200px">Kanál</th><th>Hlavná správa</th></tr></thead><tbody id="logBody"><tr><td colspan="3" class="note">Zatiaľ nič neodišlo.</td></tr></tbody></table>
+    </div>
+  </section>
+
+  <!-- 02 PROJEKTY -->
+  <section class="view" id="v-projekty">
+    <div class="kicker"><b>02</b>&nbsp;&nbsp;Prehľad projektov</div>
+    <h2>Ako sa predáva <small>/ plán, banka, mix bytov</small></h2>
+    <p class="lead">Stav predaja každého projektu oproti plánu a podmienke financujúcej banky. Mix bytov ukáže, čo sa vypredalo a čo zostáva ležať. Čísla počíta kód z jednotiek v CSV.</p>
+    <div class="bar" style="margin-top:0">
+      <span class="note" id="projInfo" style="margin:0">Dáta zatiaľ nie sú načítané.</span>
+      <button class="btn small ghost" id="btnLoadProj">Načítať dáta</button>
+    </div>
+    <div id="proj"><div class="pv"><div class="empty">Kliknite na „Načítať dáta“.</div></div></div>
+  </section>
+
+  <!-- 03 FINANCIE -->
+  <section class="view" id="v-financie">
+    <div class="kicker"><b>03</b>&nbsp;&nbsp;Financie projektov</div>
+    <h2>Úver, rozpočet, výnosnosť <small>/ pre majiteľa a finančného riaditeľa</small></h2>
+    <p class="lead">Podmienky čerpania tranží, krytie úveru zmluvami, potrebné tempo predaja, rozpočet s rezervou, IRR oproti biznis plánu a stres test. Čísla počíta kód z CSV exportov (CRM, úverová zmluva, rozpočet, cash-flow), rovnaké dáta dajú vždy rovnaké čísla.</p>
+    <div class="method"><b>Ako sa počíta výnosnosť.</b> Mesačné peňažné toky bez DPH: skutočné náklady z cash-flow, zvyšok podľa odhadu na dokončenie, nevyčerpaná rezerva ako náklad. Príjmy z podpísaných zmlúv (záloha podľa splátkového kalendára, doplatok mesiac po kolaudácii) a z predaja voľných jednotiek za aktuálny cenník v tempe posledných 90 dní. Úver sa čerpá podľa tranží, úrok sa platí mesačne, istina sa spláca z doplatkov po kolaudácii; chýbajúce peniaze dopĺňa vlastný kapitál. IRR vlastného kapitálu porovnáva vklady a výplaty investorov. Biznis plán je ten istý výpočet nad plánovanými stĺpcami cash-flow.</div>
+    <div class="bar" style="margin-top:0">
+      <span class="note" id="finInfo" style="margin:0">Dáta zatiaľ nie sú načítané.</span>
+      <button class="btn small ghost" id="btnLoadFin">Načítať dáta</button>
+    </div>
+    <div id="fin"><div class="pv"><div class="empty">Kliknite na „Načítať dáta“.</div></div></div>
+  </section>
+
+  <!-- 04 TÍM -->
+  <section class="view" id="v-tim">
+    <div class="kicker"><b>04</b>&nbsp;&nbsp;Tím a príjemcovia</div>
+    <h2>Kto dostane čo <small>/ každý len to, čo sa ho týka</small></h2>
+    <p class="lead">Riaditeľ predaja a vedenie dostanú celý brífing. Predajca dostane osobný brífing: svojich záujemcov, svoje rezervácie, zálohy a kroky na dnes. Majiteľ alebo finančný riaditeľ dostane finančný brífing. Predajca sa páruje s menom v dátach.</p>
+    <div class="team" id="team"></div>
+    <div class="bar">
+      <button class="link" id="addMember">+ Pridať člena tímu</button>
+      <span class="saved" id="teamSaved"></span>
+    </div>
+    <div class="bar" style="margin-top:8px">
+      <button class="btn" id="btnTeam">Poslať brífingy tímu <span>→</span></button>
+      <span class="note" id="teamInfo"></span>
+    </div>
+    <div class="note">Na adresy @example.com z dát First Mate nikdy neposiela. Na ukážku zadajte adresy, ktoré viete otvoriť.</div>
+    <div class="run hidden" id="teamRun">
+      <div class="run-head"><div class="lbl">Odosielanie tímu</div><div class="saved" id="teamRunTime"></div></div>
+      <ol class="steps" id="teamSteps"></ol>
+      <div id="teamMsg" style="padding:0 20px 18px"></div>
+    </div>
+  </section>
+
+  <!-- 05 SIGNÁLY -->
+  <section class="view" id="v-signaly">
+    <div class="kicker"><b>05</b>&nbsp;&nbsp;Nastavenie signálov</div>
+    <h2>Čo First Mate sleduje <small>/ hranice si určí developer</small></h2>
+    <p class="lead">Žiadna čierna skrinka. Každý signál je pravidlo, ktoré sa dá zapnúť, vypnúť a nastaviť. Čísla „dnes“ sa prepočítajú hneď po zmene z posledných načítaných dát.</p>
+    <div class="bar" style="margin-top:0">
+      <div class="seg" role="group" aria-label="Zobraziť signály" id="sigFilter"><button type="button" data-sf="all" class="on">Všetky</button><button type="button" data-sf="sales">Predajné</button><button type="button" data-sf="fin">Finančné</button></div>
+      <div style="display:flex;gap:14px;align-items:center"><span class="saved" id="sigSaved"></span><button class="btn small ghost" id="btnLoad">Načítať dáta</button><button class="btn small" id="btnAddSig">+ Pridať signál</button></div>
+    </div>
+    <div id="salesWrap">
+    <div class="kicker" style="margin-bottom:14px"><b>Predaj</b>&nbsp;&nbsp;signály pre riaditeľa predaja a predajcov · poradie podľa dôležitosti</div>
+    <div class="sig" id="sig"></div>
+    </div>
+    <div id="finWrap">
+    <div class="kicker" style="margin-top:48px"><b>Financie</b>&nbsp;&nbsp;signály pre majiteľa a finančného riaditeľa</div>
+    <p class="lead" style="margin-top:10px">Tieto signály idú do finančného brífingu, nie do kanála predajného tímu. Cieľové IRR, kovenanty a podmienky tranží sú v dátach, tu sa nastavujú hranice upozornení.</p>
+    <div class="sig" id="fsig"></div>
+    </div>
+  </section>
+
+  <!-- 06 ROZVRH -->
+  <section class="view" id="v-rozvrh">
+    <div class="kicker"><b>06</b>&nbsp;&nbsp;Rozvrh a prepojenia</div>
+    <h2>Kedy a kam <small>/ ranný brífing bez klikania</small></h2>
+    <p class="lead">Nastavte dni, čas a kanály ranného brífingu. Pod tým je stav prepojení na CRM a komunikačné kanály.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="lbl">Dni</div>
+        <div class="days" id="days" style="margin:12px 0 22px"></div>
+        <div class="field" style="max-width:180px"><label class="lbl" for="time">Čas odoslania</label><input type="time" id="time"></div>
+      </div>
+      <div class="card">
+        <div class="lbl">Kanály</div>
+        <div class="checks" style="margin-top:14px">
+          <label><input type="checkbox" id="chSlack"><span><b>Slack</b> · #first-mate-developer<br><span class="note">celý brífing do kanála</span></span></label>
+          <label><input type="checkbox" id="chEmail"><span><b>E-mail</b> · <span id="chEmailAddr"></span><br><span class="note">celý brífing na adresu z prvej záložky</span></span></label>
+          <label><input type="checkbox" id="chTeam"><span><b>Osobné brífingy tímu</b><br><span class="note">podľa záložky Tím</span></span></label>
+          <label><input type="checkbox" id="chFin"><span><b>Finančný brífing</b> · <span id="chFinAddr"></span><br><span class="note">e-mailom majiteľovi a finančnému riaditeľovi</span></span></label>
+        </div>
+      </div>
+    </div>
+    <div class="auto">
+      <div class="lbl blue">Automatické odosielanie</div>
+      <div style="margin-top:6px" id="autoText"></div>
+    </div>
+    <div class="bar"><span class="saved" id="schSaved"></span></div>
+
+    <div class="kicker" style="margin-top:36px"><b>Prepojenia</b></div>
+    <table class="ctable" style="margin-top:12px">
+      <thead><tr><th>Služba</th><th>Na čo slúži</th><th>Stav</th><th>Posledné úspešné volanie</th><th></th></tr></thead>
+      <tbody id="connBody"></tbody>
+    </table>
+  </section>
+
+  <!-- 07 ARCHITEKTÚRA -->
+  <section class="view" id="v-architektura">
+    <div class="kicker"><b>07</b>&nbsp;&nbsp;Architektúra</div>
+    <h2>Ako First Mate funguje <small>/ zdroje → jadro → kanály</small></h2>
+    <p class="lead">Dáta zostávajú v systémoch, ktoré developer už používa. First Mate ich číta, čísla počíta kód, AI ich vysvetlí a výsledok doručí do kanála. Akcie späť do CRM robí až po potvrdení človekom.</p>
+    <figure>
+      <svg viewBox="0 0 1000 560" role="img" aria-label="First Mate číta dáta zo zdrojov (dnes CSV export z CRM s projektmi, jednotkami a dopytmi), v jadre kód spočíta signály a AI ich vysvetlí a navrhne kroky, výsledok doručí do Slacku a e-mailu; z rozhovoru v Claude vznikne akcia, ktorá sa po potvrdení zapíše späť do CRM." xmlns="http://www.w3.org/2000/svg" font-family="Geist, Arial, Helvetica, sans-serif">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0B0B0C"/></marker><marker id="arm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#55524A"/></marker></defs>
+<text x="20" y="78" font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing="2">ZDROJE DÁT</text>
+<text x="340" y="78" font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing="2">JADRO</text>
+<text x="750" y="78" font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing="2">KANÁLY</text>
+<rect x="400" y="8" width="200" height="48" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="414" y="32" font-size="14" font-weight="700" fill="#0B0B0C">Nastavenia</text>
+<text x="414" y="51" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">tím · signály · rozvrh</text>
+<text x="588" y="32" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">PANEL</text>
+<line x1="500" y1="56" x2="500" y2="84" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="510" y="74" font-size="11" text-anchor="start" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">riadi</text>
+<rect x="340" y="84" width="320" height="352" fill="#EAE6DB" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="356" y="108" font-size="11" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="2">FIRST MATE</text>
+<rect x="356" y="122" width="288" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="370" y="146" font-size="14" font-weight="700" fill="#0B0B0C">01  Zber dát</text>
+<text x="370" y="165" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">každé ráno alebo na kliknutie</text>
+<rect x="356" y="194" width="288" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="370" y="218" font-size="14" font-weight="700" fill="#0B0B0C">02  Výpočet signálov</text>
+<text x="370" y="237" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">kód · rovnaké dáta, rovnaké čísla</text>
+<rect x="356" y="266" width="288" height="58" fill="#1B2CC1" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="370" y="290" font-size="14" font-weight="700" fill="#FFFFFF">03  Interpretácia</text>
+<text x="370" y="309" font-size="11.5" fill="#D8DCF6" font-family="Geist Mono, Menlo, monospace">AI · prečo na čísle záleží</text>
+<rect x="356" y="338" width="288" height="58" fill="#1B2CC1" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="370" y="362" font-size="14" font-weight="700" fill="#FFFFFF">04  Návrh krokov</text>
+<text x="370" y="381" font-size="11.5" fill="#D8DCF6" font-family="Geist Mono, Menlo, monospace">AI · kto, čo, pri ktorej jednotke</text>
+<line x1="500" y1="180" x2="500" y2="194" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<line x1="500" y1="252" x2="500" y2="266" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<line x1="500" y1="324" x2="500" y2="338" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="20" y="96" width="230" height="56" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="34" y="120" font-size="14" font-weight="700" fill="#0B0B0C">CRM · CSV</text>
+<text x="34" y="139" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">projekty · jednotky · dopyty</text>
+<text x="238" y="120" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<line x1="250" y1="124" x2="338" y2="124" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="294" y="116" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">číta</text>
+<rect x="20" y="166" width="230" height="56" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="34" y="190" font-size="14" font-weight="700" fill="#55524A">Web projektu</text>
+<text x="34" y="209" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">PostHog · Google Analytics</text>
+<line x1="250" y1="194" x2="338" y2="194" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="20" y="236" width="230" height="56" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="34" y="260" font-size="14" font-weight="700" fill="#0B0B0C">Banka a controlling · CSV</text>
+<text x="34" y="279" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">úver · tranže · rozpočet · cash-flow</text>
+<line x1="250" y1="264" x2="338" y2="264" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="20" y="306" width="230" height="56" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="34" y="330" font-size="14" font-weight="700" fill="#55524A">Portály a kampane</text>
+<text x="34" y="349" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">nehnutelnosti.sk · Meta</text>
+<line x1="250" y1="334" x2="338" y2="334" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="20" y="376" width="230" height="56" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="34" y="400" font-size="14" font-weight="700" fill="#55524A">Stavba</text>
+<text x="34" y="419" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">harmonogram · klientske zmeny</text>
+<line x1="250" y1="404" x2="338" y2="404" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="750" y="122" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="764" y="146" font-size="14" font-weight="700" fill="#0B0B0C">Slack</text>
+<text x="764" y="165" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">#first-mate-developer</text>
+<text x="968" y="146" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<line x1="662" y1="151" x2="748" y2="151" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="705" y="143" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">doručí</text>
+<rect x="750" y="194" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="764" y="218" font-size="14" font-weight="700" fill="#0B0B0C">E-mail</text>
+<text x="764" y="237" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">vedenie + osobné brífingy</text>
+<text x="968" y="218" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<line x1="662" y1="223" x2="748" y2="223" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="750" y="266" width="230" height="58" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="764" y="290" font-size="14" font-weight="700" fill="#55524A">WhatsApp</text>
+<text x="764" y="309" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">správa do mobilu</text>
+<line x1="662" y1="295" x2="748" y2="295" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="750" y="338" width="230" height="58" fill="#FFFFFF" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="764" y="362" font-size="14" font-weight="700" fill="#55524A">Report pre banku</text>
+<text x="764" y="381" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">mesačný stav predpredaja</text>
+<line x1="662" y1="367" x2="748" y2="367" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
+<rect x="750" y="486" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="764" y="510" font-size="14" font-weight="700" fill="#0B0B0C">Rozhovor v Claude</text>
+<text x="764" y="529" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">/first-mate-dev · otázky</text>
+<text x="968" y="510" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<rect x="340" y="486" width="320" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<text x="354" y="510" font-size="14" font-weight="700" fill="#0B0B0C">Akcia s potvrdením</text>
+<text x="354" y="529" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">zápis do CRM · úlohy · koncept e-mailu</text>
+<text x="648" y="510" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
+<line x1="865" y1="396" x2="865" y2="484" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="857" y="446" font-size="11" text-anchor="end" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">otázka vo vlákne</text>
+<line x1="750" y1="515" x2="662" y2="515" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="706" y="507" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">pokyn</text>
+<path d="M340,515 L8,515 L8,124 L18,124" fill="none" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="176" y="507" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">zapisuje späť do CRM</text>
+</svg>
+      <figcaption>
+        Plné čiary fungujú v tejto ukážke, prerušované sú ďalšie zdroje a kanály, ktoré sa dajú pripojiť. Výpočet signálov je pravidlový kód, takže rovnaké dáta dajú vždy rovnaké čísla; AI píše iba vysvetlenie a návrh krokov.
+        <div class="legend">
+          <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" stroke="#0B0B0C" stroke-width="1.5"/></svg>funguje dnes</span>
+          <span><svg width="34" height="10"><line x1="0" y1="5" x2="34" y2="5" stroke="#55524A" stroke-width="1.5" stroke-dasharray="5 4"/></svg>dá sa pripojiť</span>
+          <span><svg width="14" height="14"><rect x="1" y="1" width="12" height="12" fill="#1B2CC1"/></svg>robí AI</span>
+        </div>
+      </figcaption>
+    </figure>
+    <div class="cols3">
+      <div><div class="lbl">Zdroje dát</div><h4>Kde dáta už sú</h4><ul><li>CRM: Attio, Pipedrive, HubSpot; cenník aj z Excelu alebo Google Sheets</li><li>Web projektu a kampane</li><li>Banka a controlling: úver, tranže, rozpočet, cash-flow</li><li>Stavba: harmonogram a klientske zmeny</li></ul></div>
+      <div><div class="lbl">Jadro</div><h4>Pravidlá + AI</h4><ul><li>Signály počíta kód podľa nastavení developera</li><li>AI (Claude) vysvetlí, prečo na čísle záleží</li><li>Navrhne konkrétne kroky s menom a jednotkou</li><li>Rozhodnutia sa dajú zapisovať a vyhodnocovať</li></ul></div>
+      <div><div class="lbl">Kanály a akcie</div><h4>Tam, kde tím pracuje</h4><ul><li>Slack, e-mail; neskôr WhatsApp alebo Teams</li><li>Rozhovor nad dátami v Claude (/first-mate-dev)</li><li>Zápis do CRM, úlohy, koncepty e-mailov kupujúcim</li><li>Vždy s potvrdením človeka</li></ul></div>
+    </div>
+
+    <div class="kicker" style="margin-top:56px"><b>Rozvoj</b>&nbsp;&nbsp;Katalóg akcií a učenie</div>
+    <h2>Ako sa First Mate zlepšuje <small>/ akcia → výsledok → ponaučenie</small></h2>
+    <p class="lead">Návrhy vyberá z akcií, ktoré developer naozaj vie urobiť. Výsledok každej akcie vyhodnotí a z opakovaných úspechov vzniká vlastný playbook predaja.</p>
+    <figure>
+      <svg viewBox="0 0 1000 220" role="img" aria-label="Cyklus zlepšovania: signál, výber dvoch až troch akcií z katalógu, potvrdenie človekom, vykonanie, vyhodnotenie po 14 dňoch a ponaučenie, ktoré po potvrdení vedením vstúpi do playbooku a ovplyvní ďalší výber akcií." xmlns="http://www.w3.org/2000/svg" font-family="Geist, Arial, Helvetica, sans-serif">
+<defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0B0B0C"/></marker><marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1B2CC1"/></marker></defs>
+<g font-family="Geist Mono, Menlo, monospace" font-size="11" fill="#1B2CC1" letter-spacing="1"><text x="30" y="34">01</text><text x="194" y="34">02</text><text x="358" y="34">03</text><text x="522" y="34">04</text><text x="686" y="34">05</text><text x="850" y="34">06</text></g>
+<rect x="20" y="44" width="140" height="70" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<rect x="184" y="44" width="140" height="70" fill="#D8DCF6" stroke="#1B2CC1" stroke-width="1.5" stroke-dasharray="6 5"/>
+<rect x="348" y="44" width="140" height="70" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<rect x="512" y="44" width="140" height="70" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
+<rect x="676" y="44" width="140" height="70" fill="#D8DCF6" stroke="#1B2CC1" stroke-width="1.5" stroke-dasharray="6 5"/>
+<rect x="840" y="44" width="140" height="70" fill="#D8DCF6" stroke="#1B2CC1" stroke-width="1.5" stroke-dasharray="6 5"/>
+<g font-size="14" font-weight="700" fill="#0B0B0C"><text x="32" y="72">Signál</text><text x="196" y="72">Katalóg akcií</text><text x="360" y="72">Potvrdenie</text><text x="524" y="72">Vykonanie</text><text x="688" y="72">Vyhodnotenie</text><text x="852" y="72">Ponaučenie</text></g>
+<g font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace"><text x="32" y="92">čo sa deje</text><text x="196" y="92">vyberie 2 až 3</text><text x="196" y="106">vhodné akcie</text><text x="360" y="92">predajca alebo</text><text x="360" y="106">riaditeľ predaja</text><text x="524" y="92">CRM · e-mail</text><text x="524" y="106">cenník · kampaň</text><text x="688" y="92">kód po 14 dňoch</text><text x="688" y="106">zabralo? áno/nie</text><text x="852" y="92">AI navrhne,</text><text x="852" y="106">vedenie potvrdí</text></g>
+<g stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar2)"><line x1="160" y1="79" x2="182" y2="79"/><line x1="324" y1="79" x2="346" y2="79"/><line x1="488" y1="79" x2="510" y2="79"/><line x1="652" y1="79" x2="674" y2="79"/><line x1="816" y1="79" x2="838" y2="79"/></g>
+<path d="M910 114 V176 H254 V116" fill="none" stroke="#1B2CC1" stroke-width="1.5" marker-end="url(#arb)"/>
+<rect x="384" y="162" width="296" height="28" fill="#FFFFFF"/>
+<text x="532" y="181" font-size="12.5" font-weight="600" fill="#1B2CC1" text-anchor="middle">playbook predaja: čo zabralo, pri akom type</text>
+<line x1="20" y1="206" x2="44" y2="206" stroke="#1B2CC1" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="52" y="210" font-size="11" fill="#55524A" font-family="Geist Mono, Menlo, monospace">prerušované = rozvoj, zatiaľ nie je v ukážke</text>
+      </svg>
+    </figure>
+    <div class="cols3" style="grid-template-columns:repeat(2,1fr)">
+      <div><div class="lbl">Katalóg akcií</div><h4>Len to, čo developer naozaj vie</h4><ul><li>Každá akcia: kedy sa hodí, nástroj, cena, čas</li><li>Šablóna: text, rozpočet, cieľová skupina</li><li>Schvaľuje podľa rizika: úloha predajca, zmena cenníka vedenie</li><li>Štart s 8 až 12 akciami: úprava ceny, balíček s parkovaním, deň otvorených dverí vo vzorovom byte, e-mail záujemcom, kampaň, predĺženie rezervácie, upomienka zálohy, ponuka partnerským realitkám</li></ul></div>
+      <div><div class="lbl">Učenie</div><h4>Zápis automaticky, ponaučenie potvrdí človek</h4><ul><li>Pri akcii sa zapíše situácia: projekt, typ bytu, podlažie, orientácia, cena</li><li>Výsledok vyhodnotí kód, nie dojem</li><li>Ponaučenie s počtom prípadov: hypotéza alebo overené</li><li>Prenáša sa do ďalšej etapy: mix bytov a cenník</li></ul></div>
+    </div>
+  </section>
+  </main>
+
+  <footer>
+    <div class="lbl">First Mate · Books &amp; Mirror · CSV · Slack · Gmail</div>
+    <div class="note" style="margin:0">Ukážkový developer. Všetky osoby, kontakty, projekty a jednotky sú fiktívne.</div>
+  </footer>
+</div>
+
+<div class="ds-ov hidden" id="dsOv" role="dialog" aria-modal="true" aria-labelledby="dsTitle">
+  <div class="ds">
+    <button class="close" id="dsClose" type="button" aria-label="Zavrieť">×</button>
+    <div class="kicker"><b>Dáta ukážky</b> · CSV export z Attio (books-mirror), 19. 11. 2026</div>
+    <h2 id="dsTitle">Developer v dátach <small>/ fiktívna spoločnosť</small></h2>
+    <p class="sub">Developer s dvoma projektmi v Bratislave a okolí. Dáta sú vymyslené, ale postavené ako skutočné: cenník jednotiek, rezervácie, zmluvy o budúcej zmluve, zálohy, klientske zmeny, dopyty záujemcov, úver s tranžami, rozpočet a cash-flow.</p>
+
+    <div class="tiles">
+      <div class="tile"><div class="v">2</div><div class="k">Projekty</div></div>
+      <div class="tile"><div class="v">63</div><div class="k">Jednotiek</div></div>
+      <div class="tile"><div class="v">52</div><div class="k">Bytov</div></div>
+      <div class="tile"><div class="v">41</div><div class="k">Dopytov</div></div>
+      <div class="tile"><div class="v">3</div><div class="k">Predajcovia</div></div>
+      <div class="tile"><div class="v">2</div><div class="k">Partnerské RK</div></div>
+    </div>
+
+    <div class="dsgrid">
+      <div class="dsblk">
+        <h4>Rezidencia Pod Lesom · Lamač</h4>
+        <p class="meta">32 bytov, 2 obchodné priestory, 8 parkovacích státí. Hrubá stavba hotová, kolaudácia 30. 6. 2027.</p>
+        <div class="stack" aria-hidden="true"><i class="c1" style="width:68.75%"></i><i class="c2" style="width:9.375%"></i><i class="c3" style="width:21.875%"></i></div>
+        <div class="keys"><span><i class="sw c1"></i>Zmluva o budúcej <b>22</b></span><span><i class="sw c2"></i>Rezervované <b>3</b></span><span><i class="sw c3"></i>Voľné <b>7</b></span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Nové Záhrady Senec</h4>
+        <p class="meta">20 bytov a 1 obchodný priestor. Predaj od 15. 9. 2026, banka chce 30 % predaných do 31. 12. 2026.</p>
+        <div class="stack" aria-hidden="true"><i class="c1" style="width:15%"></i><i class="c2" style="width:5%"></i><i class="c3" style="width:80%"></i></div>
+        <div class="keys"><span><i class="sw c1"></i>Zmluva o budúcej <b>3</b></span><span><i class="sw c2"></i>Rezervované <b>1</b></span><span><i class="sw c3"></i>Voľné <b>16</b></span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Dopyty podľa stavu</h4>
+        <p class="meta">Z webu projektu, portálov, billboardu na stavenisku, sociálnych sietí a partnerských realitiek, s časom prvej reakcie predajcu.</p>
+        <div class="stack" aria-hidden="true"><i class="c4" style="width:24.4%"></i><i class="c3" style="width:19.5%"></i><i class="c1" style="width:31.7%"></i><i class="c2" style="width:24.4%"></i></div>
+        <div class="keys"><span><i class="sw c4"></i>Nemá záujem <b>10</b></span><span><i class="sw c3"></i>Kontaktovaný <b>8</b></span><span><i class="sw c1"></i>Obhliadka <b>13</b></span><span><i class="sw c2"></i>Nový alebo rezervácia <b>10</b></span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Odkiaľ prichádzajú dopyty</h4>
+        <div class="hb"><span>Nehnutelnosti.sk</span><span class="tr"><i style="width:100%"></i></span><span class="n">12</span></div>
+        <div class="hb"><span>Billboard</span><span class="tr"><i style="width:75%"></i></span><span class="n">9</span></div>
+        <div class="hb"><span>Web projektu</span><span class="tr"><i style="width:50%"></i></span><span class="n">6</span></div>
+        <div class="hb"><span>Facebook/Instagram</span><span class="tr"><i style="width:41.7%"></i></span><span class="n">5</span></div>
+        <div class="hb"><span>Partnerská RK</span><span class="tr"><i style="width:41.7%"></i></span><span class="n">5</span></div>
+        <div class="hb"><span>Odporúčanie</span><span class="tr"><i style="width:25%"></i></span><span class="n">3</span></div>
+        <div class="hb"><span>Reality.sk</span><span class="tr"><i style="width:8.3%"></i></span><span class="n">1</span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Predajcovia</h4>
+        <p class="meta">Každá jednotka a dopyt má priradeného predajcu. Predajcovia sú v dátach údaj, nie používatelia.</p>
+        <div class="mk"><span>Martina Vargová</span><span>Michal Hrnčiar</span><span>Zuzana Polakovičová</span></div>
+      </div>
+      <div class="dsblk">
+        <h4>Financovanie a rozpočet</h4>
+        <p class="meta" style="margin:0">PL: úver Tatra banka 6,2 mil. €, načerpané 3 z 5 tranží, rozpočet 7,4 mil. € bez DPH. NZ: úver Slovenská sporiteľňa 2,1 mil. €, načerpaná 1 zo 4 tranží, rozpočet 2,9 mil. €. Mesačné cash-flow podľa plánu a skutočnosti do októbra 2026.</p>
+      </div>
+      <div class="dsblk">
+        <h4>Čo je v ktorom súbore</h4>
+        <p class="meta" style="margin:0">Predaj: dev_projekty.csv, dev_jednotky.csv (byty, obchodné priestory, parkovanie) a dev_dopyty.csv (záujemcovia vrátane obhliadok), pôvodne vlastné objekty v Attio. Financie (simulované): dev_uver.csv, dev_tranze.csv, dev_podmienky_cerpania.csv, dev_rozpocet.csv a dev_cashflow.csv. Popis stĺpcov je v slovnik_dat.md.</p>
+      </div>
+    </div>
+
+    <div class="foot" id="dsFoot">CSV export 19. 11. 2026. Pri zapnutom posune sú dátumy posunuté k dnešku.</div>
+  </div>
+</div>
+
+<div class="ds-ov hidden" id="csOv" role="dialog" aria-modal="true" aria-labelledby="csTitle">
+  <div class="ds">
+    <button class="close" id="csClose" type="button" aria-label="Zavrieť">×</button>
+    <div class="kicker"><b>Vlastný signál</b> · pravidlo počíta kód, AI ho len vysvetlí</div>
+    <h2 id="csTitle">Pridať signál</h2>
+    <p class="sub">Opíšte vlastnými slovami, čo chcete sledovať. AI pravidlo sformuluje a vyplní všetky políčka nižšie. Skontrolujte ich a kliknite na „Uložiť signál“.</p>
+    <div class="field" style="margin-bottom:8px"><label class="lbl" for="csAsk">Opis pravidla</label><textarea id="csAsk" rows="3" placeholder="napr. dopyty z partnerských realitiek, ktoré ešte nemali obhliadku"></textarea></div>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;min-height:22px"><span class="aistat" id="csAiInfo"></span><button class="link hidden" id="csAi" type="button">Sformulovať znova</button></div>
+    <div class="rule hidden" id="csRule" style="margin-top:12px"></div>
+    <div class="csgrid">
+      <div class="field"><label class="lbl" for="csName">Názov signálu</label><input type="text" id="csName" placeholder="napr. Partnerské RK bez obhliadky"></div>
+      <div class="field"><label class="lbl" for="csObj">Sleduje</label><select id="csObj"></select></div>
+      <div class="field"><label class="lbl" for="csLevel">Keď niečo nájde</label><select id="csLevel"><option value="yellow">Sledovať</option><option value="red">Konať dnes</option></select></div>
+    </div>
+    <div class="field"><label class="lbl" for="csDesc">Prečo na tom záleží (voliteľné)</label><input type="text" id="csDesc" placeholder="jedna veta pre tím"></div>
+    <div class="lbl" style="margin-top:6px">Podmienky · musia platiť všetky</div>
+    <div id="csConds" style="margin-top:10px"></div>
+    <button class="link" id="csAddCond" type="button">+ Pridať podmienku</button>
+    <div class="now" style="margin-top:18px"><span class="lbl">Dnes</span><span class="v" id="csNow">–</span><span class="note" id="csNowd" style="margin:0"></span></div>
+    <div id="csErr" class="msg warn hidden"></div>
+    <div class="bar" style="margin:22px 0 0">
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn" id="csSave" type="button">Uložiť signál <span>→</span></button><button class="btn ghost" id="csCancel" type="button">Zrušiť</button></div>
+      <button class="link hidden" id="csDel" type="button">Odstrániť signál</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
