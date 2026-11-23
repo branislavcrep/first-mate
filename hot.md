@@ -1,31 +1,46 @@
 # Čo sa práve deje
 
-Aktualizované: 2026-11-24 · Branislav (session v Claude Code v cloude)
+Aktualizované: 2026-11-24 · Branislav (koniec session, nová session nadväzuje tu)
 
-## Aktívne
-- Migrácia na jedno jadro podľa `docs/migracia/PLAN.md`. Fázy 0–3 hotové. **Fáza 4 (Issue #3) beží**, všetko doterajšie je v `main`.
-- Fáza 4 hotové:
-  - výpočtové jadro `panel/` (17 modulov `panel/usecases/<id>.js`, typy realitka a developer, finančný model, register podľa katalógu); `npm test` → `panel/golden.mjs` = golden pre oba typy,
-  - rozhranie `panel/index.html`, `styles.css`, `app.js` pre typ developer; `npm run test:ui` = všetky záložky a náhľad brífingu zhodné s legacy.
-- Fáza 4 zostáva (v tomto poradí):
-  1. Realitka v tom istom `app.js`: typové časti (menu bez Projekty/Financie, makléri, obdobie `period`, Slack #first-mate-demo, `fm/settings`) z `legacy/panel-realitka/index.html` app skriptu (riadky ~1135–1759) ako vetvy podľa `TYP`; UI test rozšíriť o realitku (teraz 2026-11-03T17:00:00Z).
-  2. Prepínač typu firmy (`prepinac: true`): vymení dáta, menu, use casy; farba badgeu z `typy.json`.
-  3. Menu z nastavení (zapnutie, poradie, názvy, čísla 01, 02… samy).
-  4. Klientsky režim ako nastavenia podľa `legacy/panel-klient-immocap/` (potvrdenie pred odoslaním, signály len na čítanie, záložka tipy z katalógu, e-mail šablóny Gmail/Outlook, rozvrh = plánovaná úloha, názov klienta, bez adries Books & Mirror).
-  5. Päta „First Mate vX.Y.Z · zostavené RRRR-MM-DD“.
-  6. Otvorené body z `legacy/README.md` zapísať ako Issues (modrá farba čísla, vypnutý signál v brífingu, zmeny, Attio v capabilities).
-- Pôvodné panely bežia ďalej (slugy v `legacy/README.md`).
+## Kde sme skončili
+- Migrácia podľa `docs/migracia/PLAN.md`: fázy 0–3 hotové, **fáza 4 (Issue #3) v polovici**. Všetko je v `main`, `npm test` aj `npm run test:ui` prechádzajú.
+- Hotové vo fáze 4:
+  - výpočtové jadro `panel/` (`panel/index.md`): 17 modulov `panel/usecases/<id>.js`, `panel/typy/realitka.js` a `developer.js`, `panel/financie/fin.js`, register `panel/jadro/signaly.js`. Golden zhoda pre oba typy.
+  - rozhranie `panel/index.html`, `styles.css`, `app.js`, **zatiaľ len typ developer** (`TYP_ID = "developer"` natvrdo v `app.js`). UI test: všetky záložky a náhľad brífingu zhodné s legacy.
 
-## Ako pracovať v panel/
-- Výpočty len v `panel/usecases/`; kľúče výstupu sú zatiaľ legacy (`s1`…, `f1`…) kvôli textom.
-- Generátory `docs/migracia/nastroje/rozdel_*.mjs` už nespúšťať (prepísali by ručné úpravy).
-- Pred zlúčením do `main`: `npm test` aj `npm run test:ui`.
-- Lokálne: `python3 -m http.server` v koreni, otvoriť `/panel/index.html`.
+## Ďalší krok: realitka v tom istom paneli
+1. **Najprv test.** V `tests/ui/porovnaj.mjs` pridaj do `PRIPADY` realitku: `legacy/panel-realitka/index.html` ↔ `panel/index.html?typ=realitka`, `teraz: "2026-11-03T17:00:00Z"`. Bude padať, to je cieľ.
+2. **Výber typu v `app.js`.** Typ z `?typ=` (neskôr z nastavení klienta), predvolene developer. Podľa typu importuj `FM`/`CSV` z `panel/typy/<typ>.js`. `FIN` len pre developera. `zostavSignaly` už vie oba typy.
+3. **Rozdiely aplikácií.** Realitka (`legacy/panel-realitka/index.html`, app skript riadky 1135–1759) má rovnaké mená funkcií ako `panel/app.js`, len je podmnožinou. Porovnaj po funkciách:
+   `diff <(sed -n 1135,1759p legacy/panel-realitka/index.html) panel/app.js`
+   Známe rozdiely:
+   - nastavenia v db `fm/settings` a `fm/log` (developer `fmdev/...`),
+   - `mergeSettings` so `signals.period` a s1–s4,
+   - `#period` (7/14 dní),
+   - makléri namiesto predajcov,
+   - bez Projektov, Financií, vlastných signálov a `SRC`,
+   - Slack #first-mate-demo a `/first-mate`,
+   - `CSV.toData(raw, teraz)`: volaj s `Date.now()`.
+   Rozdiely rieš malými vetvami alebo objektom typu (napr. `T.dbPrefix`), nie kópiou funkcií.
+4. **Značky.** Porovnaj `<body>` po prvý `<script>` v legacy realitke s `panel/index.html`:
+   - záložky realitky: brifing, tim, signaly, rozvrh, architektura,
+   - texty Tím a Rozvrh sú iné.
+   Sekcie typov označ napr. `data-typy="developer"` a skrývaj podľa typu.
+5. **Hotovo, keď** UI test prejde pre oba typy a `npm test` ostane zelený. Potom commit a zlúčenie do `main`.
 
-## Otvorené otázky
-- Návrhy na neskôr: Issues #7 (čas prvej reakcie pre developera), #8 (zaujem-bez-akcie, vypredané typy).
-- Plugin First Mate pre Cowork (fm.py, fin_model.py): balík First-Mate-Immocap.zip u Branislava.
-- Marcelov GitHub účet zatiaľ neznámy. Farby štítkov v GitHube sivé.
+## Potom (zvyšok fázy 4)
+1. Prepínač typu firmy (`prepinac: true`) s farbou badgeu z `typy.json`.
+2. Menu z nastavení.
+3. Klientsky režim podľa `legacy/panel-klient-immocap/`.
+4. Päta s verziou.
+5. Otvorené body z `legacy/README.md` zapísať ako Issues.
 
-## Kam ísť ďalej
-- panel/index.md · tests/index.md · usecases/index.md · docs/rozhodnutia.md · docs/migracia/PLAN.md (fáza 4)
+## Pravidlá pre panel/
+- Výpočty len v `panel/usecases/`. Kľúče výstupu zatiaľ legacy (`s1`…, `f1`…).
+- Generátory `docs/migracia/nastroje/rozdel_*.mjs` už nespúšťať: prepísali by ručné úpravy.
+- Lokálne: `python3 -m http.server` v koreni, potom `/panel/index.html`.
+
+## Otvorené
+- Issues #7, #8: návrhy na neskôr, menia čísla.
+- Plugin pre Cowork: First-Mate-Immocap.zip u Branislava.
+- Marcelov GitHub účet zatiaľ neznámy.
