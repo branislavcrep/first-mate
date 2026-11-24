@@ -69,3 +69,9 @@ Datované. Neplatné sa nemažú, označia sa `NEPLATÍ od RRRR-MM-DD`.
 - Slack kanál, workspace a tím sú v nastaveniach klienta (`slack.kanaly: [{ typ?, id, nazov }]`, `slack.workspace`, `predvolene.tim`). Bez nich platia pôvodné demo hodnoty, takže demo aj Immocap sú zhodné s legacy.
 - Šablóna nového klienta `klienti/_sablona/` (nastavenia + README s popisom polí), miesta na doplnenie sú «…», aby sa nepliedli so šablónami e-mailu `{{…}}`. Outlook sa v šablóne nevymýšľa, overí sa pri prvom klientovi (Issue #13).
 - `klienti/<klient>/verzie.md`: hlavička (artefakt, nastavenia, build) a tabuľka Dátum · Verzia · Commit · Čo sa stalo; z nej `/release` zistí klientov na staršej verzii.
+
+## 2026-11-24 · fáza 6: zverejnenie demo panela (Claude Code, v rámci schváleného plánu)
+- Nový artefakt „First Mate · demo panel“: https://claude.ai/artifact/VZWUmbcEU4WihYycwT3GQK (verzia 1795499383-4aa1, build 0.5.0 z commitu e6e4978). Pôvodné artefakty sa nemenili.
+- Artefakt povoľuje len vložené skripty a štýly (alebo z CDN), súbory vedľa stránky číta cez `fetch`. Preto build vyrába aj `dist/<klient>/zverejnenie/`: stránka bez kostry dokumentu s vloženým CSS a jedným skriptom (vlastný spájač ES modulov v `tools/build.py`, bez balíkov z npm), dáta, katalóg a nastavenia ako súbory. UI test ju obalí kostrou ako platforma a porovná s pôvodnými panelmi.
+- Capabilities: `db` (nastavenia a história ako doteraz), `mcp` len Slack (`slack_send_message`, `slack_read_channel`) a Gmail (`send_message`), bez Attio (Issue #12), `sample`. Názvy argumentov overené proti schémam konektorov; skutočné odoslanie z artefaktu sa robí až so súhlasom (STOP fázy 6).
+- Súbory `.md` sa zverejňujú s typom presne `text/markdown` (bez `charset`).

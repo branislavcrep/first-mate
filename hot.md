@@ -13,7 +13,12 @@ Aktualizované: 2026-11-24 · Branislav (koniec session, nová session nadväzuj
   Každý má `verzie.md`. Príkazy `/build` a `/novy-klient` sú funkčné.
 - UI test porovnáva s legacy aj zostavené `dist/demo` a `dist/immocap`. `npm test` zostaví všetkých klientov naskúšku.
 
-## Ďalší krok: fáza 6 · zverejnenie a archív (Issue #5)
+## Teraz: STOP fázy 6 · Branislav skúša demo panel
+- Zverejnené: „First Mate · demo panel“ https://claude.ai/artifact/VZWUmbcEU4WihYycwT3GQK (`dist/demo/zverejnenie/`, build 0.5.0, commit e6e4978). Body 1 a 2 nižšie sú hotové.
+- Čaká sa na Branislava: vyskúšať panel (oba typy, prepínač, posun dátumov, nahratie CSV, AI brífing) a povoliť testovacie odoslanie do #first-mate-demo / #first-mate-developer. Bez súhlasu nič neposielať.
+- Ďalšie zverejnenie: publish toho istého súboru `dist/demo/zverejnenie/index.html` s `root` a `files` podľa `dist/demo/build.json` (bez `url` z tejto session; inak s `url` artefaktu). `.md` súbory s typom `text/markdown`.
+
+## Fáza 6 · zverejnenie a archív (Issue #5)
 1. **Zverejnenie.** `python3 tools/build.py demo` a zverejni **nový** artefakt „First Mate · demo panel“ nástrojom Artifact:
    - `index.html` + `files` podľa `dist/demo/build.json`,
    - pred zápisom načítaj skilly `artifact-design` a `artifact-capabilities`,
