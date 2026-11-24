@@ -1,12 +1,15 @@
 ---
 description: Vydá novú verziu First Mate (CHANGELOG, tag, päta)
 ---
-# /release · KOSTRA (naplní sa vo fáze 7 migrácie)
+# /release
 
-Postup:
-1. Zisti poslednú verziu (`git describe --tags --abbrev=0`) a navrhni ďalšiu podľa zmien (semver). Verzia = $ARGUMENTS, ak je zadaná.
-2. Spusti golden testy. Ak neprejdú, zastav.
-3. Zhrň zmeny od poslednej verzie (git log, denník) do `CHANGELOG.md` po slovensky.
-4. Zapíš číslo verzie tam, odkiaľ ho build berie do päty („First Mate vX.Y.Z · zostavené RRRR-MM-DD“).
-5. Commit, `git tag vX.Y.Z`, push aj s tagom.
-6. Vypíš klientov na staršej verzii podľa `klienti/*/verzie.md`.
+Vydá novú verziu First Mate. Verzia = $ARGUMENTS (napr. `1.1.0`), inak ju navrhni a nechaj potvrdiť. Nič nezverejňuj klientom a nič neposielaj do Slacku ani e-mailom; release len pripraví verziu.
+
+1. `python3 tools/release.py`: verzia v `package.json`, posledný tag, klienti na staršej verzii.
+2. Ak verzia nie je zadaná, navrhni ju podľa semver z `git log <posledný tag>..HEAD` a denníka: oprava = PATCH, nový use case, záložka alebo nastavenie = MINOR, zmena čísel signálov alebo formátu CSV či nastavení, ktorá si vyžaduje zásah u klienta = MAJOR. Počkaj na potvrdenie.
+3. Do `package.json` zapíš `version`. Odtiaľ ju berie build do päty („First Mate vX.Y.Z · zostavené D. M. RRRR“) a UI test kontroluje, že sa zhoduje.
+4. `npm test` a `npm run test:ui` (v Bash `timeout` 600000). Ak niečo neprejde, zastav, vráť verziu späť a ukáž rozdiely.
+5. Do `CHANGELOG.md` pridaj navrch sekciu `## X.Y.Z · RRRR-MM-DD` po slovensky, pre čitateľa, nie pre programátora: **Nové**, **Zmenené**, **Opravené**, **Pre klientov** (čo treba u klienta urobiť, alebo „nič“). Zdroj: `git log <posledný tag>..HEAD`, denník, `docs/rozhodnutia.md`, uzavreté Issues. Zmeny čísel signálov vždy výslovne uveď.
+6. Commit („Vydanie vX.Y.Z“) na pracovnej vetve, zlúč do `main`, na commit v `main` daj anotovaný tag `git tag -a vX.Y.Z -m "First Mate vX.Y.Z"` a pushni `main`, vetvu aj tag (`git push origin vX.Y.Z`).
+7. `python3 tools/release.py --klienti` a vypíš klientov na staršej verzii. Každému navrhni ďalší krok (demo: `/zverejni-demo` alebo nočná úloha; klient: `/build <klient>` a zverejnenie so súhlasom), ale sám nič nezverejňuj.
+8. Denník, `hot.md` a commit podľa `CLAUDE.md`.

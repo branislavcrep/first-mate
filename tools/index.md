@@ -4,3 +4,4 @@
 - hooks/koniec_session.py — hooky Claude Code: `stop` blokuje koniec session pri necommitnutých/nepushnutých zmenách alebo chýbajúcom dnešnom zázname v denníku (raz, potom pustí); `start` vypíše prvých 40 riadkov `hot.md`
 - export_usecases.py — kontrola katalógu podľa `usecases/schema.md` a export `usecases/export/usecases.csv`; `--kontrola` len overí (súčasť `npm test`)
 - build.py — build panela pre klienta: `python3 tools/build.py <klient> [--vystup dist]` → `dist/<klient>/` (kód panela, katalóg, dáta typov klienta, nastavenia, meta verzie a dátumu, `build.json` so zoznamom súborov); odmietne nevyplnenú šablónu a polia s tajomstvami; verzia z `package.json`; vyrába aj `zverejnenie/` pre artefakt (vložené CSS, moduly spojené do jedného skriptu, dáta vedľa)
+- release.py — pomocník pre `/release`: verzia v `package.json`, posledný tag, klienti na staršej verzii podľa `klienti/*/verzie.md` (`--klienti` len zoznam)
