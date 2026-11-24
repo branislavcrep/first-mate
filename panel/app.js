@@ -45,10 +45,38 @@ async function pripravTyp(T) {
   return TYP;
 }
 
+// menu typu z usecases/typy.json, prepísané nastaveniami klienta (menu.<typ>: [{ id, nazov?, zapnute? }]):
+// záložky z nastavení idú prvé v ich poradí, ostatné za nimi v poradí typu; neznáme id sa ignorujú
+function zostavMenu(typMenu, klientMenu) {
+  const zaklad = (typMenu || []).map(m => ({ ...m }));
+  if (!Array.isArray(klientMenu)) return zaklad;
+  const out = [];
+  klientMenu.forEach(k => {
+    const m = zaklad.find(x => x.id === (k && k.id));
+    if (!m || out.includes(m)) return;
+    if (typeof k.nazov === "string" && k.nazov.trim()) m.nazov = k.nazov.trim();
+    if (typeof k.zapnute === "boolean") m.zapnute = k.zapnute;
+    out.push(m);
+  });
+  return out.concat(zaklad.filter(m => !out.includes(m)));
+}
+
 // značky pre typ: prvky s data-typy bez tohto typu sa odstránia (nie len skryjú, aby nevznikli duplicitné id),
+// menu podľa typu a nastavení (vypnutá záložka zmizne z menu, jej sekcia ostane v DOM, ale nikdy sa nezobrazí),
 // čísla záložiek 01, 02… podľa poradia v menu, odkaz na iný typ prepína typ (ak to nastavenia dovolia)
-function pripravZnacky(koren, typId) {
+function pripravZnacky(koren, typId, menu) {
   koren.querySelectorAll("[data-typy]").forEach(e => { if (e.dataset.typy.split(/\s+/).includes(typId)) e.removeAttribute("data-typy"); else e.remove(); });
+  const nav = koren.querySelector("#nav");
+  if (nav && menu && menu.length) {
+    const odkazy = [...nav.querySelectorAll("a")];
+    odkazy.forEach(a => a.remove());
+    menu.forEach(m => {
+      const a = odkazy.find(x => x.dataset.v === m.id);
+      if (!a || m.zapnute === false) return;
+      if (m.nazov) a.lastChild.nodeValue = m.nazov;
+      nav.appendChild(a);
+    });
+  }
   koren.querySelectorAll("#nav a").forEach((a, i) => {
     const n = String(i + 1).padStart(2, "0"), k = koren.querySelector(`#v-${a.dataset.v} > .kicker b`);
     a.querySelector("span").textContent = n; if (k) k.textContent = n;
@@ -68,9 +96,13 @@ async function spusti(typId) {
   let koren = document.body;
   if (koren.dataset.fmTyp) { koren = SABLONA.cloneNode(true); document.body.replaceWith(koren); window.scrollTo(0, 0); }
   koren.dataset.fmTyp = typId;
+  const sig = beh.signal;
+  let menu = null;
+  try { const [, typy] = await nacitajKatalog(); menu = zostavMenu((typy.typy.find(t => t.id === typId) || {}).menu, (NASTAVENIA.menu || {})[typId]); } catch (e) { }
+  if (sig.aborted) return;
   try { if (new URLSearchParams(location.search).get("typ") !== typId && NASTAVENIA.prepinac) history.replaceState(null, "", "?typ=" + typId + location.hash); } catch (e) { }
-  pripravZnacky(koren, typId);
-  aplikacia(ROZHRANIA[typId], koren, beh.signal);
+  pripravZnacky(koren, typId, menu);
+  aplikacia(ROZHRANIA[typId], koren, sig);
 }
 
 // ---------- aplikácia jedného typu ----------
@@ -111,7 +143,7 @@ function aplikacia(T, koren, signal) {
   const VIEWS = $$("#nav a").map(a => a.dataset.v);
   function route() {
     const h = (location.hash || "").slice(1);
-    const v = VIEWS.includes(h) ? h : "brifing";
+    const v = VIEWS.includes(h) ? h : VIEWS[0];
     $$(".view").forEach(e => e.classList.toggle("on", e.id === "v-" + v));
     $$("#nav a").forEach(a => a.classList.toggle("on", a.dataset.v === v));
   }

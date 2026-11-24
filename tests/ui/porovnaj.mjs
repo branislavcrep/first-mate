@@ -4,6 +4,7 @@
 // Europe/Bratislava, bez AI, db a konektorov), porovná viditeľný text každej záložky (po prepnutí na ňu)
 // hlavičku, menu, pätu, dialóg „Dáta ukážky“, prepnutie na pôvodné dátumy a späť
 // a po „Prepočítať“ priebeh a náhľad brífingu vo všetkých kartách (E-mail, Slack, pri developerovi Financie).
+// Okrem porovnania s legacy overí správanie podľa nastavení klienta (NASTAVENIA, podstrčené cez page.route).
 // Rozdiel = zlyhanie. Úmyselné zmeny rozhrania sa sem doplnia ako výnimky so zápisom v docs/rozhodnutia.md.
 import http from "node:http";
 import fs from "node:fs";
@@ -79,6 +80,54 @@ async function snimok(browser, url, teraz, prepni = []) {
   return { chyby, zalozky: { ...zalozky, ...okolie }, brif };
 }
 
+// Nastavenia klienta (bez porovnania s legacy): panel s inými nastaveniami podstrčenými cez page.route.
+// Každý prípad: nastavenia, kroky v prehliadači a očakávania { meno: [skutočnosť, očakávanie] }.
+const NASTAVENIA = [
+  {
+    meno: "menu z nastavení (developer, potom prepnutie na realitku)",
+    nastavenia: {
+      prepinac: true, typy: ["realitka", "developer"], typ: "developer",
+      menu: { developer: [{ id: "signaly", nazov: "Pravidlá" }, { id: "brifing" }, { id: "financie", zapnute: false }, { id: "neznama" }], realitka: [{ id: "tim", nazov: "Makléri" }, { id: "architektura", zapnute: false }] }
+    },
+    async over(p) {
+      const menu = () => p.$$eval("#nav a", (as) => as.map((a) => a.querySelector("span").textContent + " " + a.lastChild.nodeValue.trim()).join(" | "));
+      const viditelna = () => p.$$eval(".view", (vs) => vs.filter((v) => getComputedStyle(v).display !== "none").map((v) => v.id).join(","));
+      const kicker = (id) => p.$eval(`#${id} > .kicker b`, (b) => b.textContent).catch(() => "–");
+      const o = {};
+      o["developer: menu"] = [await menu(), "01 Pravidlá | 02 Brífing | 03 Projekty | 04 Tím | 05 Rozvrh | 06 Architektúra"];
+      o["developer: úvodná záložka je prvá v menu"] = [await viditelna(), "v-signaly"];
+      o["developer: číslo v nadpise Signálov"] = [await kicker("v-signaly"), "01"];
+      o["developer: číslo v nadpise Tímu"] = [await kicker("v-tim"), "04"];
+      await p.evaluate(() => { location.hash = "financie"; }); await p.waitForTimeout(150);
+      o["developer: vypnuté Financie sa neotvoria"] = [await viditelna(), "v-signaly"];
+      await p.evaluate(() => { location.hash = "tim"; }); await p.waitForTimeout(150);
+      o["developer: Tím sa otvorí"] = [await viditelna(), "v-tim"];
+      await p.click('[data-prepni="realitka"]');
+      await p.waitForFunction(() => document.body.dataset.fmTyp === "realitka"); await p.waitForTimeout(1500);
+      o["realitka: menu"] = [await menu(), "01 Makléri | 02 Brífing | 03 Signály | 04 Rozvrh"];
+      o["realitka: Tím ostal otvorený"] = [await viditelna(), "v-tim"];
+      o["realitka: číslo v nadpise Tímu"] = [await kicker("v-tim"), "01"];
+      return o;
+    }
+  }
+];
+
+async function overNastavenia(browser, c) {
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, timezoneId: "Europe/Bratislava" });
+  const p = await ctx.newPage();
+  const chyby = [];
+  p.on("pageerror", (e) => chyby.push(e.message));
+  p.on("console", (m) => { if (m.type() === "error") chyby.push(m.text()); });
+  await p.route("**/klienti/demo/nastavenia.json", (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify(c.nastavenia) }));
+  await p.goto(BASE + "panel/index.html");
+  await p.waitForFunction(() => document.body.dataset.fmTyp, null, { timeout: 15000 });
+  await p.waitForTimeout(2000);
+  const o = await c.over(p);
+  await ctx.close();
+  if (chyby.length) o["bez chýb v konzole"] = [chyby.join(" · "), ""];
+  return o;
+}
+
 let zlyhania = 0;
 const browser = await chromium.launch();
 try {
@@ -98,6 +147,13 @@ try {
       zlyhania++;
       const x = a.brif[k], y = b.brif[k] || "", i = [...x].findIndex((ch, n) => ch !== y[n]);
       console.log(`  ✗ po Prepočítať: ${k} sa líši od znaku ${i}: „${x.slice(Math.max(0, i - 40), i + 60)}“ ≠ „${y.slice(Math.max(0, i - 40), i + 60)}“`);
+    }
+  }
+  for (const c of NASTAVENIA) {
+    console.log(`UI nastavenia: ${c.meno}`);
+    for (const [k, [je, ma]] of Object.entries(await overNastavenia(browser, c))) {
+      if (je === ma) console.log(`  ✓ ${k}`);
+      else { zlyhania++; console.log(`  ✗ ${k}: „${je}“, očakávané „${ma}“`); }
     }
   }
 } finally {
