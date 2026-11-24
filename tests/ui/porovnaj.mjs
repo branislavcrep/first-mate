@@ -6,6 +6,7 @@
 // a po „Prepočítať“ priebeh a náhľad brífingu vo všetkých kartách (E-mail, Slack, pri developerovi Financie).
 // Okrem porovnania s legacy overí správanie podľa nastavení klienta (NASTAVENIA, podstrčené cez page.route).
 // Rozdiel = zlyhanie. Úmyselné zmeny rozhrania sa sem doplnia ako výnimky so zápisom v docs/rozhodnutia.md.
+// Výnimky: riadok s verziou v päte (#verzia, nový oproti legacy).
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
@@ -64,7 +65,7 @@ async function snimok(browser, url, teraz, prepni = [], c = {}) {
   // okolie záložiek: hlavička, menu, päta a dialóg „Dáta ukážky“ (skrytý, preto textContent bez medzier navyše)
   const okolie = await p.evaluate(() => ({
     hlavicka: document.querySelector(".hero").innerText, menu: document.querySelector("#nav").innerText,
-    pata: document.querySelector("footer").innerText, dialog_data: document.querySelector("#dsOv").textContent.replace(/\s+/g, " ").trim()
+    pata: (() => { const v = document.querySelector("#verzia"); if (v) v.style.display = "none"; const t = document.querySelector("footer").innerText; if (v) v.style.display = ""; return t; })(), dialog_data: document.querySelector("#dsOv").textContent.replace(/\s+/g, " ").trim()
   }));
   // posun dátumov: pôvodné dátumy a späť (záložka Signály s číslami „Dnes“)
   await p.evaluate(() => { location.hash = "signaly"; });
@@ -142,6 +143,7 @@ const NASTAVENIA = [
       o["signály len na čítanie"] = [await p.$$eval("#sig input, #period", (x) => x.every((i) => i.disabled) && x.length > 0), true];
       o["bez pridania signálu"] = [await p.$$eval("#btnAddSig, #sgAdd", (x) => x.length), 0];
       o["rozvrh ako plánovaná úloha"] = [await p.$$eval("#days", (x) => x.length) + " · " + (await p.$eval("#v-rozvrh", (v) => v.textContent)).includes("#first-mate-demo"), "0 · true"];
+      o["päta s verziou (bez buildu)"] = [await p.$eval("#verzia", (e) => e.textContent), "First Mate · vývojová verzia, nezostavené"];
       o["bez predvolených adries"] = [await p.$eval("#emailTo", (e) => e.value), ""];
       o["tipy z katalógu"] = [await p.$eval("#tipCount", (e) => e.textContent), await p.evaluate(async () => { const k = await (await fetch("../usecases/usecases.json")).json(); return k.usecases.filter((u) => u.druh === "tip" && u.typy.includes("realitka")).length + " tipov"; })];
       await p.click("#btnSlack");
@@ -150,8 +152,46 @@ const NASTAVENIA = [
       await p.click("#cfNo");
       return o;
     }
+  },
+  {
+    meno: "nahratie vlastného CSV a odoslanie cez mock konektory (nič neodchádza)",
+    mock: true,
+    nastavenia: { prepinac: true, typy: ["realitka", "developer"], typ: "developer" },
+    async over(p, KOREN) {
+      const o = {};
+      await p.setInputFiles("#dbFile", ["dev_projekty.csv", "dev_jednotky.csv", "dev_dopyty.csv"].map((f) => path.join(KOREN, "data/developer", f)));
+      await p.waitForTimeout(800);
+      o["nahraté CSV: štítok dát"] = [await p.$eval("#dbLabel", (e) => e.textContent), "Dáta: vlastné CSV · 3 súbory"];
+      o["nahraté CSV: chýbajúce finančné súbory"] = [(await p.$eval("#dbMsg", (e) => e.textContent)).includes("Finančné súbory chýbajú"), true];
+      await p.click("#dbReset"); await p.waitForTimeout(800);
+      o["späť na ukážku"] = [(await p.$eval("#dbLabel", (e) => e.textContent)).startsWith("Dáta: CSV · export"), true];
+      await p.click("#btnSlack");
+      await p.waitForFunction(() => window.__volania.some((v) => v.tool === "slack_send_message"), null, { timeout: 15000 }).catch(() => {});
+      const sl = await p.evaluate(() => window.__volania.find((v) => v.tool === "slack_send_message"));
+      o["Slack: kanál #first-mate-developer"] = [sl ? sl.server + " " + sl.input.channel_id : "nevolané", "Slack C0CDY6XG8MR"];
+      o["Slack: text brífingu"] = [!!(sl && /ranný brífing/i.test(sl.input.message)), true];
+      await p.fill("#emailTo", "test@firstmate.sk");
+      await p.click("#btnEmail");
+      await p.waitForFunction(() => window.__volania.some((v) => v.tool === "send_message"), null, { timeout: 15000 }).catch(() => {});
+      const em = await p.evaluate(() => window.__volania.find((v) => v.tool === "send_message"));
+      o["e-mail: Gmail send_message s adresou a HTML"] = [em ? `${em.server} ${em.input.to} ${!!em.input.htmlBody}` : "nevolané", "Gmail test@firstmate.sk true"];
+      o["e-mail: s potvrdením zápisu do histórie"] = [(await p.$eval("#logBody", (e) => e.textContent)).includes("test@firstmate.sk"), true];
+      return o;
+    }
   }
 ];
+
+// mock window.claude: db v pamäti, mcp zaznamená volania (nič neodíde), sample nedostupný (pravidlový text)
+const MOCK = () => {
+  window.__volania = [];
+  const docs = {};
+  const db = { doc: (id) => ({ get: async () => ({ exists: id in docs, data: () => docs[id] }), set: async (v) => { docs[id] = v; } }) };
+  const mcp = {
+    listTools: async () => ({ servers: [{ server: "Slack", authStatus: "connected" }, { server: "Gmail", authStatus: "connected" }] }),
+    callTool: async (server, tool, input) => { window.__volania.push({ server, tool, input }); return { payload: { ok: true } }; }
+  };
+  window.claude = { use: async (n) => (n === "db" ? db : n === "mcp" ? mcp : null) };
+};
 
 async function overNastavenia(browser, c) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, timezoneId: "Europe/Bratislava" });
@@ -160,10 +200,11 @@ async function overNastavenia(browser, c) {
   p.on("pageerror", (e) => chyby.push(e.message));
   p.on("console", (m) => { if (m.type() === "error") chyby.push(m.text()); });
   await p.route("**/klienti/demo/nastavenia.json", (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify(c.nastavenia) }));
+  if (c.mock) await p.addInitScript(MOCK);
   await p.goto(BASE + "panel/index.html");
   await p.waitForFunction(() => document.body.dataset.fmTyp, null, { timeout: 15000 });
   await p.waitForTimeout(2000);
-  const o = await c.over(p);
+  const o = await c.over(p, KOREN);
   await ctx.close();
   if (chyby.length) o["bez chýb v konzole"] = [chyby.join(" · "), ""];
   return o;

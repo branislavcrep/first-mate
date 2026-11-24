@@ -52,3 +52,12 @@ Datované. Neplatné sa nemažú, označia sa `NEPLATÍ od RRRR-MM-DD`.
 - Prepínač typu firmy: odkaz „verzia pre …“ v hlavičke prepne typ priamo v paneli (značky sa postavia znova zo šablóny, bez načítania stránky, lebo zmena adresy v artefakte nemusí byť dovolená). Zobrazí sa len pri `prepinac: true` v nastaveniach klienta, inak zmizne a panel je zamknutý na `typ` z nastavení. `?typ=` platí len pri zapnutom prepínači.
 - Nastavenia klienta číta panel už teraz z `klienti/<klient>/nastavenia.json` (meta `fm-nastavenia`). `klienti/demo/nastavenia.json` má zatiaľ len `prepinac`, `typy`, `typ`; ostatné polia doplní fáza 5.
 - Badge typu: text „verzia pre …“ v hlavičke vo farbe typu z `usecases/typy.json` (realitka #0B7A5C, developer #1B2CC1).
+
+## 2026-11-24 · fáza 4 dokončená: menu, klientsky režim, päta (Claude Code, v rámci schváleného plánu)
+- Menu: základ je `typy[].menu` v `usecases/typy.json`, klient ho prepíše v `nastavenia.json` (`menu.<typ>: [{ id, nazov?, zapnute? }]`). Uvedené záložky idú prvé v ich poradí, ostatné za nimi v poradí typu, neznáme id sa ignorujú. Vypnutá záložka zmizne z menu, jej sekcia ostane v DOM, ale nedá sa otvoriť. Úvodná záložka je prvá v menu.
+- Klientsky režim je súbor nastavení, nie samostatný panel: `rezim: "klient"` (texty pre klienta cez `data-rezim`), `nazov`, `potvrdenie_pred_odoslanim`, `signaly_len_na_citanie`, `zalozka_tipy`, `rozvrh: "planovana-uloha"` (cez `data-rozvrh`), `slack.prikaz`, `email` (šablóny odoslania a konceptu s `{{…}}`), `predvolene` (prázdne adresy namiesto Books & Mirror). `klienti/immocap/nastavenia.json` dáva panel zhodný s `legacy/panel-klient-immocap/` (UI test).
+- Tipy pre záložku Čo vyskúšať berie panel z katalógu use casov (`druh: "tip"`, `urovne`, `temy`, `miesta`), nie z `tipy.json`. Checklist: db `<typ db>/checklist` + localStorage ako v pôvodnom paneli.
+- Ponuka konceptu alebo kopírovania pri neúspešnom e-maile sa zobrazí len klientovi s nastaveným `email`; demo panel sa pri chybe správa ako predtým.
+- Príkaz v Claude (`/first-mate-dev`, `/first-mate`) je v moduloch typov nastaviteľný (`FM.nastavPrikaz`), predvolené hodnoty a golden texty sa nemenia.
+- Päta: „First Mate vX.Y.Z · zostavené D. M. RRRR“ z meta `fm-verzia` a `fm-zostavene`, bez nich „vývojová verzia, nezostavené“. Je to jediná vedomá výnimka v UI teste oproti legacy.
+- Otvorené body z `legacy/README.md` sú zapísané ako Issues #9 až #13 (farba čísla „Konať dnes“, vypnutý signál v osobných a finančných brífingoch, kolekcia `zmeny`, Attio v capabilities, Outlook). Nič z toho sa potichu neopravilo.

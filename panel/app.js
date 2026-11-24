@@ -81,6 +81,9 @@ function pripravZnacky(koren, typId, menu) {
   const prikaz = (NASTAVENIA.slack || {}).prikaz;
   if (prikaz) koren.querySelectorAll("[data-prikaz]").forEach(e => { e.textContent = prikaz; });
   if (NASTAVENIA.signaly_len_na_citanie) koren.querySelectorAll("#btnAddSig").forEach(e => e.remove());
+  // päta: verzia a dátum zostavenia (meta fm-verzia, fm-zostavene dopĺňa build)
+  const ver = koren.querySelector("#verzia"), v = meta("fm-verzia"), z = meta("fm-zostavene");
+  if (ver) ver.textContent = v && z ? `First Mate v${v} · zostavené ${z.split("-").map(Number).reverse().join(". ")}` : "First Mate · vývojová verzia, nezostavené";
   const nav = koren.querySelector("#nav");
   if (nav && menu && menu.length) {
     const odkazy = [...nav.querySelectorAll("a")];
