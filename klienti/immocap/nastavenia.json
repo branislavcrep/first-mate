@@ -1,0 +1,37 @@
+{
+  "klient": "immocap",
+  "nazov": "Immocap, a.s.",
+  "poznamka": "Klientsky panel developera (pôvodne legacy/panel-klient-immocap). Hodnoty {{…}} v šablónach e-mailu doplní panel pri odoslaní: {{prijemcovia}} = zoznam adries, {{prijemcovia_text}} = adresy oddelené čiarkou, {{prijemcovia_graph}} = [{emailAddress:{address}}], {{predmet}}, {{text}}, {{html}}.",
+  "rezim": "klient",
+  "prepinac": false,
+  "typy": ["developer"],
+  "typ": "developer",
+  "potvrdenie_pred_odoslanim": true,
+  "signaly_len_na_citanie": true,
+  "zalozka_tipy": true,
+  "rozvrh": "planovana-uloha",
+  "predvolene": {
+    "email": "",
+    "finEmail": "",
+    "prvy_clen": { "meno": "Riaditeľ predaja", "email": "", "aktivny": false }
+  },
+  "slack": {
+    "server": "Slack",
+    "nastroj": "slack_send_message",
+    "workspace": "firstmate-booksmirror",
+    "kanaly": [{ "id": "C0CDY6XG8MR", "nazov": "#first-mate-developer" }],
+    "prikaz": "/first-mate"
+  },
+  "email": {
+    "sluzba": "Gmail",
+    "server": "Gmail",
+    "odoslat": {
+      "nastroj": "send_message",
+      "argumenty": { "to": "{{prijemcovia}}", "subject": "{{predmet}}", "body": "{{text}}", "htmlBody": "{{html}}" }
+    },
+    "koncept": {
+      "nastroj": "create_draft",
+      "argumenty": { "to": "{{prijemcovia}}", "subject": "{{predmet}}", "body": "{{text}}", "htmlBody": "{{html}}" }
+    }
+  }
+}

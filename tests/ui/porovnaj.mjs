@@ -21,11 +21,15 @@ const PRIPADY = [
   { typ: "realitka", legacy: "legacy/panel-realitka/index.html", panel: "panel/index.html?typ=realitka", teraz: "2026-11-03T17:00:00Z" },
   // prepínač typu bez načítania stránky (nastavenia demo: prepinac true): developer → realitka, developer → realitka → developer
   { typ: "prepínač → realitka", legacy: "legacy/panel-realitka/index.html", panel: "panel/index.html", prepni: ["realitka"], teraz: "2026-11-03T17:00:00Z" },
+  // klientsky režim: pôvodný panel Immocap ↔ nový panel s nastaveniami klienti/immocap (vrátane potvrdenia pred odoslaním)
+  { typ: "klient Immocap", legacy: "legacy/panel-klient-immocap/index.html", panel: "panel/index.html", nastavenia: "klienti/immocap/nastavenia.json", potvrdenie: true, teraz: "2026-11-02T17:00:00Z" },
   { typ: "prepínač → realitka → developer", legacy: "legacy/panel-developer/index.html", panel: "panel/index.html", prepni: ["realitka", "developer"], teraz: "2026-11-02T17:00:00Z" },
 ];
 const TYPY = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".csv": "text/csv; charset=utf-8", ".md": "text/markdown; charset=utf-8" };
 const server = http.createServer((req, res) => {
-  const p = path.join(KOREN, decodeURIComponent(new URL(req.url, "http://x").pathname));
+  // pôvodný panel Immocap mal rovnaké dáta ako developer, v legacy/ nie sú skopírované
+  const cesta = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/legacy\/panel-klient-immocap\/data\//, "/data/developer/");
+  const p = path.join(KOREN, cesta);
   if (!p.startsWith(KOREN) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) { res.writeHead(404); return res.end(); }
   res.writeHead(200, { "content-type": TYPY[path.extname(p)] || "application/octet-stream" });
   fs.createReadStream(p).pipe(res);
@@ -33,13 +37,14 @@ const server = http.createServer((req, res) => {
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${server.address().port}/`;
 
-async function snimok(browser, url, teraz, prepni = []) {
+async function snimok(browser, url, teraz, prepni = [], c = {}) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, timezoneId: "Europe/Bratislava" });
   const p = await ctx.newPage();
   await p.clock.setFixedTime(new Date(teraz));
   const chyby = [];
   p.on("pageerror", (e) => chyby.push(e.message));
   p.on("console", (m) => { if (m.type() === "error") chyby.push(m.text()); });
+  if (c.nastavenia) await p.route("**/klienti/demo/nastavenia.json", (r) => r.fulfill({ path: path.join(KOREN, c.nastavenia) }));
   await p.goto(BASE + url);
   await p.waitForFunction(() => /projekt|nehnuteľnost|ponuk/i.test(document.body.innerText), null, { timeout: 15000 }).catch(() => {});
   await p.waitForTimeout(1500);
@@ -76,6 +81,16 @@ async function snimok(browser, url, teraz, prepni = []) {
     await p.waitForTimeout(150);
     brif["nahlad_" + pv] = await p.$eval("#pv", (v) => v.innerHTML);
   }
+  if (c.potvrdenie) {
+    // odoslanie do Slacku: potvrdzovacie okno, „Späť“ a výsledok (nič neodíde)
+    await p.click('.tabs2 button[data-pv="email"]');
+    await p.click("#btnSlack");
+    await p.waitForSelector("#cfOv:not(.hidden)", { timeout: 10000 }).catch(() => {});
+    brif.potvrdenie_okno = await p.$eval("#cfOv", (v) => v.innerText).catch(() => "chýba #cfOv");
+    await p.click("#cfNo").catch(() => {});
+    await p.waitForTimeout(300);
+    brif.potvrdenie_zrusene = await p.$eval("#run", (v) => v.innerText);
+  }
   await ctx.close();
   return { chyby, zalozky: { ...zalozky, ...okolie }, brif };
 }
@@ -109,6 +124,32 @@ const NASTAVENIA = [
       o["realitka: číslo v nadpise Tímu"] = [await kicker("v-tim"), "01"];
       return o;
     }
+  },
+  {
+    meno: "klientsky režim realitky (bez legacy predlohy)",
+    nastavenia: {
+      nazov: "Realitka Test, s.r.o.", rezim: "klient", prepinac: false, typy: ["realitka"], typ: "realitka",
+      potvrdenie_pred_odoslanim: true, signaly_len_na_citanie: true, zalozka_tipy: true, rozvrh: "planovana-uloha",
+      predvolene: { email: "", prvy_clen: { meno: "Manažér", email: "", aktivny: false } }, slack: { prikaz: "/first-mate-test" }
+    },
+    async over(p) {
+      const o = {};
+      o["horný pruh s názvom klienta"] = [await p.$eval("#klient", (e) => e.firstChild.textContent.trim()), "Realitka Test, s.r.o."];
+      o["hlavička"] = [await p.$eval(".hero .kicker", (e) => e.innerText), "MÔJ PANEL · FIRST MATE PRE REALITNÚ KANCELÁRIU"];
+      o["bez prepínača typu"] = [await p.$$eval("[data-prepni]", (x) => x.length), 0];
+      o["menu"] = [await p.$$eval("#nav a", (as) => as.map((a) => a.innerText.replace(/\s+/g, " ")).join(" | ")), "01BRÍFING | 02TÍM | 03SIGNÁLY | 04ROZVRH | 05ARCHITEKTÚRA | 06ČO VYSKÚŠAŤ"];
+      o["príkaz v Slack karte"] = [await p.$eval("#v-brifing [data-prikaz]", (e) => e.textContent), "/first-mate-test"];
+      o["signály len na čítanie"] = [await p.$$eval("#sig input, #period", (x) => x.every((i) => i.disabled) && x.length > 0), true];
+      o["bez pridania signálu"] = [await p.$$eval("#btnAddSig, #sgAdd", (x) => x.length), 0];
+      o["rozvrh ako plánovaná úloha"] = [await p.$$eval("#days", (x) => x.length) + " · " + (await p.$eval("#v-rozvrh", (v) => v.textContent)).includes("#first-mate-demo"), "0 · true"];
+      o["bez predvolených adries"] = [await p.$eval("#emailTo", (e) => e.value), ""];
+      o["tipy z katalógu"] = [await p.$eval("#tipCount", (e) => e.textContent), await p.evaluate(async () => { const k = await (await fetch("../usecases/usecases.json")).json(); return k.usecases.filter((u) => u.druh === "tip" && u.typy.includes("realitka")).length + " tipov"; })];
+      await p.click("#btnSlack");
+      await p.waitForSelector("#cfOv:not(.hidden)", { timeout: 10000 }).catch(() => {});
+      o["potvrdenie pred odoslaním do Slacku"] = [await p.$eval("#cfTitle", (e) => e.textContent).catch(() => "chýba"), "Odoslať brífing do Slacku?"];
+      await p.click("#cfNo");
+      return o;
+    }
   }
 ];
 
@@ -133,7 +174,7 @@ const browser = await chromium.launch();
 try {
   for (const c of PRIPADY) {
     console.log(`UI ${c.typ}: ${c.legacy} ↔ ${c.panel}`);
-    const [a, b] = [await snimok(browser, c.legacy, c.teraz), await snimok(browser, c.panel, c.teraz, c.prepni)];
+    const [a, b] = [await snimok(browser, c.legacy, c.teraz, [], { potvrdenie: c.potvrdenie }), await snimok(browser, c.panel, c.teraz, c.prepni, c)];
     if (b.chyby.length) { zlyhania++; console.log("  ✗ chyby v konzole nového panela:\n    " + b.chyby.join("\n    ")); }
     for (const id of Object.keys(a.zalozky)) {
       if (a.zalozky[id] === b.zalozky[id]) { console.log(`  ✓ ${id}`); continue; }

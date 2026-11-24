@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <!-- First Mate · panel. Vygenerované z legacy/panel-developer (docs/migracia/nastroje/rozdel_rozhranie.mjs, 2026-11-24), odvtedy sa upravuje ručne.
      Prvky s data-typy="…" patria len uvedeným typom firmy (app.js ostatné odstráni). Čísla záložiek 01, 02… dopĺňa app.js podľa poradia v menu.
+     data-rezim="demo|klient" a data-rozvrh="panel|planovana-uloha" fungujú ako data-typy podľa nastavení klienta (rezim, rozvrh); data-prikaz dostane slack.prikaz.
      data-prepni="<typ>" = odkaz, ktorý prepne panel na iný typ (len ak nastavenia klienta majú prepinac: true, inak zmizne).
      fm-nastavenia = cesta k nastaveniam klienta od fm-koren (build vo fáze 5 ich vloží podľa klienta). -->
 <meta name="fm-koren" content="../">
@@ -19,12 +20,14 @@
 <div class="wrap">
   <div class="top">
     <div class="brand">Books &amp; Mirror</div>
-    <div class="demo">Ukážka <span>fiktívne dáta</span><button class="dslink" id="dsOpen" type="button">Dáta ukážky</button></div>
+    <div class="demo" id="klient">Ukážka <span>fiktívne dáta</span><button class="dslink" id="dsOpen" type="button">Dáta ukážky</button></div>
   </div>
   <section class="hero">
     <div>
-      <div class="kicker" data-typy="realitka"><b>Ovládací panel</b> · <span class="typ-badge">verzia pre realitnú kanceláriu</span><a class="dslink" data-prepni="developer" href="https://claude.ai/artifact/Thwr8YV58gP7RprXQHRw2Y" target="_blank" rel="noopener">verzia pre developera →</a></div>
-      <div class="kicker" data-typy="developer"><b>Ovládací panel</b> · <span class="typ-badge">verzia pre developera</span><a class="dslink" data-prepni="realitka" href="https://claude.ai/artifact/TMqLo37PgkvMqetibH7a5P" target="_blank" rel="noopener">verzia pre realitnú kanceláriu →</a></div>
+      <div class="kicker" data-typy="realitka" data-rezim="demo"><b>Ovládací panel</b> · <span class="typ-badge">verzia pre realitnú kanceláriu</span><a class="dslink" data-prepni="developer" href="https://claude.ai/artifact/Thwr8YV58gP7RprXQHRw2Y" target="_blank" rel="noopener">verzia pre developera →</a></div>
+      <div class="kicker" data-typy="realitka" data-rezim="klient"><b>Môj panel</b> · <span class="typ-badge">First Mate pre realitnú kanceláriu</span></div>
+      <div class="kicker" data-typy="developer" data-rezim="demo"><b>Ovládací panel</b> · <span class="typ-badge">verzia pre developera</span><a class="dslink" data-prepni="realitka" href="https://claude.ai/artifact/TMqLo37PgkvMqetibH7a5P" target="_blank" rel="noopener">verzia pre realitnú kanceláriu →</a></div>
+      <div class="kicker" data-typy="developer" data-rezim="klient"><b>Môj panel</b> · <span class="typ-badge">First Mate pre developera</span></div>
       <h1>First Mate<i>.</i></h1>
       <p data-typy="realitka">Čísla z CRM prídu samy tam, kde tím pracuje. Kód ich spočíta, AI vysvetlí a navrhne, čo s nimi urobiť dnes.</p>
       <p data-typy="developer">Predaj projektov bez dashboardov. Kód každé ráno spočíta, ako sa plní plán a podmienka banky, čo horí pri rezerváciách a zálohách a kde čakajú záujemcovia. Majiteľovi stráži čerpanie úveru, rozpočet a výnosnosť. AI vysvetlí a navrhne kroky na dnes.</p>
@@ -32,7 +35,8 @@
       <div class="databar" id="dataBar">
         <span class="chip"><i class="dot ok"></i><span id="dbLabel">Dáta: CSV</span></span>
         <div class="seg" role="group" aria-label="Dátumy v dátach"><button type="button" data-shift="1" class="on">Posunuté k dnešku</button><button type="button" data-shift="0">Pôvodné dátumy</button></div>
-        <button class="link" id="dbUpload" type="button">Nahrať vlastné CSV</button><button class="link hidden" id="dbReset" type="button">Späť na ukážku</button>
+        <button class="link" id="dbUpload" type="button" data-rezim="demo">Nahrať vlastné CSV</button><button class="link hidden" id="dbReset" type="button" data-rezim="demo">Späť na ukážku</button>
+        <button class="link" id="dbUpload" type="button" data-rezim="klient">Nahrať dáta z priečinka First Mate</button><button class="link hidden" id="dbReset" type="button" data-rezim="klient">Späť na východiskové dáta</button>
         <input type="file" id="dbFile" accept=".csv,.md,.txt,text/csv" multiple hidden>
         <div class="note" id="dbShift"></div>
         <div id="dbMsg"></div>
@@ -47,6 +51,7 @@
     <a href="#signaly" data-v="signaly"><span>05</span>Signály</a>
     <a href="#rozvrh" data-v="rozvrh"><span>06</span>Rozvrh</a>
     <a href="#architektura" data-v="architektura"><span>07</span>Architektúra</a>
+    <a href="#tipy" data-v="tipy"><span>08</span>Čo vyskúšať</a>
   </nav>
 
   <main>
@@ -54,15 +59,17 @@
   <section class="view" id="v-brifing">
     <div class="kicker"><b>01</b>&nbsp;&nbsp;Ranný brífing</div>
     <h2>Poslať brífing teraz <small>/ <span id="today"></span></small></h2>
-    <p class="lead" data-typy="realitka">Jedno kliknutie: First Mate načíta aktuálne dáta z CSV exportu CRM, spočíta signály, AI ich vysvetlí a navrhne kroky na dnes. Výsledok odíde tam, kam ho pošlete.</p>
-    <p class="lead" data-typy="developer">Jedno kliknutie: First Mate načíta projekty, jednotky a dopyty z CSV exportu CRM, spočíta signály, AI ich vysvetlí a navrhne kroky na dnes. Výsledok odíde tam, kam ho pošlete. Finančný brífing (úver, rozpočet, výnosnosť) ide zvlášť majiteľovi.</p>
+    <p class="lead" data-typy="realitka" data-rezim="demo">Jedno kliknutie: First Mate načíta aktuálne dáta z CSV exportu CRM, spočíta signály, AI ich vysvetlí a navrhne kroky na dnes. Výsledok odíde tam, kam ho pošlete.</p>
+    <p class="lead" data-typy="realitka" data-rezim="klient">Pošlite ranný brífing ručne, keď ho potrebujete mimo plánovaného odoslania. First Mate spočíta signály z dát (východiskové z balíka alebo nahraté z priečinka First Mate), AI ich vysvetlí a navrhne kroky. Pred každým odoslaním uvidíte náhľad a zhrnutie, odoslanie potvrdíte.</p>
+    <p class="lead" data-typy="developer" data-rezim="demo">Jedno kliknutie: First Mate načíta projekty, jednotky a dopyty z CSV exportu CRM, spočíta signály, AI ich vysvetlí a navrhne kroky na dnes. Výsledok odíde tam, kam ho pošlete. Finančný brífing (úver, rozpočet, výnosnosť) ide zvlášť majiteľovi.</p>
+    <p class="lead" data-typy="developer" data-rezim="klient">Pošlite ranný brífing ručne, keď ho potrebujete mimo plánovaného odoslania. First Mate spočíta signály z dát (východiskové z balíka alebo nahraté z priečinka First Mate), AI ich vysvetlí a navrhne kroky. Pred každým odoslaním uvidíte náhľad a zhrnutie, odoslanie potvrdíte. Finančný brífing ide len e-mailom.</p>
     <div class="grid2">
       <div class="card">
         <div class="lbl">Kanál 01 · Slack</div>
         <h3 data-typy="realitka">#first-mate-demo</h3>
         <h3 data-typy="developer">#first-mate-developer</h3>
-        <p data-typy="realitka">Celý brífing do kanála tímu. Vo vlákne sa dá pýtať ďalej a pokračovať v Claude príkazom <span class="mono blue">/first-mate</span>.</p>
-        <p data-typy="developer">Celý brífing do kanála predajného tímu. Vo vlákne sa dá pýtať ďalej a pokračovať v Claude príkazom <span class="mono blue">/first-mate-dev</span>.</p>
+        <p data-typy="realitka">Celý brífing do kanála tímu. Vo vlákne sa dá pýtať ďalej a pokračovať v Claude príkazom <span class="mono blue" data-prikaz>/first-mate</span>.</p>
+        <p data-typy="developer">Celý brífing do kanála predajného tímu. Vo vlákne sa dá pýtať ďalej a pokračovať v Claude príkazom <span class="mono blue" data-prikaz>/first-mate-dev</span>.</p>
         <button class="btn" id="btnSlack">Poslať do Slacku <span>→</span></button>
       </div>
       <div class="card">
@@ -161,10 +168,15 @@
 
   <!-- 05 SIGNÁLY -->
   <section class="view" id="v-signaly">
-    <div class="kicker"><b>05</b>&nbsp;&nbsp;Nastavenie signálov</div>
-    <h2 data-typy="realitka">Čo First Mate sleduje <small>/ hranice si určí kancelária</small></h2>
-    <h2 data-typy="developer">Čo First Mate sleduje <small>/ hranice si určí developer</small></h2>
-    <p class="lead">Žiadna čierna skrinka. Každý signál je pravidlo, ktoré sa dá zapnúť, vypnúť a nastaviť. Čísla „dnes“ sa prepočítajú hneď po zmene z posledných načítaných dát.</p>
+    <div class="kicker" data-rezim="demo"><b>05</b>&nbsp;&nbsp;Nastavenie signálov</div>
+    <div class="kicker" data-rezim="klient"><b>05</b>&nbsp;&nbsp;Signály</div>
+    <h2 data-rezim="demo" data-typy="realitka">Čo First Mate sleduje <small>/ hranice si určí kancelária</small></h2>
+    <h2 data-rezim="demo" data-typy="developer">Čo First Mate sleduje <small>/ hranice si určí developer</small></h2>
+    <h2 data-rezim="klient" data-typy="developer">Čo First Mate sleduje <small>/ predaj a financie</small></h2>
+    <h2 data-rezim="klient" data-typy="realitka">Čo First Mate sleduje <small>/ dopyty, obhliadky, ponuky</small></h2>
+    <p class="lead" data-rezim="demo">Žiadna čierna skrinka. Každý signál je pravidlo, ktoré sa dá zapnúť, vypnúť a nastaviť. Čísla „dnes“ sa prepočítajú hneď po zmene z posledných načítaných dát.</p>
+    <p class="lead" data-rezim="klient" data-typy="developer">Každý signál je pravidlo s pevnou hranicou. Rovnaké hranice používa ranný brífing v Slacku aj First Mate v Claude, preto sa tu nemenia. Pri každom signáli je číslo „Dnes“ z vašich dát a tlačidlo Zdroje, odkiaľ dáta pochádzajú. Ak chcete hranicu zmeniť, napíšte Books &amp; Mirror.</p>
+    <p class="lead" data-rezim="klient" data-typy="realitka">Každý signál je pravidlo s pevnou hranicou. Rovnaké hranice používa ranný brífing v Slacku aj First Mate v Claude, preto sa tu nemenia. Pri každom signáli je číslo „Dnes“ z vašich dát. Ak chcete hranicu zmeniť, napíšte Books &amp; Mirror.</p>
     <div class="bar" style="margin-top:0">
       <label class="field" style="flex-direction:row;align-items:center;gap:12px;margin:0" data-typy="realitka"><span class="lbl">Porovnávacie obdobie</span>
         <select id="period" style="width:auto"><option value="7">7 dní</option><option value="14">14 dní</option></select></label>
@@ -186,35 +198,107 @@
   <section class="view" id="v-rozvrh">
     <div class="kicker"><b>06</b>&nbsp;&nbsp;Rozvrh a prepojenia</div>
     <h2>Kedy a kam <small>/ ranný brífing bez klikania</small></h2>
-    <p class="lead">Nastavte dni, čas a kanály ranného brífingu. Pod tým je stav prepojení na CRM a komunikačné kanály.</p>
-    <div class="grid2">
-      <div class="card">
-        <div class="lbl">Dni</div>
-        <div class="days" id="days" style="margin:12px 0 22px"></div>
-        <div class="field" style="max-width:180px"><label class="lbl" for="time">Čas odoslania</label><input type="time" id="time"></div>
-      </div>
-      <div class="card">
-        <div class="lbl">Kanály</div>
-        <div class="checks" style="margin-top:14px">
-          <label data-typy="realitka"><input type="checkbox" id="chSlack"><span><b>Slack</b> · #first-mate-demo<br><span class="note">celý brífing do kanála</span></span></label>
-          <label data-typy="developer"><input type="checkbox" id="chSlack"><span><b>Slack</b> · #first-mate-developer<br><span class="note">celý brífing do kanála</span></span></label>
-          <label><input type="checkbox" id="chEmail"><span><b>E-mail</b> · <span id="chEmailAddr"></span><br><span class="note">celý brífing na adresu z prvej záložky</span></span></label>
-          <label><input type="checkbox" id="chTeam"><span><b>Osobné brífingy tímu</b><br><span class="note">podľa záložky Tím</span></span></label>
-          <label data-typy="developer"><input type="checkbox" id="chFin"><span><b>Finančný brífing</b> · <span id="chFinAddr"></span><br><span class="note">e-mailom majiteľovi a finančnému riaditeľovi</span></span></label>
+    <div data-rozvrh="panel">
+      <p class="lead">Nastavte dni, čas a kanály ranného brífingu. Pod tým je stav prepojení na CRM a komunikačné kanály.</p>
+      <div class="grid2">
+        <div class="card">
+          <div class="lbl">Dni</div>
+          <div class="days" id="days" style="margin:12px 0 22px"></div>
+          <div class="field" style="max-width:180px"><label class="lbl" for="time">Čas odoslania</label><input type="time" id="time"></div>
+        </div>
+        <div class="card">
+          <div class="lbl">Kanály</div>
+          <div class="checks" style="margin-top:14px">
+            <label data-typy="realitka"><input type="checkbox" id="chSlack"><span><b>Slack</b> · #first-mate-demo<br><span class="note">celý brífing do kanála</span></span></label>
+            <label data-typy="developer"><input type="checkbox" id="chSlack"><span><b>Slack</b> · #first-mate-developer<br><span class="note">celý brífing do kanála</span></span></label>
+            <label><input type="checkbox" id="chEmail"><span><b>E-mail</b> · <span id="chEmailAddr"></span><br><span class="note">celý brífing na adresu z prvej záložky</span></span></label>
+            <label><input type="checkbox" id="chTeam"><span><b>Osobné brífingy tímu</b><br><span class="note">podľa záložky Tím</span></span></label>
+            <label data-typy="developer"><input type="checkbox" id="chFin"><span><b>Finančný brífing</b> · <span id="chFinAddr"></span><br><span class="note">e-mailom majiteľovi a finančnému riaditeľovi</span></span></label>
+          </div>
         </div>
       </div>
+      <div class="auto">
+        <div class="lbl blue">Automatické odosielanie</div>
+        <div style="margin-top:6px" id="autoText"></div>
+      </div>
+      <div class="bar"><span class="saved" id="schSaved"></span></div>
     </div>
-    <div class="auto">
-      <div class="lbl blue">Automatické odosielanie</div>
-      <div style="margin-top:6px" id="autoText"></div>
+    <div data-rozvrh="planovana-uloha" data-typy="developer">
+      <p class="lead">Ranný brífing do Slacku posiela každý pracovný deň plánovaná úloha v aplikácii Claude z priečinka First Mate na vašom počítači. Dni a čas sa menia tam. Pod tým je stav prepojení.</p>
+      <div class="grid2">
+        <div class="card">
+          <div class="lbl">Ranný brífing · plánovaná úloha</div>
+          <h3>First Mate · ranný brífing</h3>
+          <ul class="plain">
+            <li><b>Kde:</b> aplikácia Claude → Scheduled → First Mate · ranný brífing</li>
+            <li><b>Kedy:</b> pracovné dni o 7:30 (zmeníte v úlohe)</li>
+            <li><b>Kam:</b> Slack #first-mate-developer</li>
+            <li><b>Podmienka:</b> počítač je zapnutý a aplikácia Claude otvorená</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="lbl">Ručne a ďalšie kanály</div>
+          <h3>Kedykoľvek inokedy</h3>
+          <ul class="plain">
+            <li>V Claude príkaz <span class="mono blue">/first-mate-brifing</span></li>
+            <li>Záložka <b>Brífing</b>: Slack, e-mail a finančný brífing</li>
+            <li>Záložka <b>Tím</b>: osobné brífingy predajcom a vedeniu</li>
+          </ul>
+        </div>
+      </div>
+      <div class="auto"><div class="lbl blue">Automatické odosielanie</div><div style="margin-top:6px" id="autoText">Automaticky odchádza len ranný brífing do Slacku z plánovanej úlohy v Claude. E-maily, finančný brífing a brífingy tímu odchádzajú len vtedy, keď ich odošlete v tomto paneli a potvrdíte.</div></div>
     </div>
-    <div class="bar"><span class="saved" id="schSaved"></span></div>
+    <div data-rozvrh="planovana-uloha" data-typy="realitka">
+      <p class="lead">Ranný brífing do Slacku posiela každý pracovný deň plánovaná úloha v aplikácii Claude z priečinka First Mate na vašom počítači. Dni a čas sa menia tam. Pod tým je stav prepojení.</p>
+      <div class="grid2">
+        <div class="card">
+          <div class="lbl">Ranný brífing · plánovaná úloha</div>
+          <h3>First Mate · ranný brífing</h3>
+          <ul class="plain">
+            <li><b>Kde:</b> aplikácia Claude → Scheduled → First Mate · ranný brífing</li>
+            <li><b>Kedy:</b> pracovné dni o 7:30 (zmeníte v úlohe)</li>
+            <li><b>Kam:</b> Slack #first-mate-demo</li>
+            <li><b>Podmienka:</b> počítač je zapnutý a aplikácia Claude otvorená</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="lbl">Ručne a ďalšie kanály</div>
+          <h3>Kedykoľvek inokedy</h3>
+          <ul class="plain">
+            <li>V Claude príkaz <span class="mono blue">/first-mate-brifing</span></li>
+            <li>Záložka <b>Brífing</b>: Slack a e-mail</li>
+            <li>Záložka <b>Tím</b>: osobné brífingy maklérom a manažérovi</li>
+          </ul>
+        </div>
+      </div>
+      <div class="auto"><div class="lbl blue">Automatické odosielanie</div><div style="margin-top:6px" id="autoText">Automaticky odchádza len ranný brífing do Slacku z plánovanej úlohy v Claude. E-maily a brífingy tímu odchádzajú len vtedy, keď ich odošlete v tomto paneli a potvrdíte.</div></div>
+    </div>
 
     <div class="kicker" style="margin-top:36px"><b>Prepojenia</b></div>
     <table class="ctable" style="margin-top:12px">
       <thead><tr><th>Služba</th><th>Na čo slúži</th><th>Stav</th><th>Posledné úspešné volanie</th><th></th></tr></thead>
       <tbody id="connBody"></tbody>
     </table>
+  </section>
+
+  <!-- ČO VYSKÚŠAŤ (tipy z katalógu; v menu len ak je zapnutá) -->
+  <section class="view" id="v-tipy">
+    <div class="kicker"><b>08</b>&nbsp;&nbsp;Čo vyskúšať s First Mate</div>
+    <h2>Tipy a checklist <small>/ <span id="tipCount"></span></small></h2>
+    <p class="lead">Otázky, ktoré na vašich dátach fungujú. Skopírujte otázku, vložte ju do Claude (alebo do vlákna brífingu v Slacku) a potom si tip odškrtnite. Tipy označené „Mení dáta“ First Mate zapíše až po vašom potvrdení.</p>
+    <div class="t-progress">
+      <div><div class="lbl">Vyskúšané</div><div class="v" id="progV">0 <small>z 0</small></div></div>
+      <div><div class="t-pbar"><i id="progBar" style="width:0%"></i></div><div class="t-lvls" id="progLvls"></div></div>
+    </div>
+    <div class="t-tod" id="tod"></div>
+    <div class="t-filters">
+      <div class="f"><label class="lbl" for="fStav">Zobraziť</label><select id="fStav"><option value="vsetky">Všetky tipy</option><option value="nie">Nevyskúšané</option><option value="ano">Vyskúšané</option></select></div>
+      <div class="f"><label class="lbl" for="fUroven">Úroveň</label><select id="fUroven"><option value="">Všetky úrovne</option></select></div>
+      <div class="f"><label class="lbl" for="fTema">Téma</label><select id="fTema"><option value="">Všetky témy</option></select></div>
+      <span class="note" id="fInfo"></span>
+    </div>
+    <div id="tipList"></div>
+    <p class="t-store" id="storeInfo">Stav checklistu sa načítava…</p>
   </section>
 
   <!-- ARCHITEKTÚRA · realitka -->
@@ -294,7 +378,7 @@
 <line x1="662" y1="367" x2="748" y2="367" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
 <rect x="750" y="486" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
 <text x="764" y="510" font-size="14" font-weight="700" fill="#0B0B0C">Rozhovor v Claude</text>
-<text x="764" y="529" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">/first-mate · otázky k dátam</text>
+<text x="764" y="529" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace"><tspan data-prikaz>/first-mate</tspan> · otázky k dátam</text>
 <text x="968" y="510" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
 <rect x="340" y="486" width="320" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
 <text x="354" y="510" font-size="14" font-weight="700" fill="#0B0B0C">Akcia s potvrdením</text>
@@ -319,7 +403,7 @@
     <div class="cols3">
       <div><div class="lbl">Zdroje dát</div><h4>Kde dáta už sú</h4><ul><li>CRM: Attio, Pipedrive, HubSpot; iné cez export alebo API</li><li>Web a analytika: PostHog, Google Analytics</li><li>Realitné portály a sociálne siete</li><li>E-mail a kalendár maklérov</li></ul></div>
       <div><div class="lbl">Jadro</div><h4>Pravidlá + AI</h4><ul><li>Signály počíta kód podľa nastavení kancelárie</li><li>AI (Claude) vysvetlí, prečo na čísle záleží</li><li>Navrhne konkrétne kroky s menom a nehnuteľnosťou</li><li>Rozhodnutia sa dajú zapisovať a vyhodnocovať</li></ul></div>
-      <div><div class="lbl">Kanály a akcie</div><h4>Tam, kde tím pracuje</h4><ul><li>Slack, e-mail; neskôr WhatsApp alebo Teams</li><li>Rozhovor nad dátami v Claude (/first-mate)</li><li>Zápis do CRM, úlohy, koncepty e-mailov</li><li>Vždy s potvrdením človeka</li></ul></div>
+      <div><div class="lbl">Kanály a akcie</div><h4>Tam, kde tím pracuje</h4><ul><li>Slack, e-mail; neskôr WhatsApp alebo Teams</li><li>Rozhovor nad dátami v Claude (<span data-prikaz>/first-mate</span>)</li><li>Zápis do CRM, úlohy, koncepty e-mailov</li><li>Vždy s potvrdením človeka</li></ul></div>
     </div>
 
     <div class="kicker" style="margin-top:56px"><b>Rozvoj</b>&nbsp;&nbsp;Katalóg akcií a učenie</div>
@@ -428,7 +512,7 @@
 <line x1="662" y1="367" x2="748" y2="367" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
 <rect x="750" y="486" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
 <text x="764" y="510" font-size="14" font-weight="700" fill="#0B0B0C">Rozhovor v Claude</text>
-<text x="764" y="529" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">/first-mate-dev · otázky</text>
+<text x="764" y="529" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace"><tspan data-prikaz>/first-mate-dev</tspan> · otázky</text>
 <text x="968" y="510" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
 <rect x="340" y="486" width="320" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
 <text x="354" y="510" font-size="14" font-weight="700" fill="#0B0B0C">Akcia s potvrdením</text>
@@ -453,7 +537,7 @@
     <div class="cols3">
       <div><div class="lbl">Zdroje dát</div><h4>Kde dáta už sú</h4><ul><li>CRM: Attio, Pipedrive, HubSpot; cenník aj z Excelu alebo Google Sheets</li><li>Web projektu a kampane</li><li>Banka a controlling: úver, tranže, rozpočet, cash-flow</li><li>Stavba: harmonogram a klientske zmeny</li></ul></div>
       <div><div class="lbl">Jadro</div><h4>Pravidlá + AI</h4><ul><li>Signály počíta kód podľa nastavení developera</li><li>AI (Claude) vysvetlí, prečo na čísle záleží</li><li>Navrhne konkrétne kroky s menom a jednotkou</li><li>Rozhodnutia sa dajú zapisovať a vyhodnocovať</li></ul></div>
-      <div><div class="lbl">Kanály a akcie</div><h4>Tam, kde tím pracuje</h4><ul><li>Slack, e-mail; neskôr WhatsApp alebo Teams</li><li>Rozhovor nad dátami v Claude (/first-mate-dev)</li><li>Zápis do CRM, úlohy, koncepty e-mailov kupujúcim</li><li>Vždy s potvrdením človeka</li></ul></div>
+      <div><div class="lbl">Kanály a akcie</div><h4>Tam, kde tím pracuje</h4><ul><li>Slack, e-mail; neskôr WhatsApp alebo Teams</li><li>Rozhovor nad dátami v Claude (<span data-prikaz>/first-mate-dev</span>)</li><li>Zápis do CRM, úlohy, koncepty e-mailov kupujúcim</li><li>Vždy s potvrdením človeka</li></ul></div>
     </div>
 
     <div class="kicker" style="margin-top:56px"><b>Rozvoj</b>&nbsp;&nbsp;Katalóg akcií a učenie</div>
@@ -491,6 +575,17 @@
     <div class="note" style="margin:0" data-typy="realitka">Ukážková realitná kancelária. Všetky osoby, kontakty a nehnuteľnosti sú fiktívne.</div>
     <div class="note" style="margin:0" data-typy="developer">Ukážkový developer. Všetky osoby, kontakty, projekty a jednotky sú fiktívne.</div>
   </footer>
+</div>
+
+<div class="cf-ov hidden" id="cfOv" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+  <div class="cf">
+    <div class="kicker"><b>Potvrdenie</b>&nbsp;&nbsp;pred odoslaním</div>
+    <h2 id="cfTitle">Odoslať?</h2>
+    <ul id="cfList"></ul>
+    <div id="cfWarn"></div>
+    <p class="note" style="margin-top:12px">Náhľad toho, čo odíde, je v záložke Brífing pod týmto oknom.</p>
+    <div class="acts"><button class="btn small ghost" id="cfNo" type="button">Späť</button><button class="btn small" id="cfYes" type="button">Odoslať <span>→</span></button></div>
+  </div>
 </div>
 
 <div class="ds-ov hidden" id="dsOv" data-typy="realitka" role="dialog" aria-modal="true" aria-labelledby="dsTitle">
@@ -561,7 +656,8 @@
 <div class="ds-ov hidden" id="dsOv" data-typy="developer" role="dialog" aria-modal="true" aria-labelledby="dsTitle">
   <div class="ds">
     <button class="close" id="dsClose" type="button" aria-label="Zavrieť">×</button>
-    <div class="kicker"><b>Dáta ukážky</b> · CSV export z Attio (books-mirror), 19. 11. 2026</div>
+    <div class="kicker" data-rezim="demo"><b>Dáta ukážky</b> · CSV export z Attio (books-mirror), 19. 11. 2026</div>
+    <div class="kicker" data-rezim="klient"><b>Dáta ukážky</b> · CSV export z CRM, 19. 11. 2026, financie simulované</div>
     <h2 id="dsTitle">Developer v dátach <small>/ fiktívna spoločnosť</small></h2>
     <p class="sub">Developer s dvoma projektmi v Bratislave a okolí. Dáta sú vymyslené, ale postavené ako skutočné: cenník jednotiek, rezervácie, zmluvy o budúcej zmluve, zálohy, klientske zmeny, dopyty záujemcov, úver s tranžami, rozpočet a cash-flow.</p>
 

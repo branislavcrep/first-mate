@@ -39,6 +39,7 @@ function nacitajKatalog() {
 async function pripravTyp(T) {
   const [katalog, typy] = await nacitajKatalog();
   const TYP = typy.typy.find((t) => t.id === T.id) || { id: T.id, data_dir: `data/${T.id}/` };
+  T.FM.nastavPrikaz((NASTAVENIA.slack || {}).prikaz);
   T.CSV.dir = KOREN + TYP.data_dir;
   T.FM.nastavSignaly(zostavSignaly(T.id, katalog, typy, "signaly"));
   if (T.FIN) T.FIN.nastavSignaly(zostavSignaly(T.id, katalog, typy, "financne_signaly"));
@@ -65,7 +66,21 @@ function zostavMenu(typMenu, klientMenu) {
 // menu podľa typu a nastavení (vypnutá záložka zmizne z menu, jej sekcia ostane v DOM, ale nikdy sa nezobrazí),
 // čísla záložiek 01, 02… podľa poradia v menu, odkaz na iný typ prepína typ (ak to nastavenia dovolia)
 function pripravZnacky(koren, typId, menu) {
-  koren.querySelectorAll("[data-typy]").forEach(e => { if (e.dataset.typy.split(/\s+/).includes(typId)) e.removeAttribute("data-typy"); else e.remove(); });
+  // data-typy podľa typu, data-rezim podľa režimu (demo/klient), data-rozvrh podľa rozvrhu (panel/planovana-uloha)
+  const hodnoty = { typy: typId, rezim: NASTAVENIA.rezim || "demo", rozvrh: NASTAVENIA.rozvrh || "panel" };
+  koren.querySelectorAll("[data-typy],[data-rezim],[data-rozvrh]").forEach(e => {
+    if (!e.isConnected && !koren.contains(e)) return;
+    const ok = Object.entries(hodnoty).every(([k, v]) => e.dataset[k] == null || e.dataset[k].split(/\s+/).includes(v));
+    if (!ok) { e.remove(); return; }
+    Object.keys(hodnoty).forEach(k => e.removeAttribute("data-" + k));
+  });
+  if (NASTAVENIA.nazov && NASTAVENIA.rezim === "klient") {
+    const k = koren.querySelector("#klient"); if (k) k.firstChild.textContent = NASTAVENIA.nazov + " ";
+    document.title = "First Mate · môj panel";
+  }
+  const prikaz = (NASTAVENIA.slack || {}).prikaz;
+  if (prikaz) koren.querySelectorAll("[data-prikaz]").forEach(e => { e.textContent = prikaz; });
+  if (NASTAVENIA.signaly_len_na_citanie) koren.querySelectorAll("#btnAddSig").forEach(e => e.remove());
   const nav = koren.querySelector("#nav");
   if (nav && menu && menu.length) {
     const odkazy = [...nav.querySelectorAll("a")];
@@ -77,6 +92,7 @@ function pripravZnacky(koren, typId, menu) {
       nav.appendChild(a);
     });
   }
+  if (nav) nav.classList.toggle("vela", nav.querySelectorAll("a").length > 7);
   koren.querySelectorAll("#nav a").forEach((a, i) => {
     const n = String(i + 1).padStart(2, "0"), k = koren.querySelector(`#v-${a.dataset.v} > .kicker b`);
     a.querySelector("span").textContent = n; if (k) k.textContent = n;
@@ -98,7 +114,11 @@ async function spusti(typId) {
   koren.dataset.fmTyp = typId;
   const sig = beh.signal;
   let menu = null;
-  try { const [, typy] = await nacitajKatalog(); menu = zostavMenu((typy.typy.find(t => t.id === typId) || {}).menu, (NASTAVENIA.menu || {})[typId]); } catch (e) { }
+  try {
+    const [, typy] = await nacitajKatalog();
+    menu = zostavMenu((typy.typy.find(t => t.id === typId) || {}).menu, (NASTAVENIA.menu || {})[typId]);
+    if (NASTAVENIA.zalozka_tipy) menu.forEach(m => { if (m.id === "tipy") m.zapnute = true; });
+  } catch (e) { }
   if (sig.aborted) return;
   try { if (new URLSearchParams(location.search).get("typ") !== typId && NASTAVENIA.prepinac) history.replaceState(null, "", "?typ=" + typId + location.hash); } catch (e) { }
   pripravZnacky(koren, typId, menu);
@@ -132,7 +152,25 @@ function aplikacia(T, koren, signal) {
   const clone = o => JSON.parse(JSON.stringify(o));
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const hm = ms => FM.localParts(ms).hm;
-  const SERVERS = ["Slack", "Gmail"];
+  // nastavenia klienta: režim, potvrdenie pred odoslaním, signály len na čítanie, e-mail podľa šablón
+  const KLIENT = NASTAVENIA.rezim === "klient";
+  const POTVRDIT = !!NASTAVENIA.potvrdenie_pred_odoslanim;
+  const LEN_CITAT = !!NASTAVENIA.signaly_len_na_citanie;
+  const sablona = { to: "{{prijemcovia}}", subject: "{{predmet}}", body: "{{text}}", htmlBody: "{{html}}" };
+  const EMAIL = { sluzba: "Gmail", server: "Gmail", odoslat: { nastroj: "send_message", argumenty: sablona }, ...(NASTAVENIA.email || {}) };
+  const SERVERS = ["Slack", EMAIL.server];
+  function fillTpl(tpl, vars) {
+    if (Array.isArray(tpl)) return tpl.map(x => fillTpl(x, vars));
+    if (tpl && typeof tpl === "object") { const o = {}; for (const k in tpl) o[k] = fillTpl(tpl[k], vars); return o; }
+    if (typeof tpl === "string") { const m = tpl.match(/^\{\{(\w+)\}\}$/); if (m) return vars[m[1]]; return tpl.replace(/\{\{(\w+)\}\}/g, (_, k) => typeof vars[k] === "string" ? vars[k] : JSON.stringify(vars[k])); }
+    return tpl;
+  }
+  function mailVars(to, subject, text, html) { return { prijemcovia: to, prijemcovia_text: to.join(", "), prijemcovia_graph: to.map(a => ({ emailAddress: { address: a } })), predmet: subject, text, html }; }
+  async function sendMail(to, subject, text, html) {
+    st.lastMail = { to, subject, text, html };
+    if (!EMAIL.odoslat) throw { code: "tool_error", message: "E-mail nie je v tomto paneli nastavený. Report môžete skopírovať." };
+    return call(EMAIL.server, EMAIL.odoslat.nastroj, fillTpl(EMAIL.odoslat.argumenty, mailVars(to, subject, text, html)), { write: true });
+  }
   const DOC_SETTINGS = T.db + "/settings", DOC_LOG = T.db + "/log";
 
   let S = mergeSettings({});
@@ -150,8 +188,17 @@ function aplikacia(T, koren, signal) {
   window.addEventListener("hashchange", route, { signal });
 
   // ---------- nastavenia (db) ----------
+  // predvolené nastavenia typu, u klienta bez adries Books & Mirror (nastavenia: predvolene)
+  function predvolene() {
+    const P = NASTAVENIA.predvolene; if (!P) return FM.DEFAULTS;
+    const D = clone(FM.DEFAULTS);
+    if (P.email != null) D.email = P.email;
+    if (P.finEmail != null && "finEmail" in D) D.finEmail = P.finEmail;
+    if (P.prvy_clen && D.team[0]) Object.assign(D.team[0], P.prvy_clen);
+    return D;
+  }
   function mergeSettings(d) {
-    const D = FM.DEFAULTS, g = d.signals || {};
+    const D = predvolene(), g = d.signals || {};
     return {
       ...clone(D), ...d, signals: T.signaly(D, g),
       schedule: { ...D.schedule, ...(d.schedule || {}) },
@@ -231,7 +278,7 @@ function aplikacia(T, koren, signal) {
   }
   function dataLabel() {
     if (!st.src) return "Dáta: CSV · nenačítané";
-    if (st.src.kind === "vlastne") return `Dáta: vlastné CSV · ${st.src.names.length} ${st.src.names.length === 1 ? "súbor" : (st.src.names.length < 5 ? "súbory" : "súborov")}`;
+    if (st.src.kind === "vlastne") return `Dáta: ${KLIENT ? "z priečinka First Mate" : "vlastné CSV"} · ${st.src.names.length} ${st.src.names.length === 1 ? "súbor" : (st.src.names.length < 5 ? "súbory" : "súborov")}`;
     const ex = st.src.manifest && st.src.manifest.exportAt;
     return `Dáta: CSV · export ${ex ? fmtDmy(ex) : "?"}`;
   }
@@ -287,7 +334,7 @@ function aplikacia(T, koren, signal) {
       if (u.errs.length) { dbMsg("<b>Súbory som nenačítal.</b><br>" + u.errs.join("<br>"), true); return; }
       const prev = st.src; st.src = { kind: "vlastne", texts: u.texts, names: u.names, manifest: u.manifest };
       st.shift = !!u.manifest.ref && st.shift;
-      try { await reloadFromSrc(); const fm = st.data.finMissing || []; dbMsg(`Načítané vlastné dáta: ${u.names.join(", ")}. Sú len v pamäti tohto okna, nikam sa neukladajú; po obnovení stránky sa vráti ukážka.` + (fm.length ? ` Finančné súbory chýbajú (${fm.join(", ")}), sekcia Financie a finančný brífing budú ${fm.length === optional_count() ? "prázdne" : "neúplné"}.` : "")); }
+      try { await reloadFromSrc(); const fm = st.data.finMissing || []; dbMsg((KLIENT ? `Načítané dáta z priečinka First Mate: ${u.names.join(", ")}. Sú len v pamäti tohto okna, nikam sa neukladajú; po obnovení stránky sa vrátia východiskové dáta z balíka.` : `Načítané vlastné dáta: ${u.names.join(", ")}. Sú len v pamäti tohto okna, nikam sa neukladajú; po obnovení stránky sa vráti ukážka.`) + (fm.length ? ` Finančné súbory chýbajú (${fm.join(", ")}), sekcia Financie a finančný brífing budú ${fm.length === optional_count() ? "prázdne" : "neúplné"}.` : "")); }
       catch (err) { st.src = prev; dbMsg("Súbory sa nepodarilo spracovať: " + esc(err.message || err), true); await reloadFromSrc(); }
     });
     $("#dbReset").addEventListener("click", async () => { st.src = null; st.shift = true; dbMsg(""); await loadData(null); updateSignalNow(); });
@@ -410,7 +457,7 @@ function aplikacia(T, koren, signal) {
     const msgEl = box.querySelector("[id$=Msg]");
     if (msgEl) msgEl.innerHTML = "";
     let active = -1;
-    const LBL = { wait: "čaká", active: "beží", done: "hotovo", err: "chyba", skip: "použité", warn: "náhradný text" };
+    const LBL = { wait: "čaká", active: "beží", done: "hotovo", err: "chyba", skip: "použité", warn: "náhradný text", cancel: "zrušené" };
     const R = {
       set(i, status, detail) {
         const li = list.children[i]; if (!li) return;
@@ -471,6 +518,7 @@ function aplikacia(T, koren, signal) {
     const R = makeRun($("#run"), $("#steps"), $("#runTitle"), "Brífing → Slack", [...BRIEF_STEPS, "Odoslať do Slacku"]);
     try {
       await ensureBrief(false, R);
+      if (POTVRDIT && !await confirmSend("Odoslať brífing do Slacku?", [["Kanál", FM.SLACK_NAME], ["Obsah", `${st.texts.nadpis} / ${st.texts.podnadpis}`], ["Text", st.texts.ai ? "napísala AI" : "pravidlový text"], ["Dáta", dataLabel()]])) { R.set(3, "cancel", "Zrušené, nič neodišlo"); R.msg("Nič neodišlo. Náhľad je nižšie."); return; }
       R.set(3, "active", FM.SLACK_NAME);
       const res = await call("Slack", "slack_send_message", { channel_id: FM.SLACK_CHANNEL, message: FM.slackText(st.brief, st.texts) }, { write: true });
       R.set(3, "done", `Odoslané do ${FM.SLACK_NAME} o ${hm(Date.now())}`);
@@ -493,13 +541,14 @@ function aplikacia(T, koren, signal) {
     const R = makeRun($("#run"), $("#steps"), $("#runTitle"), "Brífing → e-mail", [...BRIEF_STEPS, "Odoslať e-mail"]);
     try {
       await ensureBrief(false, R);
+      if (POTVRDIT && !await confirmSend("Odoslať brífing e-mailom?", [["Komu", to], ["Cez", EMAIL.sluzba], ["Predmet", FM.emailSubject(st.brief, st.texts)], ["Text", st.texts.ai ? "napísala AI" : "pravidlový text"], ["Dáta", dataLabel()]])) { R.set(3, "cancel", "Zrušené, nič neodišlo"); R.msg("Nič neodišlo. Náhľad je nižšie."); return; }
       R.set(3, "active", to);
       const b = st.brief, t = st.texts;
-      await call("Gmail", "send_message", { to: [to], subject: FM.emailSubject(b, t), body: FM.emailText(b, t), htmlBody: FM.emailHtml(b, t) }, { write: true });
+      await sendMail([to], FM.emailSubject(b, t), FM.emailText(b, t), FM.emailHtml(b, t));
       R.set(3, "done", `Odoslané na ${to} o ${hm(Date.now())}`);
       R.msg(`E-mail odišiel na <b>${esc(to)}</b>. Predmet: ${esc(FM.emailSubject(b, t))}`);
       addLog("E-mail · " + to, t.podnadpis);
-    } catch (e) { R.fail(errText(e, R.active === 3 ? "Gmail" : "Dáta", R.active === 3)); }
+    } catch (e) { R.fail(errText(e, R.active === 3 ? EMAIL.sluzba : "Dáta", R.active === 3)); if (R.active === 3) offerDraft(); }
     finally { lock(false); }
   }
   async function recalc() {
@@ -562,14 +611,18 @@ function aplikacia(T, koren, signal) {
     const R = makeRun($("#run"), $("#steps"), $("#runTitle"), "Finančný brífing → e-mail", [...FIN_STEPS, "Odoslať e-mail"]);
     try {
       await ensureFin(false, R);
+      if (POTVRDIT) {
+        st.pv = "fin"; $$(".tabs2 button").forEach(x => x.classList.toggle("on", x.dataset.pv === "fin")); renderPreview();
+        if (!await confirmSend("Odoslať finančný brífing?", [["Komu", to], ["Cez", EMAIL.sluzba], ["Predmet", FIN.emailSubject(st.fin, st.finTexts, st.finDay)], ["Text", st.finTexts.ai ? "napísala AI" : "pravidlový text"], ["Dáta", dataLabel()]])) { R.set(3, "cancel", "Zrušené, nič neodišlo"); R.msg("Nič neodišlo. Náhľad je nižšie."); return; }
+      }
       R.set(3, "active", to);
       const f = st.fin, t = st.finTexts, day = st.finDay;
-      await call("Gmail", "send_message", { to: [to], subject: FIN.emailSubject(f, t, day), body: FIN.emailText(f, t, day), htmlBody: FIN.emailHtml(f, t, day) }, { write: true });
+      await sendMail([to], FIN.emailSubject(f, t, day), FIN.emailText(f, t, day), FIN.emailHtml(f, t, day));
       R.set(3, "done", `Odoslané na ${to} o ${hm(Date.now())}`);
       R.msg(`Finančný brífing odišiel na <b>${esc(to)}</b>. Predmet: ${esc(FIN.emailSubject(f, t, day))}`);
       st.pv = "fin"; $$(".tabs2 button").forEach(x => x.classList.toggle("on", x.dataset.pv === "fin")); renderPreview();
       addLog("Financie · " + to, t.podnadpis);
-    } catch (e) { R.fail(errText(e, R.active === 3 ? "Gmail" : "Dáta", R.active === 3)); }
+    } catch (e) { R.fail(errText(e, R.active === 3 ? EMAIL.sluzba : "Dáta", R.active === 3)); if (R.active === 3) offerDraft(); }
     finally { lock(false); }
   }
 
@@ -708,26 +761,28 @@ function aplikacia(T, koren, signal) {
         try { await ensureFin(false, NOR); } catch (e) { finErr = e; }
         R.set(2, "done", `Brífingy pripravené${finErr ? " (finančný sa nedá zostaviť)" : ""}`);
       }
+      const SC = { cely: "celý brífing", financie: "finančný brífing", svoje: "osobný brífing" };
+      if (POTVRDIT && !await confirmSend(`Odoslať ${ok.length} ${FM.pl ? FM.pl(ok.length, "e-mail", "e-maily", "e-mailov") : "e-mailov"} tímu?`, ok.map(r => [r.meno || "Bez mena", `${r.email} · ${SC[r.scope]}`]).concat([["Cez", EMAIL.sluzba], ["Dáta", dataLabel()]]))) { ok.forEach((r, i) => R.set(BRIEF_STEPS.length + i, "cancel", "Zrušené")); R.msg("Nič neodišlo."); return; }
       let sent = 0;
       for (let i = 0; i < ok.length; i++) {
         const r = ok[i], idx = BRIEF_STEPS.length + i;
         R.set(idx, "active", r.email);
         try {
           if (r.scope === "cely") {
-            await call("Gmail", "send_message", { to: [r.email], subject: FM.emailSubject(b, t), body: FM.emailText(b, t), htmlBody: FM.emailHtml(b, t) }, { write: true });
+            await sendMail([r.email], FM.emailSubject(b, t), FM.emailText(b, t), FM.emailHtml(b, t));
           } else if (r.scope === "financie") {
             if (finErr) throw finErr;
             const f = st.fin, ft = st.finTexts, day = st.finDay;
-            await call("Gmail", "send_message", { to: [r.email], subject: FIN.emailSubject(f, ft, day), body: FIN.emailText(f, ft, day), htmlBody: FIN.emailHtml(f, ft, day) }, { write: true });
+            await sendMail([r.email], FIN.emailSubject(f, ft, day), FIN.emailText(f, ft, day), FIN.emailHtml(f, ft, day));
           } else {
             const p0 = personal[r[T.osoba]];
             const fb = FM.personalFallback(b, r[T.osoba]);
             const p = (p0 && typeof p0.veta === "string" && Array.isArray(p0.kroky) && p0.kroky.length) ? { veta: p0.veta, kroky: p0.kroky.slice(0, 3).map(String) } : fb;
             const pe = FM.personalEmail(b, r, p);
-            await call("Gmail", "send_message", { to: [r.email], subject: pe.subject, body: pe.text, htmlBody: pe.html }, { write: true });
+            await sendMail([r.email], pe.subject, pe.text, pe.html);
           }
           sent++; R.set(idx, "done", `${r.email} · ${hm(Date.now())}`);
-        } catch (e) { R.set(idx, "err", errText(e, "Gmail", true)); }
+        } catch (e) { R.set(idx, "err", errText(e, EMAIL.sluzba, true)); }
       }
       R.msg(`Odoslané ${sent} z ${ok.length} e-mailov.` + (rc.length > ok.length ? ` ${rc.length - ok.length} adries som preskočil (neplatné alebo fiktívne).` : ""), sent < ok.length);
       if (sent) addLog(`Tím · ${sent} ${sent === 1 ? "e-mail" : (sent < 5 ? "e-maily" : "e-mailov")}`, t.podnadpis);
@@ -804,7 +859,14 @@ function aplikacia(T, koren, signal) {
       <div class="sg-acts"><button class="link" data-edit="${esc(r.id)}" type="button">Upraviť</button><button class="link" data-del="${esc(r.id)}" type="button">Odstrániť</button><span class="note" style="margin:0">${r.uroven === "red" ? "Konať dnes" : "Sledovať"}</span></div>
       <div class="now"><span class="lbl">Dnes</span><span class="v" id="now-c_${esc(r.id)}">–</span><span class="note" id="nowd-c_${esc(r.id)}" style="margin:0"></span></div></div></div>`).join("") +
       `<button class="sg sg-add" id="sgAdd" type="button"><span class="plus">+</span><b>Pridať signál</b><span class="note">Vlastné pravidlo nad jednotkami, dopytmi alebo projektmi. Opíšte ho slovami a AI navrhne podmienky.</span></button>`);
+    if (LEN_CITAT) lockSignals();
     updateSignalNow();
+  }
+  // signály len na čítanie (nastavenie signaly_len_na_citanie): hranice a zapnutie sa v paneli nemenia
+  function lockSignals() {
+    $$("#sig input, #fsig input, #period").forEach(i => { i.disabled = true; });
+    $$("#sig .toggle, #fsig .toggle").forEach(t => t.classList.add("ro"));
+    $$("#sgAdd, #sig [data-edit], #sig [data-del]").forEach(x => x.remove());
   }
   function updateSignalNow() {
     if (!$("#now-s1")) return;
@@ -848,7 +910,7 @@ function aplikacia(T, koren, signal) {
     });
     const per = $("#period");
     if (per) per.addEventListener("change", e => { S.signals.period = +e.target.value; updateSignalNow(); save(); });
-    if (DEV) $("#btnAddSig").addEventListener("click", () => openCustom(null));
+    if (DEV && $("#btnAddSig")) $("#btnAddSig").addEventListener("click", () => openCustom(null));
     if (DEV) $("#sigFilter").addEventListener("click", e => {
       const b = e.target.closest("[data-sf]"); if (!b) return;
       const v = b.dataset.sf;
@@ -1036,6 +1098,7 @@ function aplikacia(T, koren, signal) {
     return null;
   }
   function renderSchedule() {
+    if (!$("#days")) return;
     $("#days").innerHTML = DAYS.map(([n, l]) => `<button type="button" data-d="${n}" class="${S.schedule.days.includes(n) ? "on" : ""}">${l}</button>`).join("");
     $("#time").value = S.schedule.time;
     $("#chSlack").checked = !!S.schedule.slack; $("#chEmail").checked = !!S.schedule.email; $("#chTeam").checked = !!S.schedule.team;
@@ -1049,13 +1112,14 @@ function aplikacia(T, koren, signal) {
       `<div class="note">${nx && ch.length ? `Najbližší termín podľa nastavenia: <b>${esc(nx)}</b> · ${esc(ch.join(", "))}` : "Vyberte aspoň jeden deň a kanál."}</div>`;
   }
   function bindSchedule() {
+    if (!$("#days")) return;
     $("#days").addEventListener("click", e => { const d = e.target.dataset.d; if (d == null) return; const n = +d; const a = S.schedule.days; const i = a.indexOf(n); i >= 0 ? a.splice(i, 1) : a.push(n); renderSchedule(); save(); });
     $("#time").addEventListener("change", e => { if (/^\d\d:\d\d$/.test(e.target.value)) { S.schedule.time = e.target.value; renderSchedule(); save(); } });
     [["#chSlack", "slack"], ["#chEmail", "email"], ["#chTeam", "team"], ...(DEV ? [["#chFin", "fin"]] : [])].forEach(([id, k]) => $(id).addEventListener("change", e => { S.schedule[k] = e.target.checked; renderSchedule(); save(); }));
   }
   const CONN_ROWS = [
     { s: "Slack", use: "Doručenie do " + FM.SLACK_NAME, check: () => call("Slack", "slack_read_channel", { channel_id: FM.SLACK_CHANNEL, limit: 1 }) },
-    { s: "Gmail", use: "Doručenie e-mailov", check: null },
+    { s: EMAIL.server, use: NASTAVENIA.email ? `Doručenie e-mailov (${EMAIL.sluzba})` : "Doručenie e-mailov", check: null },
     { s: "Claude AI", use: "Interpretácia a návrh krokov", check: null }
   ];
   function renderConnTable() {
@@ -1098,6 +1162,144 @@ function aplikacia(T, koren, signal) {
     b.innerHTML = st.log.map(l => { const lp = FM.localParts(l.at); return `<tr><td class="mono" style="font-size:13px">${FM.dm(lp.date)} ${lp.hm}</td><td>${esc(l.kanal)}</td><td>${esc(l.sprava)}</td></tr>`; }).join("");
   }
 
+  // ---------- potvrdenie, koncept, kopírovanie ----------
+  function confirmSend(title, rows) {
+    return new Promise(res => {
+      const ov = $("#cfOv"); $("#cfTitle").textContent = title;
+      $("#cfList").innerHTML = rows.map(([k, v]) => `<li><span class="lbl">${esc(k)}</span><span>${esc(v)}</span></li>`).join("");
+      const warn = st.src && st.src.kind !== "vlastne" ? "Posielate východiskové dáta z balíka. Zmeny, ktoré First Mate zapísal do priečinka, v nich nie sú. Ak chcete aktuálny stav, zrušte a nahrajte dáta z priečinka First Mate." : "";
+      $("#cfWarn").innerHTML = warn ? `<div class="msg warn">${esc(warn)}</div>` : "";
+      ov.classList.remove("hidden"); $("#cfYes").focus();
+      const done = v => { ov.classList.add("hidden"); $("#cfYes").onclick = $("#cfNo").onclick = ov.onclick = null; document.removeEventListener("keydown", key); res(v); };
+      const key = e => { if (e.key === "Escape") done(false); };
+      $("#cfYes").onclick = () => done(true); $("#cfNo").onclick = () => done(false);
+      ov.onclick = e => { if (e.target === ov) done(false); };
+      document.addEventListener("keydown", key, { signal });
+    });
+  }
+  async function copyText(text, btn) {
+    const old = btn.textContent;
+    try { await navigator.clipboard.writeText(text); btn.textContent = "Skopírované"; }
+    catch (e) { const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e2) { } document.body.removeChild(ta); btn.textContent = ok ? "Skopírované" : "Označte a Ctrl+C"; }
+    setTimeout(() => { btn.textContent = old; }, 1800);
+  }
+  function offerDraft() {
+    const m = st.lastMail; if (!m || !NASTAVENIA.email) return;
+    const em = EMAIL, canDraft = !!(em && em.koncept && em.koncept.nastroj);
+    const box = document.createElement("div");
+    box.innerHTML = `<div class="msg warn"><b>E-mail neodišiel.</b> ${canDraft ? "Môžete uložiť koncept do svojej pošty a odoslať ho sami, alebo " : "Môžete "}skopírovať text a vložiť ho do nového e-mailu (adresy: ${esc(m.to.join(", "))}).
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">${canDraft ? `<button class="btn small" data-a="draft" type="button">Uložiť ako koncept</button>` : ""}<button class="btn small ghost" data-a="text" type="button">Kopírovať text</button><button class="btn small ghost" data-a="subj" type="button">Kopírovať predmet</button></div><div data-a="msg"></div></div>`;
+    const host = $("#runMsg"); if (host) host.appendChild(box);
+    box.addEventListener("click", async e => {
+      const a = e.target.dataset && e.target.dataset.a; if (!a) return;
+      if (a === "text") return copyText(m.text, e.target);
+      if (a === "subj") return copyText(m.subject, e.target);
+      if (a === "draft") {
+        e.target.disabled = true; const out = box.querySelector('[data-a="msg"]');
+        try { await call(em.server, em.koncept.nastroj, fillTpl(em.koncept.argumenty, mailVars(m.to, m.subject, m.text, m.html)), { write: true }); out.innerHTML = `<div class="msg">Koncept je uložený vo vašej pošte. Odošlite ho odtiaľ.</div>`; addLog("Koncept e-mailu · " + m.to.join(", "), m.subject); }
+        catch (err) { out.innerHTML = `<div class="msg warn">${esc(errText(err, em.sluzba, true))}</div>`; e.target.disabled = false; }
+      }
+    });
+  }
+
+  // ---------- 08 čo vyskúšať (tipy a checklist) ----------
+  const TP = { tips: null, check: {}, store: "local" };
+  const TLS = "first-mate-panel:checklist" + (T.id === "developer" ? "" : ":" + T.id), DOC_TIPS = T.db + "/checklist";
+  const tlsGet = () => { try { const v = localStorage.getItem(TLS); return v ? JSON.parse(v) : null; } catch (e) { return null; } };
+  const tlsSet = v => { try { localStorage.setItem(TLS, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  const lvlName = id => (TP.tips.urovne.find(u => u.id === id) || {}).nazov || id;
+  const temaName = id => (TP.tips.temy.find(u => u.id === id) || {}).nazov || id;
+  const isDone = id => !!(TP.check[id] && TP.check[id].done);
+  function tipCard(t, i) {
+    const c = TP.check[t.id] || {};
+    return `<article class="t-tip ${c.done ? "done" : ""}">
+      <div class="t-top"><h4>${esc(t.nazov)}</h4><span class="lbl">${String(i + 1).padStart(2, "0")}</span></div>
+      <div class="t-tags"><span class="t-tag">${esc(temaName(t.tema))}</span>${t.meni_data ? `<span class="t-tag write">Mení dáta · vyžaduje potvrdenie</span>` : ""}</div>
+      <div class="t-q"><code>${esc(t.otazka)}</code><button type="button" data-copy="${esc(t.id)}">Kopírovať</button></div>
+      <div class="t-where"><b>Kde</b>${esc(TP.tips.miesta[t.kde] || t.kde)}</div>
+      <p class="t-what">${esc(t.co_urobi)}</p>
+      <div class="t-foot"><label class="t-chk" for="ck-${esc(t.id)}"><input type="checkbox" id="ck-${esc(t.id)}" data-done="${esc(t.id)}" ${c.done ? "checked" : ""}> Vyskúšané</label><span class="saved">${c.done && c.at ? esc(FM.dm(FM.localParts(c.at).date)) : ""}</span></div>
+      <label class="lbl" for="nt-${esc(t.id)}">Poznámka (nepovinná)</label>
+      <textarea id="nt-${esc(t.id)}" data-note="${esc(t.id)}" rows="2" placeholder="Čo vám First Mate odpovedal, čo chcete vyskúšať inak…">${esc(c.note || "")}</textarea>
+    </article>`;
+  }
+  function renderTips() {
+    if (!TP.tips) return;
+    const TT = TP.tips.tipy, n = TT.length, done = TT.filter(t => isDone(t.id)).length;
+    $("#tipCount").textContent = `${n} tipov`;
+    $("#progV").innerHTML = `${done} <small>z ${n}</small>`;
+    $("#progBar").style.width = (n ? done / n * 100 : 0) + "%";
+    $("#progLvls").innerHTML = TP.tips.urovne.map(u => { const all = TT.filter(t => t.uroven === u.id); return `<span>${esc(u.nazov)} <b>${all.filter(t => isDone(t.id)).length}/${all.length}</b></span>`; }).join("");
+    const pool = TT.filter(t => !isDone(t.id)), day = Math.floor(Date.now() / 864e5), tod = pool.length ? pool[day % pool.length] : null;
+    $("#tod").innerHTML = tod ? `<div class="kicker"><b>Tip dňa</b>&nbsp;&nbsp;${esc(lvlName(tod.uroven))} · ${esc(temaName(tod.tema))}</div><h3>${esc(tod.nazov)}</h3>
+      <div class="t-q"><code>${esc(tod.otazka)}</code><button type="button" data-copy="${esc(tod.id)}">Kopírovať</button></div>
+      <p class="t-what" style="margin-top:10px"><b class="lbl" style="margin-right:6px">Kde</b>${esc(TP.tips.miesta[tod.kde] || tod.kde)} · ${esc(tod.co_urobi)}</p>`
+      : `<div class="kicker"><b>Hotovo</b></div><h3>Vyskúšali ste všetky tipy.</h3><p class="t-what">Nové tipy pribudnú s ďalšou verziou First Mate.</p>`;
+    const fs = $("#fStav").value, fu = $("#fUroven").value, ft = $("#fTema").value;
+    const vis = TT.filter(t => (fs === "vsetky" || (fs === "ano") === isDone(t.id)) && (!fu || t.uroven === fu) && (!ft || t.tema === ft));
+    $("#fInfo").textContent = vis.length === n ? "" : `Zobrazených ${vis.length} z ${n}.`;
+    let html = "";
+    TP.tips.urovne.forEach(u => {
+      const list = vis.filter(t => t.uroven === u.id); if (!list.length) return;
+      const all = TT.filter(t => t.uroven === u.id);
+      html += `<div class="t-lvlh"><h3>${esc(u.nazov)}</h3><span class="lbl">${all.filter(t => isDone(t.id)).length} z ${all.length} vyskúšaných</span></div><div class="t-tips">${list.map(t => tipCard(t, TT.indexOf(t))).join("")}</div>`;
+    });
+    $("#tipList").innerHTML = html || `<p class="note">Filtru nevyhovuje žiadny tip.</p>`;
+  }
+  let tipTimer = null;
+  function saveTips() {
+    clearTimeout(tipTimer);
+    tipTimer = setTimeout(async () => {
+      tlsSet({ items: TP.check });
+      if (db) { try { await db.doc(DOC_TIPS).set(clone({ items: TP.check })); } catch (e) { $("#storeInfo").textContent = "Stav sa nepodarilo uložiť do panela, ostáva len v tomto prehliadači."; } }
+    }, 600);
+  }
+  function tipStoreSentence() {
+    $("#storeInfo").textContent = TP.store === "db"
+      ? "Odškrtnuté tipy a poznámky sa ukladajú v tomto paneli vo vašom účte Claude, uvidíte ich aj na inom počítači."
+      : "Odškrtnuté tipy a poznámky sa ukladajú len v tomto prehliadači na tomto počítači. Na inom zariadení ich neuvidíte.";
+  }
+  async function initTips() {
+    if (!$("#v-tipy") || !$('#nav a[data-v="tipy"]')) return;
+    // tipy z katalógu use casov (druh tip) pre tento typ, v pôvodnom poradí
+    try {
+      const [katalog] = await nacitajKatalog();
+      const tipy = katalog.usecases.filter(u => u.druh === "tip" && (u.typy || []).includes(T.id));
+      TP.tips = { urovne: katalog.urovne, temy: katalog.temy, miesta: katalog.miesta, tipy };
+    } catch (e) { $("#tipList").innerHTML = `<div class="msg warn">Tipy sa nepodarilo načítať (katalóg use casov).</div>`; return; }
+    $("#fUroven").innerHTML += TP.tips.urovne.map(u => `<option value="${esc(u.id)}">${esc(u.nazov)}</option>`).join("");
+    $("#fTema").innerHTML += TP.tips.temy.map(u => `<option value="${esc(u.id)}">${esc(u.nazov)}</option>`).join("");
+    TP.check = (tlsGet() || {}).items || {}; renderTips(); tipStoreSentence();
+    const onCopy = e => { const b = e.target.closest("[data-copy]"); if (!b) return; const t = TP.tips.tipy.find(x => x.id === b.dataset.copy); if (t) copyText(t.otazka, b); };
+    $("#tipList").addEventListener("click", onCopy); $("#tod").addEventListener("click", onCopy);
+    $("#tipList").addEventListener("change", e => { const id = e.target.dataset.done; if (!id) return; TP.check[id] = { ...(TP.check[id] || {}), done: e.target.checked, at: e.target.checked ? Date.now() : null }; saveTips(); renderTips(); });
+    $("#tipList").addEventListener("input", e => { const id = e.target.dataset.note; if (!id) return; TP.check[id] = { ...(TP.check[id] || {}), note: e.target.value.slice(0, 2000) }; saveTips(); });
+    ["#fStav", "#fUroven", "#fTema"].forEach(s => $(s).addEventListener("change", renderTips));
+  }
+  async function loadTipsState() {
+    if (!TP.tips) return;
+    if (!db) { tipStoreSentence(); return; }
+    TP.store = "db";
+    try { const s = await withTimeout(db.doc(DOC_TIPS).get(), 10000); if (s.exists) { TP.check = { ...TP.check, ...((s.data() || {}).items || {}) }; renderTips(); } }
+    catch (e) { TP.store = "local"; }
+    tipStoreSentence();
+  }
+  // ---------- štart ----------
+  function renderAll() {
+    const lp = FM.localParts(Date.now());
+    $("#today").textContent = `${FM.WDL[lp.wd]} ${FM.dm(lp.date)} ${lp.date.slice(0, 4)}`;
+    $("#emailTo").value = S.email; $("#finTo").value = S.finEmail;
+    renderTeam(); renderSignals(); renderSchedule(); renderConn(); renderLog(); renderProjects();
+  }
+  function bind() {
+    $("#btnSlack").addEventListener("click", sendSlack);
+    $("#btnEmail").addEventListener("click", sendEmail);
+    $("#emailTo").addEventListener("input", e => { e.target.classList.remove("err"); $("#emailErr").classList.add("hidden"); });
+    $("#btnRecalc").addEventListener("click", recalc);
+    $$(".tabs2 button").forEach(b => b.addEventListener("click", () => { st.pv = b.dataset.pv; $$(".tabs2 button").forEach(x => x.classList.toggle("on", x === b)); renderPreview(); }));
+    bindDataBar(); bindProjects(); bindFinance(); bindTeam(); bindSignals(); bindSources(); bindCustom(); bindSchedule(); bindConn();
+  }
+
   // ---------- štart ----------
   function renderAll() {
     const lp = FM.localParts(Date.now());
@@ -1116,7 +1318,7 @@ function aplikacia(T, koren, signal) {
   async function boot() {
     TYP = await pripravTyp(T);
     if (TYP.farba) koren.style.setProperty("--typ", TYP.farba);
-    route(); bind(); renderAll();
+    route(); bind(); renderAll(); initTips();
     try { lock(true); await loadData(null); updateSignalNow(); $(DEV ? "#btnLoadProj" : "#btnLoad").textContent = `Načítané ${hm(st.dataAt)} · obnoviť`; }
     catch (e) { $(DEV ? "#projInfo" : "#sigSaved").textContent = errText(e, "Dáta"); }
     finally { lock(false); }
@@ -1125,7 +1327,7 @@ function aplikacia(T, koren, signal) {
     const [d, m, s] = await Promise.all([C.use("db"), C.use("mcp"), C.use("sample")].map(p => Promise.resolve(p).catch(() => null)));
     db = d; mcp = m; sample = s; st.capsReady = true;
     if (db) await loadSettings();
-    renderAll();
+    renderAll(); await loadTipsState();
     await refreshConn();
     if (st.data) { if (DEV) renderProjects(); updateSignalNow(); }
   }

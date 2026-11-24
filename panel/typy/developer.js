@@ -5,7 +5,9 @@ const FM = (() => {
   const OBJ = { projekty: "dev_projekty", jednotky: "dev_jednotky", dopyty: "dev_dopyty" };
   const SLACK_CHANNEL = "C0CDY6XG8MR";
   const SLACK_NAME = "#first-mate-developer";
-  const CMD = "/first-mate-dev";
+  // príkaz v Claude pre otázky k brífingu; klient ho môže mať iný (nastavenia: slack.prikaz)
+  let CMD = "/first-mate-dev";
+  const nastavPrikaz = c => { CMD = c || "/first-mate-dev"; };
   const PREDAJCOVIA = ["Martina Vargová", "Michal Hrnčiar", "Zuzana Polakovičová"];
   const SOLD = ["Zmluva o budúcej", "Kúpna zmluva", "Odovzdaná"];
   const OPEN = ["Nový – bez reakcie", "Kontaktovaný", "Obhliadka dohodnutá", "Obhliadka prebehla"];
@@ -484,7 +486,7 @@ Popis od používateľa: ${popis}`;
   let SIGNALY = [];
   function nastavSignaly(z) { SIGNALY = z; }
 
-  return { nastavSignaly, TPL, joinSk, daysBetween, WD, WDL, dm, dmy, KEYS, SLACK_CHANNEL, SLACK_NAME, CMD, PREDAJCOVIA, DEFAULTS, normalize, compute, projectStats, fallbackTexts, aiPrompt, mergeTexts, personalPrompt, personalFallback, personalFacts, emailHtml, emailPreview, emailSubject, emailText, slackText, personalEmail, validEmail, esc, fmt1, fmtInt, fmtPct, eur, localParts, short, pl, SOURCES, FIELDS, OPS, NOVAL, fieldDef, describeRule, validRule, rulePrompt, distinctValues };
+  return { nastavSignaly, nastavPrikaz, get CMD() { return CMD; }, TPL, joinSk, daysBetween, WD, WDL, dm, dmy, KEYS, SLACK_CHANNEL, SLACK_NAME, PREDAJCOVIA, DEFAULTS, normalize, compute, projectStats, fallbackTexts, aiPrompt, mergeTexts, personalPrompt, personalFallback, personalFacts, emailHtml, emailPreview, emailSubject, emailText, slackText, personalEmail, validEmail, esc, fmt1, fmtInt, fmtPct, eur, localParts, short, pl, SOURCES, FIELDS, OPS, NOVAL, fieldDef, describeRule, validRule, rulePrompt, distinctValues };
 })();
 
 // definícia CSV súborov (spec, povinné a voliteľné súbory) a prevod na dáta pre FM

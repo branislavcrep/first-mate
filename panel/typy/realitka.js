@@ -6,6 +6,9 @@ const FM = (() => {
   const OBHLIADKY = "d037b930-16c2-4304-9f51-70b89bbd1070";
   const SLACK_CHANNEL = "C0CDGG5MY0Y";
   const SLACK_NAME = "#first-mate-demo";
+  // príkaz v Claude pre otázky k brífingu; klient ho môže mať iný (nastavenia: slack.prikaz)
+  let CMD = "/first-mate";
+  const nastavPrikaz = c => { CMD = c || "/first-mate"; };
   const MAKLERI = ["Katarína Bartošová", "Tomáš Kováč", "Lucia Hudáková", "Peter Molnár", "Simona Lukáčová", "Juraj Šimko"];
   const H = 3600e3, D = 24 * H;
   const TZ = "Europe/Bratislava";
@@ -262,7 +265,7 @@ ${JSON.stringify(per)}`;
       b.s4.items.map(x => `<tr>${td(esc(x.kod + " " + x.lokalita))}${td(esc(short(x.makler)))}${td(esc(x.koniec).replace(" ", "&nbsp;"), { right: true, blue: x.rizikova })}</tr>`).join("") + `</table>` +
       (b.s4.items.some(x => x.rizikova) ? `<p style="font-family:${F.sans};font-size:13px;line-height:20px;color:${C.muted};margin:12px 0 0 0;">Modrou: za posledných 14 dní bez obhliadky aj bez dopytu.</p>` : ""));
     h += sec(secLabel(N(), "Čo urobiť dnes") + secHead(t.kroky.length === 1 ? "Jeden krok" : (t.kroky.length === 2 ? "Dva kroky" : "Tri kroky"), b.dayLabel) + stepsTable(t.kroky.map(nb)) +
-      para(`Chcete vedieť viac alebo niečo rovno vykonať? Otvorte Claude a napíšte <span style="font-family:${F.mono};font-size:14px;color:${C.blue};white-space:nowrap;">/first-mate</span>.`, "margin:24px 0 0 0;"), true);
+      para(`Chcete vedieť viac alebo niečo rovno vykonať? Otvorte Claude a napíšte <span style="font-family:${F.mono};font-size:14px;color:${C.blue};white-space:nowrap;">${CMD}</span>.`, "margin:24px 0 0 0;"), true);
     return h;
   }
   function emailHtml(b, t) { return shell(`First Mate · ranný brífing · ${b.dayLabel}`, t.zistenie, briefInner(b, t), FOOT); }
@@ -274,7 +277,7 @@ ${JSON.stringify(per)}`;
     if (b.s2.on) L.push(`- Priemerný čas prvej reakcie: ${b.s2.mean == null ? "bez dát" : fmt1(b.s2.mean) + " h"}${b.s2.prev != null ? ` (predtým ${fmt1(b.s2.prev)} h)` : ""}. ${t.s2}`);
     if (b.s3.on) L.push(`- Ponuky s ${b.s3.minViews}+ zobrazeniami a bez obhliadky za ${b.s3.days} dní: ${b.s3.count}. ${t.s3}`);
     if (b.s4.on) L.push(`- Exkluzivity končiace do ${b.s4.days} dní: ${b.s4.count} (pred týždňom ${b.s4.prev}). ${t.s4}`);
-    L.push("", "ČO UROBIŤ DNES", ...t.kroky.map((k, i) => `${i + 1}. ${k}`), "", "Otázky a pokyny: otvorte Claude a napíšte /first-mate.", "", FOOT);
+    L.push("", "ČO UROBIŤ DNES", ...t.kroky.map((k, i) => `${i + 1}. ${k}`), "", `Otázky a pokyny: otvorte Claude a napíšte ${CMD}.`, "", FOOT);
     return L.join("\n");
   }
   function slackText(b, t) {
@@ -285,7 +288,7 @@ ${JSON.stringify(per)}`;
     if (b.s2.on) L.push(`**${++i}. Priemerný čas prvej reakcie: ${b.s2.mean == null ? "bez dát" : fmt1(b.s2.mean) + " h"}**${b.s2.prev != null ? ` (predtým ${fmt1(b.s2.prev)} h)` : ""} ${em(b.s2.level)}`, `→ ${t.s2}`, "");
     if (b.s3.on) L.push(`**${++i}. Ponuky s ${b.s3.minViews}+ zobrazeniami a bez obhliadky za ${b.s3.days} dní: ${b.s3.count}** ${em(b.s3.level)}`, `→ ${t.s3}`, "");
     if (b.s4.on) L.push(`**${++i}. Exkluzivity končiace do ${b.s4.days} dní: ${b.s4.count}** (pred týždňom ${b.s4.prev}) ${em(b.s4.level)}`, `→ ${t.s4}`, "");
-    L.push("**Čo urobiť dnes**", ...t.kroky.map((k, j) => `${j + 1}. ${k}`), "_Napíšte do vlákna, čo treba urobiť, a pokračujte v Claude príkazom /first-mate._");
+    L.push("**Čo urobiť dnes**", ...t.kroky.map((k, j) => `${j + 1}. ${k}`), `_Napíšte do vlákna, čo treba urobiť, a pokračujte v Claude príkazom ${CMD}._`);
     return L.join("\n");
   }
   function personalEmail(b, member, p) {
@@ -316,7 +319,7 @@ ${JSON.stringify(per)}`;
   let SIGNALY = [];
   function nastavSignaly(z) { SIGNALY = z; }
 
-  return { nastavSignaly, WD, WDL, dm, DOPYTY, OBHLIADKY, SLACK_CHANNEL, SLACK_NAME, MAKLERI, DEFAULTS, normalize, compute, fallbackTexts, aiPrompt, mergeTexts, personalPrompt, personalFallback, personalFacts, emailHtml, emailPreview, emailSubject, emailText, slackText, personalEmail, validEmail, esc, fmt1, localParts, short };
+  return { nastavSignaly, nastavPrikaz, get CMD() { return CMD; }, WD, WDL, dm, DOPYTY, OBHLIADKY, SLACK_CHANNEL, SLACK_NAME, MAKLERI, DEFAULTS, normalize, compute, fallbackTexts, aiPrompt, mergeTexts, personalPrompt, personalFallback, personalFacts, emailHtml, emailPreview, emailSubject, emailText, slackText, personalEmail, validEmail, esc, fmt1, localParts, short };
 })();
 
 // definícia CSV súborov (spec, povinné a voliteľné súbory) a prevod na dáta pre FM
