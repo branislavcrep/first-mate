@@ -2,6 +2,7 @@
 
 - rozhodnutia.md — datované rozhodnutia o First Mate
 - architektura.html — vizualizácia cieľového stavu (kópia artefaktu https://claude.ai/artifact/EvgMLQK1uhuD7T9Z6igLtb)
+- pre-marcela.md — ako začať: prístupy, prvá session, vlastná kópia demo panela, `/novy-klient`
 - migracia/PLAN.md — plán migrácie na jedno jadro po fázach (zadanie pre Claude Code)
 - migracia/skilly.md — návrh úpravy skillov first-mate a first-mate-developer na nový demo panel (fáza 6), robí Branislav na claude.ai
 - migracia/START.md — úvodný prompt, ktorým sa spúšťa každá session migrácie
