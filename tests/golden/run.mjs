@@ -4,12 +4,14 @@
 // 2. F1–F6 z golden výstupu = referenčný model v Pythone (tools/first_mate_financny_model.py).
 // 3. Overené čísla z legacy/README.md (IRR VK PL 23,9 %, NZ 15,0 % …).
 // 4. Katalóg use casov: schéma (tools/export_usecases.py --kontrola) a aktuálny CSV export.
+// 6. Klienti: build všetkých klientov z klienti/*/nastavenia.json (okrem _sablona) do dočasného priečinka prejde.
 // 5. Nové jadro: ak existuje panel/golden.mjs, musí dať pre oba typy rovnaký výstup ako golden.
 //    Kontrakt: `export function nacitaj(typ, nowMs)` vráti {FMCSV, FM, FIN, CSV} v tvare legacy modulov
 //    (FM.compute, FM.fallbackTexts, FM.DEFAULTS, FM.KEYS, FM.localParts; FIN.compute, FIN.normalize, …).
 //
 // Prepínače: FM_JADRO=legacy (bez bodu 5) · FM_JADRO=panel (bez bodu 1).
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -86,6 +88,17 @@ if (rezim !== "legacy") {
   } else {
     console.log("  – panel/golden.mjs zatiaľ neexistuje (vznikne vo fáze 4), preskočené");
   }
+}
+
+console.log("Klienti (klienti/): build");
+{
+  const klienti = fs.readdirSync(path.join(KOREN, "klienti"), { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith("_") && fs.existsSync(path.join(KOREN, "klienti", d.name, "nastavenia.json"))).map((d) => d.name);
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "fm-build-"));
+  const r = spawnSync("python3", ["-I", path.join(KOREN, "tools", "build.py"), ...klienti, "--vystup", tmp], { encoding: "utf8" });
+  (r.stdout || "").trim().split("\n").filter(Boolean).forEach((l) => console.log("  " + l));
+  if (r.status !== 0) { zlyhania++; if (r.stderr) console.log(r.stderr); }
+  fs.rmSync(tmp, { recursive: true, force: true });
 }
 
 console.log(zlyhania ? `\nZLYHALO: ${zlyhania}` : "\nVšetky golden testy prešli.");

@@ -11,6 +11,7 @@ import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
+import { execFileSync } from "node:child_process";
 import { KOREN } from "../golden/legacy.mjs";
 
 const require = createRequire(import.meta.url);
@@ -24,6 +25,10 @@ const PRIPADY = [
   { typ: "prepínač → realitka", legacy: "legacy/panel-realitka/index.html", panel: "panel/index.html", prepni: ["realitka"], teraz: "2026-11-03T17:00:00Z" },
   // klientsky režim: pôvodný panel Immocap ↔ nový panel s nastaveniami klienti/immocap (vrátane potvrdenia pred odoslaním)
   { typ: "klient Immocap", legacy: "legacy/panel-klient-immocap/index.html", panel: "panel/index.html", nastavenia: "klienti/immocap/nastavenia.json", potvrdenie: true, teraz: "2026-11-02T17:00:00Z" },
+  // zostavené panely (tools/build.py, test ich zostaví sám do dist/): rovnaké ako pôvodné
+  { typ: "build demo (developer)", legacy: "legacy/panel-developer/index.html", panel: "dist/demo/index.html", teraz: "2026-11-02T17:00:00Z" },
+  { typ: "build demo → realitka", legacy: "legacy/panel-realitka/index.html", panel: "dist/demo/index.html", prepni: ["realitka"], teraz: "2026-11-03T17:00:00Z" },
+  { typ: "build immocap", legacy: "legacy/panel-klient-immocap/index.html", panel: "dist/immocap/index.html", potvrdenie: true, teraz: "2026-11-02T17:00:00Z" },
   { typ: "prepínač → realitka → developer", legacy: "legacy/panel-developer/index.html", panel: "panel/index.html", prepni: ["realitka", "developer"], teraz: "2026-11-02T17:00:00Z" },
 ];
 const TYPY = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".csv": "text/csv; charset=utf-8", ".md": "text/markdown; charset=utf-8" };
@@ -197,6 +202,22 @@ const MOCK = () => {
   window.claude = { use: async (n) => (n === "db" ? db : n === "mcp" ? mcp : null) };
 };
 
+// zostavený panel: päta s verziou z package.json a dňom zostavenia z build.json
+NASTAVENIA.push({
+  meno: "zostavený panel dist/immocap: päta a build.json",
+  url: "dist/immocap/index.html",
+  async over(p, KOREN) {
+    const b = JSON.parse(fs.readFileSync(path.join(KOREN, "dist/immocap/build.json"), "utf8"));
+    const [r, m, d] = b.zostavene.split("-").map(Number);
+    return {
+      "päta s verziou": [await p.$eval("#verzia", (e) => e.textContent), `First Mate v${b.verzia} · zostavené ${d}. ${m}. ${r}`],
+      "verzia = package.json": [b.verzia, JSON.parse(fs.readFileSync(path.join(KOREN, "package.json"), "utf8")).version],
+      "titulok": [await p.title(), "First Mate · môj panel"],
+      "len dáta developera": [b.subory.filter((f) => f.startsWith("data/")).every((f) => f.startsWith("data/developer/")), true]
+    };
+  }
+});
+
 async function overNastavenia(browser, c) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, timezoneId: "Europe/Bratislava" });
   const p = await ctx.newPage();
@@ -205,7 +226,7 @@ async function overNastavenia(browser, c) {
   p.on("console", (m) => { if (m.type() === "error") chyby.push(m.text()); });
   await p.route("**/klienti/demo/nastavenia.json", (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify(c.nastavenia) }));
   if (c.mock) await p.addInitScript(MOCK);
-  await p.goto(BASE + "panel/index.html");
+  await p.goto(BASE + (c.url || "panel/index.html"));
   await p.waitForFunction(() => document.body.dataset.fmTyp, null, { timeout: 15000 });
   await p.waitForTimeout(2000);
   const o = await c.over(p, KOREN);
@@ -213,6 +234,9 @@ async function overNastavenia(browser, c) {
   if (chyby.length) o["bez chýb v konzole"] = [chyby.join(" · "), ""];
   return o;
 }
+
+// zostav demo a immocap do dist/ (dist/ sa necommituje)
+execFileSync("python3", [path.join(KOREN, "tools/build.py"), "demo", "immocap"], { stdio: "inherit" });
 
 let zlyhania = 0;
 const browser = await chromium.launch();
