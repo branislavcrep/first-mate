@@ -9,7 +9,7 @@ Aktualizované: 2026-11-24 · Branislav
 - Ďalšie vydanie: `/release` (pomocník `tools/release.py`).
 
 ## Panely a klienti
-- Demo: https://claude.ai/artifact/VZWUmbcEU4WihYycwT3GQK, zatiaľ build 0.5.0. Nočná úloha trig_01A5m3w9929SkxEMYNGYpWLv (2:17) ho zverejní ako 1.0.0; ručne `/zverejni-demo`.
+- Demo: https://claude.ai/artifact/VZWUmbcEU4WihYycwT3GQK, build 1.0.0 (commit `1792661`, verzia artefaktu 1795517376-3b29). Nočná úloha trig_01A5m3w9929SkxEMYNGYpWLv (2:17) ho znovu zverejní len pri zmene súborov panela; ručne `/zverejni-demo`.
 - Pôvodné demo panely developera a realitky majú pruh „Archív“ s odkazom na nový panel; ďalej sa nemenia.
 - Immocap: beží pôvodný klientsky panel, pokračuje sa **bez pluginu** pre Cowork. Prechod na 1.0.0 (`/build immocap` + zverejnenie) len po dohode s klientom.
 - Nový klient: `/novy-klient`.
