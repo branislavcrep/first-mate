@@ -69,14 +69,14 @@ Cieľový stav je opísaný v `docs/rozhodnutia.md` (záznam 2026-11-23) a nakre
 4. Príkaz `/novy-klient`: opýta sa na názov, typ, prepínač, e-mail (Gmail/Outlook), Slack kanály, tím; vytvorí `klienti/<klient>/` zo šablóny, zapíše klienta do `klienti/index.md`, spustí build, založí Issue „Inštalácia <klient>“ a zapíše `klienti/<klient>/verzie.md`.
 5. Commit, denník, hot.md.
 
-## Fáza 6 · zverejnenie a archív
+## Fáza 6 · zverejnenie a archív (HOTOVÉ 24. 11. 2026)
 1. Zverejni nový demo panel ako **nový** artefakt „First Mate · demo panel“ (nie prepísaním starých). Adresu a slug zapíš do `klienti/demo/verzie.md` a `docs/rozhodnutia.md`.
 2. **STOP**: Branislav panel vyskúša. Testovacie odoslanie do demo Slacku len po jeho súhlase.
 3. Po súhlase: na oba staré panely pridaj nenápadný pruh „Archív. Aktuálny panel: <odkaz>“ (len táto zmena, so súhlasom).
 4. Príkaz `/zverejni-demo` a návrh plánovanej úlohy „každú noc: ak sa `main` zmenil od poslednej verzie v `klienti/demo/verzie.md`, zostav a znovu zverejni demo panel“. Plánovanú úlohu vytvor, ak to prostredie dovolí; inak napíš Branislavovi presný postup.
 5. Skilly `first-mate` a `first-mate-developer` na claude.ai čítajú dáta zo starých panelov: navrhni ich úpravu na nový panel (cez propose_skills, ak je dostupné; inak text úpravy do `docs/migracia/skilly.md`).
 
-## Fáza 7 · vydanie a Marcel
+## Fáza 7 · vydanie a Marcel (HOTOVÉ 24. 11. 2026, bod 3 sa nerobí: Immocap bez pluginu)
 1. `/release`: zhrnie zmeny od poslednej verzie do `CHANGELOG.md`, git tag, číslo v päte; vypíše klientov na staršej verzii podľa `klienti/*/verzie.md`. Vydaj `v1.0.0`.
 2. `docs/pre-marcela.md`: čo potrebuje (GitHub účet, pozvánka do repozitára, Claude Pro, pripojenie GitHubu v claude.ai/code, Slack demo workspace), prvá session krok za krokom, ako si zverejní vlastnú kópiu demo panela, ako robí `/novy-klient`.
 3. Plugin pre Cowork: keď Branislav dodá `First-Mate-Immocap.zip`, presuň plugin do `plugin/`, zaraď `fm.py` a `fin_model.py` do testov (rovnaké čísla ako jadro) a navrhni, ako bude plugin čítať katalóg.

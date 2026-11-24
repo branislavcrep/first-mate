@@ -7,7 +7,7 @@ Jazyk: slovenčina. Branislavovi a Marcelovi tykaj, klientovi vo všetkých výs
 ## Štart každej session
 1. Prečítaj `hot.md`. Nič iné zatiaľ nečítaj.
 2. Podľa úlohy prečítaj `index.md` príslušného priečinka a z neho len súbory, ktoré potrebuješ. Nikdy nečítaj celý priečinok ani celý `legacy/` naraz.
-3. Kým beží migrácia (pozri `hot.md`), riaď sa `docs/migracia/PLAN.md`.
+3. Migrácia na jedno jadro je ukončená (24. 11. 2026, v1.0.0). `docs/migracia/` je len história, podľa plánu sa už nepracuje.
 
 ## Koniec každej session (vždy, aj keď sa nepýtam)
 1. Prepíš `hot.md`: NEPRIDÁVAJ, PREPÍŠ. Max 500 slov. Staršie veci presuň do denníka.
@@ -18,12 +18,12 @@ Jazyk: slovenčina. Branislavovi a Marcelovi tykaj, klientovi vo všetkých výs
 
 ## Kde čo je
 - `hot.md` · čo sa práve deje (teplá pamäť)
-- `docs/` · rozhodnutia, architektúra, migrácia, zdroje (index: `docs/index.md`)
+- `docs/` · rozhodnutia, architektúra, návod pre Marcela, história migrácie, zdroje (index: `docs/index.md`)
 - `legacy/` · zmrazené pôvodné panely, len na čítanie a porovnanie (index: `legacy/README.md`)
 - `data/<typ>/` · ukážkové CSV podľa typu firmy + `slovnik_dat*.md`
-- `usecases/` · katalóg use casov a typov firiem (vznikne v migrácii)
-- `panel/` · jadro panela (vznikne v migrácii)
-- `klienti/<klient>/` · `nastavenia.json`, `verzie.md` (vznikne v migrácii)
+- `usecases/` · katalóg use casov a typov firiem
+- `panel/` · jadro panela
+- `klienti/<klient>/` · `nastavenia.json`, `verzie.md`
 - `tools/` · skripty (build, export, testy, referenčný finančný model)
 - `tests/` · golden testy (`npm test`, index: `tests/index.md`)
 - `.claude/` · hooky (`settings.json` → `tools/hooks/koniec_session.py`) a príkazy (`commands/`: /novy-klient, /build, /release, /export-usecases, /zverejni-demo, /koniec)

@@ -87,3 +87,5 @@ Datované. Neplatné sa nemažú, označia sa `NEPLATÍ od RRRR-MM-DD`.
 - Tag `v1.0.0` je len lokálny: proxy Claude Code v cloude odmieta push tagov (HTTP 403) a nástroje GitHubu v session tag vytvoriť nevedia. Tag vytvorí Branislav na GitHube cez Releases (postup v `/release`, krok 6).
 - Klienti na staršej verzii po vydaní: demo (0.5.0, znovu ho zverejní nočná úloha, lebo sa zmenil `package.json`) a Immocap (pôvodný panel; prechod na 1.0.0 len po dohode s klientom).
 - `docs/pre-marcela.md`: prístupy (GitHub, pozvánka, Claude Pro, GitHub v claude.ai/code, Slack demo workspace, konektory), prvá session, vlastná kópia demo panela ako **nový** artefakt v Marcelovom účte (oficiálny demo panel patrí Branislavovi), `/novy-klient`.
+- Plugin pre Cowork sa nerobí: s Immocapom sa pokračuje bez pluginu (Branislav, 24. 11.). Bod 3 fázy 7 odpadá; `fm.py` a `fin_model.py` sa do testov nezaraďujú.
+- Migrácia na jedno jadro je ukončená (24. 11. 2026, v1.0.0). `CLAUDE.md` už neodkazuje na `docs/migracia/PLAN.md` ako na aktívny plán; `docs/migracia/` ostáva ako história. Ďalej sa pracuje podľa GitHub Issues.

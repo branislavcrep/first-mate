@@ -3,7 +3,7 @@
 - Artefakt: pôvodný klientsky panel https://claude.ai/artifact/3A7693simWj3U4Ljnt8nAa (`legacy/panel-klient-immocap/`, pred migráciou); nová verzia zatiaľ nezverejnená
 - Nastavenia: `klienti/immocap/nastavenia.json` · developer, klientsky režim
 - Build: `python3 tools/build.py immocap` → `dist/immocap/` (zhodný s pôvodným panelom, overené UI testom)
-- Plugin pre Cowork: `First-Mate-Immocap.zip` u Branislava (fáza 7)
+- Plugin pre Cowork: s klientom sa pokračuje bez pluginu (rozhodnutie 24. 11. 2026)
 
 | Dátum | Verzia | Commit | Čo sa stalo |
 |---|---|---|---|
