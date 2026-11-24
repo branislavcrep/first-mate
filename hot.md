@@ -15,10 +15,10 @@ Aktualizované: 2026-11-24 · Branislav (koniec session, nová session nadväzuj
 
 ## Fáza 6 (Issue #5): hotové
 - Zverejnený nový „First Mate · demo panel“: https://claude.ai/artifact/VZWUmbcEU4WihYycwT3GQK (build 0.5.0, commit e6e4978). Branislav ho vyskúšal, funguje.
-- Testovacie odoslanie do #first-mate-demo a #first-mate-developer prebehlo (so súhlasom).
+- Testovacie odoslanie do #first-mate-demo a #first-mate-developer prebehlo; Branislav overil aj tlačidlá Slack a e-mail priamo v paneli.
 - `/zverejni-demo` je funkčný.
 - Nočná plánovaná úloha trig_01A5m3w9929SkxEMYNGYpWLv (2:17): zverejní len pri zmene súborov panela.
-- Návrh úpravy skillov je v `docs/migracia/skilly.md`; upraví ich Branislav na claude.ai.
+- Návrh úpravy skillov je v `docs/migracia/skilly.md`; upraví ich Branislav na claude.ai (Issue #14).
 
 ## Ďalší krok: dokončiť fázu 6 · pruh „Archív“ na oba staré demo panely
 1. `Artifact` `action: "read"` na developera https://claude.ai/artifact/Thwr8YV58gP7RprXQHRw2Y a realitku https://claude.ai/artifact/TMqLo37PgkvMqetibH7a5P. Výsledok uloží celé HTML do súboru.
@@ -36,6 +36,6 @@ Aktualizované: 2026-11-24 · Branislav (koniec session, nová session nadväzuj
 - UI test trvá asi 4 minúty: v Bash nastav `timeout` 600000.
 
 ## Otvorené
-- Issues #7, #8 (návrhy, menia čísla), #9–#13 (body z legacy).
+- Issues #7, #8 (návrhy, menia čísla), #9–#13 (body z legacy), #14 (skilly, Branislav).
 - Plugin pre Cowork: First-Mate-Immocap.zip u Branislava.
 - Marcelov GitHub účet zatiaľ neznámy.

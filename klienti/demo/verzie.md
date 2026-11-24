@@ -9,3 +9,4 @@
 |---|---|---|---|
 | 2026-11-24 | 0.5.0 | 9aa79ec | nastavenia a build pripravené (fáza 5), zatiaľ nezverejnené |
 | 2026-11-24 | 0.5.0 | e6e4978 | prvé zverejnenie nového demo panela (verzia artefaktu 1795499383-4aa1), čaká na vyskúšanie |
+| 2026-11-24 | 0.5.0 | e6e4978 | Branislav vyskúšal panel; odoslanie do Slacku a e-mailom z panela funguje |
