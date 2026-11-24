@@ -3,7 +3,7 @@
 Aktualizované: 2026-11-24 · Branislav (koniec session, nová session nadväzuje tu)
 
 ## Kde sme skončili
-- Migrácia podľa `docs/migracia/PLAN.md`: fázy 0–5 hotové (Issues #3, #4 uzavreté). Všetko je v `main`, `npm test` aj `npm run test:ui` prechádzajú.
+- Migrácia podľa `docs/migracia/PLAN.md`: fázy 0–5 hotové (Issues #3, #4 uzavreté), fáza 6 hotová okrem pruhu „Archív“ na starých paneloch. Všetko je v `main`, `npm test` aj `npm run test:ui` prechádzajú.
 - Panel `panel/` je jedno jadro pre realitku, developera aj klientsky panel. Riadia ho nastavenia klienta `klienti/<klient>/nastavenia.json`; popis polí je v `klienti/_sablona/README.md`.
 - Build: `python3 tools/build.py <klient>` → `dist/<klient>/` (viac súborov + `build.json` so zoznamom súborov). Verzia `0.5.0` z `package.json`. `dist/` sa necommituje.
 - Klienti:
@@ -13,25 +13,20 @@ Aktualizované: 2026-11-24 · Branislav (koniec session, nová session nadväzuj
   Každý má `verzie.md`. Príkazy `/build` a `/novy-klient` sú funkčné.
 - UI test porovnáva s legacy aj zostavené `dist/demo` a `dist/immocap`. `npm test` zostaví všetkých klientov naskúšku.
 
-## Teraz: STOP fázy 6 · Branislav skúša demo panel
-- Zverejnené: „First Mate · demo panel“ https://claude.ai/artifact/VZWUmbcEU4WihYycwT3GQK (`dist/demo/zverejnenie/`, build 0.5.0, commit e6e4978). Body 1 a 2 nižšie sú hotové.
-- Čaká sa na Branislava: vyskúšať panel (oba typy, prepínač, posun dátumov, nahratie CSV, AI brífing) a povoliť testovacie odoslanie do #first-mate-demo / #first-mate-developer. Bez súhlasu nič neposielať.
-- Ďalšie zverejnenie: publish toho istého súboru `dist/demo/zverejnenie/index.html` s `root` a `files` podľa `dist/demo/build.json` (bez `url` z tejto session; inak s `url` artefaktu). `.md` súbory s typom `text/markdown`.
+## Fáza 6 (Issue #5): hotové
+- Zverejnený nový „First Mate · demo panel“: https://claude.ai/artifact/VZWUmbcEU4WihYycwT3GQK (build 0.5.0, commit e6e4978). Branislav ho vyskúšal, funguje.
+- Testovacie odoslanie do #first-mate-demo a #first-mate-developer prebehlo (so súhlasom).
+- `/zverejni-demo` je funkčný.
+- Nočná plánovaná úloha trig_01A5m3w9929SkxEMYNGYpWLv (2:17): zverejní len pri zmene súborov panela.
+- Návrh úpravy skillov je v `docs/migracia/skilly.md`; upraví ich Branislav na claude.ai.
 
-## Fáza 6 · zverejnenie a archív (Issue #5)
-1. **Zverejnenie.** `python3 tools/build.py demo` a zverejni **nový** artefakt „First Mate · demo panel“ nástrojom Artifact:
-   - `index.html` + `files` podľa `dist/demo/build.json`,
-   - pred zápisom načítaj skilly `artifact-design` a `artifact-capabilities`,
-   - capabilities: `db`, `mcp` (Slack, Gmail; bez Attio, Issue #12), `sample`,
-   - nikdy neprepisuj pôvodné artefakty z `legacy/README.md`.
-   Over, či v artefakte fungujú ES moduly a `fetch` susedných súborov. Ak nie, build musí vedieť jednu stránku (všetko vložené).
-2. Adresu zapíš do `klienti/demo/verzie.md` a `docs/rozhodnutia.md`.
-3. **STOP.** Branislav panel vyskúša. Testovacie odoslanie do demo Slacku len po jeho súhlase.
-4. Po súhlase:
-   - pruh „Archív. Aktuálny panel: <odkaz>“ na oba staré panely (len táto zmena),
-   - `/zverejni-demo`,
-   - plánovaná úloha na nočné znovuzverejnenie,
-   - návrh úpravy skillov `first-mate` a `first-mate-developer` (`docs/migracia/skilly.md`).
+## Ďalší krok: dokončiť fázu 6 · pruh „Archív“ na oba staré demo panely
+1. `Artifact` `action: "read"` na developera https://claude.ai/artifact/Thwr8YV58gP7RprXQHRw2Y a realitku https://claude.ai/artifact/TMqLo37PgkvMqetibH7a5P. Výsledok uloží celé HTML do súboru.
+   - Developer je bajtovo zhodný s `legacy/panel-developer/index.html` (overené 24. 11.); realitku over `cmp` s `legacy/panel-realitka/index.html`.
+2. Pred zmenou treba uložený súbor **celý prečítať** (pravidlo zverejňovania, 2 940 riadkov, Read po častiach). Preto na začiatku čistej session.
+3. Jediná zmena: hneď za `<body>` nenápadný pruh, napr. `<div style="background:#EAE6DB;border-bottom:1px solid #0B0B0C;font-family:'Geist Mono',Menlo,monospace;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;padding:10px 16px;text-align:center">Archív. Aktuálny panel: <a href="https://claude.ai/artifact/VZWUmbcEU4WihYycwT3GQK" target="_blank" rel="noopener">First Mate · demo panel →</a></div>`.
+4. Publish s `url` daného artefaktu, `file_path` = uložený súbor, `edits` s touto vložkou. Bez `capabilities`, ostatné súbory ostávajú. Panel Immocap sa nemení. Súbory v `legacy/` sa nemenia (sú zmrazená kópia).
+5. Zapíš do `docs/rozhodnutia.md` a `legacy/README.md` sa nedotýkaj; uzavri Issue #5 a pokračuj fázou 7 (Issue #6).
 
 ## Pravidlá pre panel/
 - Výpočty len v `panel/usecases/`. Kľúče výstupu zatiaľ legacy (`s1`…, `f1`…).
