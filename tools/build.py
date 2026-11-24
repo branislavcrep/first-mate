@@ -11,6 +11,12 @@ V `index.html` nastaví meta `fm-koren` (./), `fm-nastavenia` (nastavenia.json),
 a `fm-zostavene` (dnešný dátum v Europe/Bratislava), titulok stránky. Vedľa zapíše `build.json`
 (klient, verzia, dátum, commit, zoznam súborov) ako podklad pre zverejnenie.
 
+Navyše zostaví `dist/<klient>/zverejnenie/`: variant pre artefakt na claude.ai. Artefakt povoľuje len vložené
+skripty a štýly (alebo z CDN), preto je tam `index.html` bez kostry dokumentu (doctype/html/head/body doplní
+platforma) s vloženým CSS a jedným vloženým skriptom, do ktorého build spojí ES moduly panela (vlastný jednoduchý
+spájač pre tvary import/export používané v panel/). Dáta, katalóg a nastavenia ostávajú ako súbory vedľa
+(stránka ich číta cez fetch, to artefakt dovoľuje).
+
 Build odmietne nastavenia s nevyplnenými miestami «…» zo šablóny a s poľami, ktoré vyzerajú ako kľúče
 alebo heslá. Výpočty nemení; pred buildom majú prejsť golden testy (`npm test`).
 """
@@ -96,6 +102,123 @@ def nastav_meta(text, meno, hodnota):
     return vzor.sub(lambda m: m.group(1) + html.escape(hodnota, quote=True) + m.group(2), text, count=1)
 
 
+# ---------- spájač ES modulov panela do jedného skriptu ----------
+RE_IMPORT = re.compile(r'^\s*import\s+(?P<co>.+?)\s+from\s+"(?P<cesta>[^"]+)";\s*$')
+RE_EXPORT_FN = re.compile(r'^(\s*)export\s+(async\s+)?function\s+(\w+)')
+RE_EXPORT_CONST = re.compile(r'^(\s*)export\s+(const|let)\s+(\w+)')
+RE_EXPORT_DEF = re.compile(r'^(\s*)export\s+default\s+')
+
+
+def _vazby(co, ref):
+    """Riadok importu → deklarácie const nad objektom modulu `ref`."""
+    co = co.strip()
+    if co.startswith("* as "):
+        return [f"const {co[5:].strip()} = {ref};"]
+    out, m = [], re.fullmatch(r"(\w+)?\s*,?\s*(\{(.*)\})?", co)
+    if not m:
+        raise Chyba(f"neznámy tvar importu: import {co}")
+    if m.group(1):
+        out.append(f"const {m.group(1)} = {ref}.default;")
+    if m.group(2):
+        mena = []
+        for x in m.group(3).split(","):
+            x = x.strip()
+            if not x:
+                continue
+            a, _, b = x.partition(" as ")
+            mena.append(f"{a.strip()}: {b.strip()}" if b else a.strip())
+        out.append("const { " + ", ".join(mena) + " } = " + ref + ";")
+    return out
+
+
+def spoj_moduly(vstup):
+    """Spojí ES moduly (vstup a jeho relatívne importy) do jedného skriptu type=module.
+    Každý závislý modul je funkcia vracajúca objekt exportov; vstupný modul ostáva na najvyššej úrovni (kvôli await)."""
+    poradie, moduly = [], {}
+
+    def nacitaj(f):
+        f = f.resolve()
+        if f in moduly:
+            return
+        moduly[f] = None
+        text = f.read_text(encoding="utf-8")
+        for riadok in text.split("\n"):
+            m = RE_IMPORT.match(riadok)
+            if m:
+                if not m.group("cesta").startswith("."):
+                    raise Chyba(f"{f.name}: import mimo panela ({m.group('cesta')})")
+                nacitaj(f.parent / m.group("cesta"))
+            elif re.match(r"^\s*import[\s{*]", riadok):
+                raise Chyba(f"{f.name}: import, ktorý spájač nepozná: {riadok.strip()}")
+        moduly[f] = text
+        poradie.append(f)
+
+    nacitaj(vstup)
+    mena = {f: f"__fm_{i}" for i, f in enumerate(poradie)}
+
+    def prepis(f, je_vstup):
+        riadky, exporty = [], []
+        for riadok in moduly[f].split("\n"):
+            m = RE_IMPORT.match(riadok)
+            if m:
+                riadky += _vazby(m.group("co"), mena[(f.parent / m.group("cesta")).resolve()])
+                continue
+            for vzor, sk in ((RE_EXPORT_FN, 3), (RE_EXPORT_CONST, 3)):
+                m = vzor.match(riadok)
+                if m:
+                    exporty.append(m.group(sk))
+                    riadok = riadok.replace("export ", "", 1)
+                    break
+            else:
+                m = RE_EXPORT_DEF.match(riadok)
+                if m:
+                    exporty.append("default: __default")
+                    riadok = m.group(1) + "const __default = " + riadok[m.end():]
+                elif re.match(r"^\s*export\b", riadok):
+                    raise Chyba(f"{f.name}: export, ktorý spájač nepozná: {riadok.strip()}")
+            riadky.append(riadok)
+        if je_vstup:
+            if exporty:
+                raise Chyba(f"{f.name}: vstupný modul nemá exportovať")
+            return "\n".join(riadky)
+        rel = f.relative_to(PANEL)
+        return (f"// ---- {rel} ----\nconst {mena[f]} = (() => {{\n" + "\n".join(riadky)
+                + f"\nreturn {{ {', '.join(exporty)} }};\n}})();")
+
+    casti = [prepis(f, f == poradie[-1]) for f in poradie]
+    js = "\n".join(casti)
+    for zle in ("</script", "<!--"):
+        if zle in js:
+            raise Chyba(f"skript obsahuje „{zle}“, nedá sa vložiť do HTML")
+    return js
+
+
+def zverejnenie(ciel, ix_html):
+    """dist/<klient>/zverejnenie/: index.html bez kostry dokumentu, CSS a JS vložené, dáta ako súbory."""
+    zv = ciel / "zverejnenie"
+    zv.mkdir()
+    # hlavička: title + meta + fonty, potom vložené CSS; telo bez <body>, skript vložený
+    hlava = re.search(r"<head>(.*?)</head>", ix_html, re.S).group(1)
+    telo = re.search(r"<body>(.*?)</body>", ix_html, re.S).group(1)
+    hlava = re.sub(r'\s*<meta charset="UTF-8">|\s*<meta name="viewport"[^>]*>', "", hlava)
+    css = (PANEL / "styles.css").read_text(encoding="utf-8")
+    if "</style" in css:
+        raise Chyba("styles.css obsahuje </style")
+    hlava = hlava.replace('<link rel="stylesheet" href="styles.css">', "<style>\n" + css + "\n</style>")
+    js = spoj_moduly(PANEL / "app.js")
+    skript = '<script type="module" src="app.js"></script>'
+    if skript not in telo:
+        raise Chyba("panel/index.html nemá <script type=\"module\" src=\"app.js\">")
+    telo = telo.replace(skript, '<script type="module">\n' + js + "\n</script>")
+    (zv / "index.html").write_text(hlava.strip() + "\n" + telo.strip() + "\n", encoding="utf-8")
+    for f in ciel.rglob("*"):
+        rel = f.relative_to(ciel)
+        if f.is_file() and rel.parts[0] in ("data", "usecases", "nastavenia.json") and f.suffix in (".csv", ".md", ".json"):
+            (zv / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(f, zv / rel)
+    return sorted(str(f.relative_to(zv)) for f in zv.rglob("*") if f.is_file())
+
+
 def zostav(klient, vystup):
     cesta = KOREN / "klienti" / klient / "nastavenia.json"
     if not cesta.exists():
@@ -141,11 +264,14 @@ def zostav(klient, vystup):
     (ciel / "index.html").write_text(ix, encoding="utf-8")
 
     subory = sorted(str(f.relative_to(ciel)) for f in ciel.rglob("*") if f.is_file())
-    if len(subory) + 1 > LIMIT_SUBOROV:
-        raise Chyba(f"{len(subory)} súborov je nad limit zverejnenia ({LIMIT_SUBOROV}).")
+    zv = zverejnenie(ciel, ix)
+    if len(zv) > LIMIT_SUBOROV:
+        raise Chyba(f"{len(zv)} súborov na zverejnenie je nad limit ({LIMIT_SUBOROV}).")
     velkost = sum((ciel / s).stat().st_size for s in subory)
     info = {"klient": klient, "nazov": n.get("nazov", klient), "titulok": titulok, "verzia": ver, "zostavene": datum,
-            "commit": commit(), "typy": [t["id"] for t in typy], "subory": subory, "velkost_bajtov": velkost}
+            "commit": commit(), "typy": [t["id"] for t in typy], "subory": subory, "velkost_bajtov": velkost,
+            "zverejnenie": {"priecinok": "zverejnenie", "stranka": "index.html", "subory": [f for f in zv if f != "index.html"],
+                            "velkost_stranky_bajtov": (ciel / "zverejnenie" / "index.html").stat().st_size}}
     (ciel / "build.json").write_text(json.dumps(info, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return info
 
@@ -167,7 +293,8 @@ def main(argv):
         try:
             i = zostav(k, vystup)
             print(f"✓ {k}: {vystup.name}/{k}/ · First Mate v{i['verzia']} · zostavené {i['zostavene']} · "
-                  f"{', '.join(i['typy'])} · {len(i['subory'])} súborov, {i['velkost_bajtov'] / 1024:.0f} kB · commit {i['commit']}")
+                  f"{', '.join(i['typy'])} · {len(i['subory'])} súborov, {i['velkost_bajtov'] / 1024:.0f} kB · "
+                  f"zverejnenie: stránka {i['zverejnenie']['velkost_stranky_bajtov'] / 1024:.0f} kB + {len(i['zverejnenie']['subory'])} súborov · commit {i['commit']}")
         except Chyba as e:
             zlyhania += 1
             print(f"✗ {k}: {e}")

@@ -26,16 +26,24 @@ const PRIPADY = [
   // klientsky režim: pôvodný panel Immocap ↔ nový panel s nastaveniami klienti/immocap (vrátane potvrdenia pred odoslaním)
   { typ: "klient Immocap", legacy: "legacy/panel-klient-immocap/index.html", panel: "panel/index.html", nastavenia: "klienti/immocap/nastavenia.json", potvrdenie: true, teraz: "2026-11-02T17:00:00Z" },
   // zostavené panely (tools/build.py, test ich zostaví sám do dist/): rovnaké ako pôvodné
-  { typ: "build demo (developer)", legacy: "legacy/panel-developer/index.html", panel: "dist/demo/index.html", teraz: "2026-11-02T17:00:00Z" },
-  { typ: "build demo → realitka", legacy: "legacy/panel-realitka/index.html", panel: "dist/demo/index.html", prepni: ["realitka"], teraz: "2026-11-03T17:00:00Z" },
+  // variant na zverejnenie (dist/<klient>/zverejnenie/: vložené CSS a spojené moduly, kostru doplní server ako platforma)
+  { typ: "zverejnenie demo (developer)", legacy: "legacy/panel-developer/index.html", panel: "dist/demo/zverejnenie/index.html", teraz: "2026-11-02T17:00:00Z" },
+  { typ: "zverejnenie demo → realitka", legacy: "legacy/panel-realitka/index.html", panel: "dist/demo/zverejnenie/index.html", prepni: ["realitka"], teraz: "2026-11-03T17:00:00Z" },
+  { typ: "zverejnenie immocap", legacy: "legacy/panel-klient-immocap/index.html", panel: "dist/immocap/zverejnenie/index.html", potvrdenie: true, teraz: "2026-11-02T17:00:00Z" },
   { typ: "build immocap", legacy: "legacy/panel-klient-immocap/index.html", panel: "dist/immocap/index.html", potvrdenie: true, teraz: "2026-11-02T17:00:00Z" },
   { typ: "prepínač → realitka → developer", legacy: "legacy/panel-developer/index.html", panel: "panel/index.html", prepni: ["realitka", "developer"], teraz: "2026-11-02T17:00:00Z" },
 ];
 const TYPY = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".csv": "text/csv; charset=utf-8", ".md": "text/markdown; charset=utf-8" };
+const KOSTRA = ['<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>', "</body></html>"];
 const server = http.createServer((req, res) => {
   // pôvodný panel Immocap mal rovnaké dáta ako developer, v legacy/ nie sú skopírované
   const cesta = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/legacy\/panel-klient-immocap\/data\//, "/data/developer/");
   const p = path.join(KOREN, cesta);
+  // stránka na zverejnenie nemá kostru dokumentu: obal ju ako platforma artefaktov (doctype, charset, viewport, malý reset)
+  if (/\/zverejnenie\/index\.html$/.test(cesta) && fs.existsSync(p)) {
+    res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    return res.end(KOSTRA[0] + fs.readFileSync(p, "utf8") + KOSTRA[1]);
+  }
   if (!p.startsWith(KOREN) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) { res.writeHead(404); return res.end(); }
   res.writeHead(200, { "content-type": TYPY[path.extname(p)] || "application/octet-stream" });
   fs.createReadStream(p).pipe(res);
@@ -189,6 +197,9 @@ const NASTAVENIA = [
     }
   }
 ];
+
+// rovnaký test mock konektorov na stránke na zverejnenie (dist/demo/zverejnenie)
+NASTAVENIA.push({ ...NASTAVENIA.find((c) => c.mock), meno: "zverejnenie demo: nahratie CSV a mock konektory", url: "dist/demo/zverejnenie/index.html" });
 
 // mock window.claude: db v pamäti, mcp zaznamená volania (nič neodíde), sample nedostupný (pravidlový text)
 const MOCK = () => {
