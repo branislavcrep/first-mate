@@ -5,7 +5,7 @@ Aktualizované: 2026-11-24 · Branislav
 ## Stav
 - Migrácia na jedno jadro je **ukončená** (fázy 0–7, Issues #3–#6 uzavreté). Pracuje sa podľa GitHub Issues; `docs/migracia/` je len história.
 - Vydaná verzia **1.0.0** v `main` (commit `2c26f5d`, `CHANGELOG.md`). Testy: `npm test` (golden + build všetkých klientov), `npm run test:ui` (asi 4 min, v Bash `timeout` 600000).
-- Tag `v1.0.0` treba vytvoriť na GitHube: Releases → Draft a new release → tag `v1.0.0` (nový) → target `main` → text z `CHANGELOG.md` → Publish. Z cloudu proxy push tagov odmieta (403).
+- Tag a release `v1.0.0` sú na GitHube (https://github.com/branislavcrep/first-mate/releases/tag/v1.0.0), tag na commite `7316602` (od `2c26f5d` sa líšia len dokumenty, kód panela je rovnaký). Z cloudu proxy push tagov odmieta (403), tagy robí Branislav cez Releases.
 - Ďalšie vydanie: `/release` (pomocník `tools/release.py`).
 
 ## Panely a klienti
@@ -15,7 +15,7 @@ Aktualizované: 2026-11-24 · Branislav
 - Nový klient: `/novy-klient`.
 
 ## Marcel
-- Návod: `docs/pre-marcela.md`. GitHub účet: `MarcelK777`. Branislav mu pošle pozvánku do repozitára (Write) a do Slack workspace `firstmate-booksmirror` (kanály #first-mate-demo, #first-mate-developer).
+- Návod: `docs/pre-marcela.md`. GitHub účet: `MarcelK777`, pozvánka do repozitára odoslaná 24. 11., čaká na prijatie (osobný repozitár: spolupracovník má vždy zápis, rola sa nevyberá). Slack workspace `firstmate-booksmirror`: pozvánku pošle Branislav (kanály #first-mate-demo, #first-mate-developer).
 
 ## Pravidlá pre panel/
 - Výpočty len v `panel/usecases/`. Kľúče výstupu zatiaľ legacy (`s1`…, `f1`…). Zmena čísel len cez návrh a golden testy.

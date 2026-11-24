@@ -7,7 +7,7 @@ Ahoj Marcel. First Mate je AI analytik pre real estate od Books & Mirror: zo CSV
 | Čo | Kto to urobí | Ako |
 |---|---|---|
 | GitHub účet | ty | github.com → Sign up. Pošli Branislavovi svoje používateľské meno. |
-| Pozvánka do repozitára | Branislav | GitHub → `branislavcrep/first-mate` → Settings → Collaborators → Add people (rola Write). Ty pozvánku prijmeš v e-maile alebo na github.com/notifications. |
+| Pozvánka do repozitára | Branislav | GitHub → `branislavcrep/first-mate` → Settings → Collaborators → Add people (v osobnom repozitári má spolupracovník vždy právo zápisu, rola sa nevyberá). Ty pozvánku prijmeš v e-maile alebo na github.com/notifications. |
 | Claude Pro (alebo Max) | ty | claude.ai → Settings → Billing. Claude Code v cloude bez platenej verzie nejde. |
 | GitHub v claude.ai/code | ty | claude.ai/code → pri prvom spustení „Connect GitHub“ a povoľ prístup k `branislavcrep/first-mate`. Claude GitHub App je na repozitári už nainštalovaná. |
 | Slack demo workspace | Branislav pozve, ty prijmeš | workspace `firstmate-booksmirror`, kanály `#first-mate-demo` (realitka) a `#first-mate-developer` (developer). Testy idú len sem. |
