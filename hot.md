@@ -15,7 +15,7 @@ Aktualizované: 2026-11-24 · Branislav
 - Nový klient: `/novy-klient`.
 
 ## Marcel
-- Návod: `docs/pre-marcela.md`. Čaká sa na jeho GitHub účet; Branislav pošle pozvánku do repozitára a do Slack workspace `firstmate-booksmirror`.
+- Návod: `docs/pre-marcela.md`. GitHub účet: `MarcelK777`. Branislav mu pošle pozvánku do repozitára (Write) a do Slack workspace `firstmate-booksmirror` (kanály #first-mate-demo, #first-mate-developer).
 
 ## Pravidlá pre panel/
 - Výpočty len v `panel/usecases/`. Kľúče výstupu zatiaľ legacy (`s1`…, `f1`…). Zmena čísel len cez návrh a golden testy.
