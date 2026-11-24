@@ -61,3 +61,11 @@ Datované. Neplatné sa nemažú, označia sa `NEPLATÍ od RRRR-MM-DD`.
 - Príkaz v Claude (`/first-mate-dev`, `/first-mate`) je v moduloch typov nastaviteľný (`FM.nastavPrikaz`), predvolené hodnoty a golden texty sa nemenia.
 - Päta: „First Mate vX.Y.Z · zostavené D. M. RRRR“ z meta `fm-verzia` a `fm-zostavene`, bez nich „vývojová verzia, nezostavené“. Je to jediná vedomá výnimka v UI teste oproti legacy.
 - Otvorené body z `legacy/README.md` sú zapísané ako Issues #9 až #13 (farba čísla „Konať dnes“, vypnutý signál v osobných a finančných brífingoch, kolekcia `zmeny`, Attio v capabilities, Outlook). Nič z toho sa potichu neopravilo.
+
+## 2026-11-24 · fáza 5: build a klienti (Claude Code, v rámci schváleného plánu)
+- Build je viacsúborový (fáza 1 overila zverejnenie z viacerých súborov): `tools/build.py <klient>` → `dist/<klient>/` s kódom panela, katalógom, dátami len pre typy klienta a `nastavenia.json`; meta `fm-koren=./`, `fm-nastavenia=nastavenia.json`, `fm-verzia`, `fm-zostavene`. `dist/build.json` (verzia, dátum, commit, zoznam súborov) je podklad pre zverejnenie. `dist/` sa necommituje.
+- Verzia má jeden zdroj: `version` v `package.json`. Počas migrácie `0.5.0`, `1.0.0` vydá `/release` vo fáze 7.
+- Build odmietne nastavenia s nevyplnenými miestami «…» zo šablóny a s poľami, ktoré vyzerajú ako kľúče alebo heslá. `npm test` zostaví naskúšku všetkých klientov.
+- Slack kanál, workspace a tím sú v nastaveniach klienta (`slack.kanaly: [{ typ?, id, nazov }]`, `slack.workspace`, `predvolene.tim`). Bez nich platia pôvodné demo hodnoty, takže demo aj Immocap sú zhodné s legacy.
+- Šablóna nového klienta `klienti/_sablona/` (nastavenia + README s popisom polí), miesta na doplnenie sú «…», aby sa nepliedli so šablónami e-mailu `{{…}}`. Outlook sa v šablóne nevymýšľa, overí sa pri prvom klientovi (Issue #13).
+- `klienti/<klient>/verzie.md`: hlavička (artefakt, nastavenia, build) a tabuľka Dátum · Verzia · Commit · Čo sa stalo; z nej `/release` zistí klientov na staršej verzii.
