@@ -80,6 +80,8 @@ function pripravZnacky(koren, typId, menu) {
   }
   const prikaz = (NASTAVENIA.slack || {}).prikaz;
   if (prikaz) koren.querySelectorAll("[data-prikaz]").forEach(e => { e.textContent = prikaz; });
+  const kanal = kanalTypu(typId);
+  if (kanal) koren.querySelectorAll("[data-kanal]").forEach(e => { e.textContent = kanal.nazov; });
   if (NASTAVENIA.signaly_len_na_citanie) koren.querySelectorAll("#btnAddSig").forEach(e => e.remove());
   // päta: verzia a dátum zostavenia (meta fm-verzia, fm-zostavene dopĺňa build)
   const ver = koren.querySelector("#verzia"), v = meta("fm-verzia"), z = meta("fm-zostavene");
@@ -106,6 +108,12 @@ function pripravZnacky(koren, typId, menu) {
     a.href = "?typ=" + ciel; a.removeAttribute("target");
     a.addEventListener("click", e => { e.preventDefault(); spusti(ciel); });
   });
+}
+
+// Slack kanál klienta pre typ: slack.kanaly = [{ typ?, id, nazov }] (prvý s týmto typom alebo bez typu)
+function kanalTypu(typId) {
+  const k = ((NASTAVENIA.slack || {}).kanaly || []).find(x => x && x.id && x.nazov && (!x.typ || x.typ === typId));
+  return k || null;
 }
 
 let beh = null;
@@ -162,6 +170,9 @@ function aplikacia(T, koren, signal) {
   const sablona = { to: "{{prijemcovia}}", subject: "{{predmet}}", body: "{{text}}", htmlBody: "{{html}}" };
   const EMAIL = { sluzba: "Gmail", server: "Gmail", odoslat: { nastroj: "send_message", argumenty: sablona }, ...(NASTAVENIA.email || {}) };
   const SERVERS = ["Slack", EMAIL.server];
+  // Slack kanál: z nastavení klienta, inak predvolený kanál typu
+  const KANAL = kanalTypu(T.id) || { id: FM.SLACK_CHANNEL, nazov: FM.SLACK_NAME };
+  const SLACK_WS = (NASTAVENIA.slack || {}).workspace || "firstmate-booksmirror";
   function fillTpl(tpl, vars) {
     if (Array.isArray(tpl)) return tpl.map(x => fillTpl(x, vars));
     if (tpl && typeof tpl === "object") { const o = {}; for (const k in tpl) o[k] = fillTpl(tpl[k], vars); return o; }
@@ -198,6 +209,11 @@ function aplikacia(T, koren, signal) {
     if (P.email != null) D.email = P.email;
     if (P.finEmail != null && "finEmail" in D) D.finEmail = P.finEmail;
     if (P.prvy_clen && D.team[0]) Object.assign(D.team[0], P.prvy_clen);
+    // celý predvolený tím klienta: [{ meno, rola, osoba?, email?, rozsah?, aktivny? }], osoba = meno v dátach
+    if (Array.isArray(P.tim) && P.tim.length) D.team = P.tim.map((m, i) => ({
+      id: "m" + i, meno: m.meno || "", rola: m.rola || T.osoba, [T.osoba]: m.osoba || "", email: m.email || "",
+      rozsah: m.rozsah || (m.rola && m.rola !== T.osoba ? (T.rolaRozsah[m.rola] || "cely") : "svoje"), aktivny: m.aktivny != null ? !!m.aktivny : !!m.email
+    }));
     return D;
   }
   function mergeSettings(d) {
@@ -521,15 +537,15 @@ function aplikacia(T, koren, signal) {
     const R = makeRun($("#run"), $("#steps"), $("#runTitle"), "Brífing → Slack", [...BRIEF_STEPS, "Odoslať do Slacku"]);
     try {
       await ensureBrief(false, R);
-      if (POTVRDIT && !await confirmSend("Odoslať brífing do Slacku?", [["Kanál", FM.SLACK_NAME], ["Obsah", `${st.texts.nadpis} / ${st.texts.podnadpis}`], ["Text", st.texts.ai ? "napísala AI" : "pravidlový text"], ["Dáta", dataLabel()]])) { R.set(3, "cancel", "Zrušené, nič neodišlo"); R.msg("Nič neodišlo. Náhľad je nižšie."); return; }
-      R.set(3, "active", FM.SLACK_NAME);
-      const res = await call("Slack", "slack_send_message", { channel_id: FM.SLACK_CHANNEL, message: FM.slackText(st.brief, st.texts) }, { write: true });
-      R.set(3, "done", `Odoslané do ${FM.SLACK_NAME} o ${hm(Date.now())}`);
+      if (POTVRDIT && !await confirmSend("Odoslať brífing do Slacku?", [["Kanál", KANAL.nazov], ["Obsah", `${st.texts.nadpis} / ${st.texts.podnadpis}`], ["Text", st.texts.ai ? "napísala AI" : "pravidlový text"], ["Dáta", dataLabel()]])) { R.set(3, "cancel", "Zrušené, nič neodišlo"); R.msg("Nič neodišlo. Náhľad je nižšie."); return; }
+      R.set(3, "active", KANAL.nazov);
+      const res = await call("Slack", "slack_send_message", { channel_id: KANAL.id, message: FM.slackText(st.brief, st.texts) }, { write: true });
+      R.set(3, "done", `Odoslané do ${KANAL.nazov} o ${hm(Date.now())}`);
       const url = findUrl(res);
       const tm = JSON.stringify(res || "").match(/team(?:_id)?\\?"?\s*[:=]\s*\\?"?(T[A-Z0-9]{6,})/);
-      const appUrl = tm ? `https://slack.com/app_redirect?team=${tm[1]}&channel=${FM.SLACK_CHANNEL}` : `https://firstmate-booksmirror.slack.com/app_redirect?channel=${FM.SLACK_CHANNEL}`;
+      const appUrl = tm ? `https://slack.com/app_redirect?team=${tm[1]}&channel=${KANAL.id}` : `https://${SLACK_WS}.slack.com/app_redirect?channel=${KANAL.id}`;
       R.msg(`Brífing je v Slacku · <a href="${esc(appUrl)}" target="_blank" rel="noopener">otvoriť v aplikácii Slack</a>${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener">na webe</a>` : ""}.`);
-      addLog("Slack · " + FM.SLACK_NAME, st.texts.podnadpis);
+      addLog("Slack · " + KANAL.nazov, st.texts.podnadpis);
     } catch (e) { R.fail(errText(e, R.active === 3 ? "Slack" : "Dáta", R.active === 3)); }
     finally { lock(false); }
   }
@@ -1121,7 +1137,7 @@ function aplikacia(T, koren, signal) {
     [["#chSlack", "slack"], ["#chEmail", "email"], ["#chTeam", "team"], ...(DEV ? [["#chFin", "fin"]] : [])].forEach(([id, k]) => $(id).addEventListener("change", e => { S.schedule[k] = e.target.checked; renderSchedule(); save(); }));
   }
   const CONN_ROWS = [
-    { s: "Slack", use: "Doručenie do " + FM.SLACK_NAME, check: () => call("Slack", "slack_read_channel", { channel_id: FM.SLACK_CHANNEL, limit: 1 }) },
+    { s: "Slack", use: "Doručenie do " + KANAL.nazov, check: () => call("Slack", "slack_read_channel", { channel_id: KANAL.id, limit: 1 }) },
     { s: EMAIL.server, use: NASTAVENIA.email ? `Doručenie e-mailov (${EMAIL.sluzba})` : "Doručenie e-mailov", check: null },
     { s: "Claude AI", use: "Interpretácia a návrh krokov", check: null }
   ];

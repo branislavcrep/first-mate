@@ -131,7 +131,8 @@ const NASTAVENIA = [
     nastavenia: {
       nazov: "Realitka Test, s.r.o.", rezim: "klient", prepinac: false, typy: ["realitka"], typ: "realitka",
       potvrdenie_pred_odoslanim: true, signaly_len_na_citanie: true, zalozka_tipy: true, rozvrh: "planovana-uloha",
-      predvolene: { email: "", prvy_clen: { meno: "Manažér", email: "", aktivny: false } }, slack: { prikaz: "/first-mate-test" }
+      predvolene: { email: "", tim: [{ meno: "Jana Test", rola: "manazer", email: "jana@firstmate.sk" }, { meno: "Peter Molnár", rola: "makler", osoba: "Peter Molnár" }] },
+      slack: { prikaz: "/first-mate-test", kanaly: [{ id: "CTEST000", nazov: "#realitka-test" }] }
     },
     async over(p) {
       const o = {};
@@ -142,13 +143,16 @@ const NASTAVENIA = [
       o["príkaz v Slack karte"] = [await p.$eval("#v-brifing [data-prikaz]", (e) => e.textContent), "/first-mate-test"];
       o["signály len na čítanie"] = [await p.$$eval("#sig input, #period", (x) => x.every((i) => i.disabled) && x.length > 0), true];
       o["bez pridania signálu"] = [await p.$$eval("#btnAddSig, #sgAdd", (x) => x.length), 0];
-      o["rozvrh ako plánovaná úloha"] = [await p.$$eval("#days", (x) => x.length) + " · " + (await p.$eval("#v-rozvrh", (v) => v.textContent)).includes("#first-mate-demo"), "0 · true"];
+      o["rozvrh ako plánovaná úloha"] = [await p.$$eval("#days", (x) => x.length) + " · " + (await p.$eval("#v-rozvrh", (v) => v.textContent)).includes("Slack #realitka-test"), "0 · true"];
       o["päta s verziou (bez buildu)"] = [await p.$eval("#verzia", (e) => e.textContent), "First Mate · vývojová verzia, nezostavené"];
       o["bez predvolených adries"] = [await p.$eval("#emailTo", (e) => e.value), ""];
+      o["Slack kanál z nastavení"] = [await p.$$eval("[data-kanal], #v-brifing h3", (x) => [...new Set(x.map((e) => e.textContent))].filter((t) => t.startsWith("#")).join(",")), "#realitka-test"];
+      o["tím z nastavení"] = [await p.$$eval("#team .trow:not(.head)", (rs) => rs.map((r) => r.querySelector('[data-k="meno"]').value + "/" + r.querySelector('[data-k="rola"]').value + "/" + r.querySelector('[data-k="makler"]').value + "/" + r.querySelector('[data-k="rozsah"]').value + "/" + r.querySelector('[data-k="aktivny"]').checked).join(" | ")), "Jana Test/manazer//cely/true | Peter Molnár/makler/Peter Molnár/svoje/false"];
       o["tipy z katalógu"] = [await p.$eval("#tipCount", (e) => e.textContent), await p.evaluate(async () => { const k = await (await fetch("../usecases/usecases.json")).json(); return k.usecases.filter((u) => u.druh === "tip" && u.typy.includes("realitka")).length + " tipov"; })];
       await p.click("#btnSlack");
       await p.waitForSelector("#cfOv:not(.hidden)", { timeout: 10000 }).catch(() => {});
       o["potvrdenie pred odoslaním do Slacku"] = [await p.$eval("#cfTitle", (e) => e.textContent).catch(() => "chýba"), "Odoslať brífing do Slacku?"];
+      o["potvrdenie: kanál z nastavení"] = [(await p.$eval("#cfList", (e) => e.textContent).catch(() => "")).includes("#realitka-test"), true];
       await p.click("#cfNo");
       return o;
     }

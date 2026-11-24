@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <!-- First Mate · panel. Vygenerované z legacy/panel-developer (docs/migracia/nastroje/rozdel_rozhranie.mjs, 2026-11-24), odvtedy sa upravuje ručne.
      Prvky s data-typy="…" patria len uvedeným typom firmy (app.js ostatné odstráni). Čísla záložiek 01, 02… dopĺňa app.js podľa poradia v menu.
-     data-rezim="demo|klient" a data-rozvrh="panel|planovana-uloha" fungujú ako data-typy podľa nastavení klienta (rezim, rozvrh); data-prikaz dostane slack.prikaz.
+     data-rezim="demo|klient" a data-rozvrh="panel|planovana-uloha" fungujú ako data-typy podľa nastavení klienta (rezim, rozvrh); data-prikaz dostane slack.prikaz, data-kanal názov Slack kanála zo slack.kanaly.
      data-prepni="<typ>" = odkaz, ktorý prepne panel na iný typ (len ak nastavenia klienta majú prepinac: true, inak zmizne).
      fm-verzia, fm-zostavene = verzia a dátum zostavenia do päty (doplní build, prázdne = vývojová verzia).
      fm-nastavenia = cesta k nastaveniam klienta od fm-koren (build vo fáze 5 ich vloží podľa klienta). -->
@@ -69,8 +69,8 @@
     <div class="grid2">
       <div class="card">
         <div class="lbl">Kanál 01 · Slack</div>
-        <h3 data-typy="realitka">#first-mate-demo</h3>
-        <h3 data-typy="developer">#first-mate-developer</h3>
+        <h3 data-typy="realitka" data-kanal>#first-mate-demo</h3>
+        <h3 data-typy="developer" data-kanal>#first-mate-developer</h3>
         <p data-typy="realitka">Celý brífing do kanála tímu. Vo vlákne sa dá pýtať ďalej a pokračovať v Claude príkazom <span class="mono blue" data-prikaz>/first-mate</span>.</p>
         <p data-typy="developer">Celý brífing do kanála predajného tímu. Vo vlákne sa dá pýtať ďalej a pokračovať v Claude príkazom <span class="mono blue" data-prikaz>/first-mate-dev</span>.</p>
         <button class="btn" id="btnSlack">Poslať do Slacku <span>→</span></button>
@@ -212,8 +212,8 @@
         <div class="card">
           <div class="lbl">Kanály</div>
           <div class="checks" style="margin-top:14px">
-            <label data-typy="realitka"><input type="checkbox" id="chSlack"><span><b>Slack</b> · #first-mate-demo<br><span class="note">celý brífing do kanála</span></span></label>
-            <label data-typy="developer"><input type="checkbox" id="chSlack"><span><b>Slack</b> · #first-mate-developer<br><span class="note">celý brífing do kanála</span></span></label>
+            <label data-typy="realitka"><input type="checkbox" id="chSlack"><span><b>Slack</b> · <span data-kanal>#first-mate-demo</span><br><span class="note">celý brífing do kanála</span></span></label>
+            <label data-typy="developer"><input type="checkbox" id="chSlack"><span><b>Slack</b> · <span data-kanal>#first-mate-developer</span><br><span class="note">celý brífing do kanála</span></span></label>
             <label><input type="checkbox" id="chEmail"><span><b>E-mail</b> · <span id="chEmailAddr"></span><br><span class="note">celý brífing na adresu z prvej záložky</span></span></label>
             <label><input type="checkbox" id="chTeam"><span><b>Osobné brífingy tímu</b><br><span class="note">podľa záložky Tím</span></span></label>
             <label data-typy="developer"><input type="checkbox" id="chFin"><span><b>Finančný brífing</b> · <span id="chFinAddr"></span><br><span class="note">e-mailom majiteľovi a finančnému riaditeľovi</span></span></label>
@@ -235,7 +235,7 @@
           <ul class="plain">
             <li><b>Kde:</b> aplikácia Claude → Scheduled → First Mate · ranný brífing</li>
             <li><b>Kedy:</b> pracovné dni o 7:30 (zmeníte v úlohe)</li>
-            <li><b>Kam:</b> Slack #first-mate-developer</li>
+            <li><b>Kam:</b> Slack <span data-kanal>#first-mate-developer</span></li>
             <li><b>Podmienka:</b> počítač je zapnutý a aplikácia Claude otvorená</li>
           </ul>
         </div>
@@ -260,7 +260,7 @@
           <ul class="plain">
             <li><b>Kde:</b> aplikácia Claude → Scheduled → First Mate · ranný brífing</li>
             <li><b>Kedy:</b> pracovné dni o 7:30 (zmeníte v úlohe)</li>
-            <li><b>Kam:</b> Slack #first-mate-demo</li>
+            <li><b>Kam:</b> Slack <span data-kanal>#first-mate-demo</span></li>
             <li><b>Podmienka:</b> počítač je zapnutý a aplikácia Claude otvorená</li>
           </ul>
         </div>
@@ -362,7 +362,7 @@
 <line x1="250" y1="404" x2="338" y2="404" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
 <rect x="750" y="122" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
 <text x="764" y="146" font-size="14" font-weight="700" fill="#0B0B0C">Slack</text>
-<text x="764" y="165" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">#first-mate-demo</text>
+<text x="764" y="165" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace"><tspan data-kanal>#first-mate-demo</tspan></text>
 <text x="968" y="146" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
 <line x1="662" y1="151" x2="748" y2="151" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
 <text x="705" y="143" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">doručí</text>
@@ -496,7 +496,7 @@
 <line x1="250" y1="404" x2="338" y2="404" stroke="#55524A" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arm)"/>
 <rect x="750" y="122" width="230" height="58" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="1.5"/>
 <text x="764" y="146" font-size="14" font-weight="700" fill="#0B0B0C">Slack</text>
-<text x="764" y="165" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace">#first-mate-developer</text>
+<text x="764" y="165" font-size="11.5" fill="#55524A" font-family="Geist Mono, Menlo, monospace"><tspan data-kanal>#first-mate-developer</tspan></text>
 <text x="968" y="146" font-size="10" text-anchor="end" fill="#1B2CC1" font-family="Geist Mono, Menlo, monospace" letter-spacing="1">DNES</text>
 <line x1="662" y1="151" x2="748" y2="151" stroke="#0B0B0C" stroke-width="1.5" marker-end="url(#ar)"/>
 <text x="705" y="143" font-size="11" text-anchor="middle" fill="#55524A" font-family="Geist Mono, Menlo, monospace" letter-spacing=".5">doručí</text>

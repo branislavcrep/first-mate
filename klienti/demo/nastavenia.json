@@ -1,8 +1,17 @@
 {
   "klient": "demo",
   "nazov": "First Mate · demo",
-  "poznamka": "Zatiaľ len typ a prepínač (fáza 4). Ostatné nastavenia (Slack, e-mail, tím, menu, klientsky režim) doplní fáza 5.",
+  "poznamka": "Demo panel Books & Mirror: prepínač typov, fiktívne dáta, demo Slack kanály vo workspace firstmate-booksmirror, e-mail cez predvolený Gmail.",
+  "rezim": "demo",
   "prepinac": true,
   "typy": ["realitka", "developer"],
-  "typ": "developer"
+  "typ": "developer",
+  "slack": {
+    "server": "Slack",
+    "workspace": "firstmate-booksmirror",
+    "kanaly": [
+      { "typ": "realitka", "id": "C0CDGG5MY0Y", "nazov": "#first-mate-demo" },
+      { "typ": "developer", "id": "C0CDY6XG8MR", "nazov": "#first-mate-developer" }
+    ]
+  }
 }

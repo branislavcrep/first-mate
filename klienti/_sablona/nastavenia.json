@@ -1,0 +1,39 @@
+{
+  "klient": "«slug»",
+  "nazov": "«Názov klienta, s.r.o.»",
+  "poznamka": "Šablóna pre /novy-klient. Miesta «…» nahraď, nepotrebné vynechaj. Popis polí: klienti/_sablona/README.md. Žiadne kľúče, heslá ani skutočné dáta klienta.",
+  "rezim": "klient",
+  "prepinac": false,
+  "typy": ["«realitka|developer»"],
+  "typ": "«realitka|developer»",
+  "potvrdenie_pred_odoslanim": true,
+  "signaly_len_na_citanie": true,
+  "zalozka_tipy": true,
+  "rozvrh": "planovana-uloha",
+  "predvolene": {
+    "email": "",
+    "finEmail": "",
+    "tim": [
+      { "meno": "«Meno»", "rola": "«riaditel|vedenie|predajca|manazer|makler»", "osoba": "«meno v dátach, len pre predajcu/makléra»", "email": "" }
+    ]
+  },
+  "slack": {
+    "server": "Slack",
+    "nastroj": "slack_send_message",
+    "workspace": "«workspace»",
+    "kanaly": [{ "id": "«ID kanála, napr. C0…»", "nazov": "«#nazov-kanala»" }],
+    "prikaz": "/first-mate"
+  },
+  "email": {
+    "sluzba": "Gmail",
+    "server": "Gmail",
+    "odoslat": {
+      "nastroj": "send_message",
+      "argumenty": { "to": "{{prijemcovia}}", "subject": "{{predmet}}", "body": "{{text}}", "htmlBody": "{{html}}" }
+    },
+    "koncept": {
+      "nastroj": "create_draft",
+      "argumenty": { "to": "{{prijemcovia}}", "subject": "{{predmet}}", "body": "{{text}}", "htmlBody": "{{html}}" }
+    }
+  }
+}
