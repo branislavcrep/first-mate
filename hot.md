@@ -15,7 +15,7 @@ Aktualizované: 2026-11-27 · Marcel
 - Nový klient: `/novy-klient`.
 
 ## Marcel
-- Návod: `docs/pre-marcela.md`. GitHub účet: `MarcelK777`, pozvánka do repozitára odoslaná 24. 11., čaká na prijatie (osobný repozitár: spolupracovník má vždy zápis, rola sa nevyberá). Prvá session 27. 11.: vlastná kópia demo panela https://claude.ai/artifact/T6aXN6RU6E6i8KymGXYbsN (súkromná, v Marcelovom účte; Slack a Gmail z nej ešte nevyskúšané, predvolený príjemca e-mailov v paneli je Branislavov Gmail). Slack workspace `firstmate-booksmirror`: pozvánku pošle Branislav (kanály #first-mate-demo, #first-mate-developer).
+- Návod: `docs/pre-marcela.md`. GitHub účet: `MarcelK777`, pozvánka do repozitára odoslaná 24. 11., čaká na prijatie (osobný repozitár: spolupracovník má vždy zápis, rola sa nevyberá). Prvá session 27. 11.: vlastná kópia demo panela https://claude.ai/artifact/T6aXN6RU6E6i8KymGXYbsN (súkromná, v Marcelovom účte; Slack a Gmail z nej ešte nevyskúšané, predvolený príjemca e-mailov v paneli je Branislavov Gmail). Ďalší krok: Marcel zadá demo pre developera len so záložkou Brífing (vlastné `klienti/<nazov>/nastavenia.json`: `typ: developer`, `prepinac: false`, v `menu.developer` zapnutý len `brifing`; cvičné dáta podľa zadania), zverejniť ako jeho súkromný artefakt. Slack workspace `firstmate-booksmirror`: pozvánku pošle Branislav (kanály #first-mate-demo, #first-mate-developer).
 
 ## Pravidlá pre panel/
 - Výpočty len v `panel/usecases/`. Kľúče výstupu zatiaľ legacy (`s1`…, `f1`…). Zmena čísel len cez návrh a golden testy.
