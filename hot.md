@@ -1,6 +1,6 @@
 # Čo sa práve deje
 
-Aktualizované: 2026-11-24 · Branislav
+Aktualizované: 2026-11-27 · Marcel
 
 ## Stav
 - Migrácia na jedno jadro je **ukončená** (fázy 0–7, Issues #3–#6 uzavreté). Pracuje sa podľa GitHub Issues; `docs/migracia/` je len história.
@@ -15,7 +15,7 @@ Aktualizované: 2026-11-24 · Branislav
 - Nový klient: `/novy-klient`.
 
 ## Marcel
-- Návod: `docs/pre-marcela.md`. GitHub účet: `MarcelK777`, pozvánka do repozitára odoslaná 24. 11., čaká na prijatie (osobný repozitár: spolupracovník má vždy zápis, rola sa nevyberá). Slack workspace `firstmate-booksmirror`: pozvánku pošle Branislav (kanály #first-mate-demo, #first-mate-developer).
+- Návod: `docs/pre-marcela.md`. GitHub účet: `MarcelK777`, pozvánka do repozitára odoslaná 24. 11., čaká na prijatie (osobný repozitár: spolupracovník má vždy zápis, rola sa nevyberá). Prvá session 27. 11.: vlastná kópia demo panela https://claude.ai/artifact/T6aXN6RU6E6i8KymGXYbsN (súkromná, v Marcelovom účte; Slack a Gmail z nej ešte nevyskúšané, predvolený príjemca e-mailov v paneli je Branislavov Gmail). Slack workspace `firstmate-booksmirror`: pozvánku pošle Branislav (kanály #first-mate-demo, #first-mate-developer).
 
 ## Pravidlá pre panel/
 - Výpočty len v `panel/usecases/`. Kľúče výstupu zatiaľ legacy (`s1`…, `f1`…). Zmena čísel len cez návrh a golden testy.
